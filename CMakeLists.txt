@@ -1,4 +1,4 @@
-project( jedi_common_libs )
+project( jedi_common_libs C Fortran CXX )
 
 # TODO Missing dependencies:
 # - Firebird
@@ -42,10 +42,19 @@ set( libjpeg_URL http://www.ijg.org/files/jpegsrc.v9b.tar.gz )
 set( libjpeg_MD5 6a9996ce116ec5c52b4870dbcd6d3ddb)
 set( _PACKAGES ${_PACKAGES} libjpeg )
 
+set( libjasper_URL http://www.ece.uvic.ca/~frodo/jasper/software/jasper-1.900.2.tar.gz )
+set( _PACKAGES ${_PACKAGES} libjasper )
+
 set( freetype_URL http://download.savannah.gnu.org/releases/freetype/freetype-2.5.5.tar.bz2 )
 set( freetype_MD5 2a7a314927011d5030903179cf183be0 )
 set( _PACKAGES ${_PACKAGES} freetype )
 
+set( hdf5_URL https://support.hdfgroup.org/ftp/HDF5/current18/src/hdf5-1.8.18.tar.gz )     
+set( hdf5_MD5 dd2148b740713ca0295442ec683d7b1c )
+set( _PACKAGES ${_PACKAGES} hdf5 )
+
+set( netcdf_URL ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.1.3.tar.gz ) 
+set( _PACKAGES ${_PACKAGES} netcdf )
 
 # If in fetch mode, only download and set a "fetch-only" indicator
 if ( FETCH_ONLY )
@@ -61,116 +70,41 @@ ELSE ( FETCH_ONLY )
 
     # Make sure autotools-based 3rd-parties use the bootstrapped libraries
     file( WRITE ${JEDI_PREFIX}/share/config.site "CPPFLAGS='-I${JEDI_PREFIX}/include'\nLDFLAGS='-L${JEDI_PREFIX}/lib'\n" )
-
     file(MAKE_DIRECTORY ${JEDI_PREFIX}/licenses/zlib)
-    ExternalProject_Add( zlib-fetch
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/zlib-src
+
+    ExternalProject_Add( zlib
         DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
         URL ${zlib_URL}
         URL_HASH ${zlib_HASH}
-        LIST_SEPARATOR ^^
-        PATCH_COMMAND ${CMAKE_COMMAND} -E remove zconf.h
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND ""
-        TEST_COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/zlib.h ${JEDI_PREFIX}/licenses/zlib/
+        CONFIGURE_COMMAND
+        <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} 
+        BUILD_COMMAND make
+        INSTALL_COMMAND make check install
         LOG_DOWNLOAD 1
         LOG_UPDATE 1
         LOG_CONFIGURE 1
         LOG_BUILD 1
         LOG_TEST 1
         LOG_INSTALL 1
-        )
-
-    ExternalProject_Add( zlib-debug
-        DEPENDS zlib-fetch
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/zlib-src
-        DOWNLOAD_COMMAND ${CMAKE_COMMAND} -E echo
-        LIST_SEPARATOR ^^
-        CMAKE_ARGS -DCMAKE_SYSTEM_IGNORE_PATH=/lib^^/usr/lib^^/usr/local/lib^^/usr/include^^/usr/local/include -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_PREFIX_PATH:PATH=${JEDI_PREFIX}
-        LOG_DOWNLOAD 1
-        LOG_UPDATE 1
-        LOG_CONFIGURE 1
-        LOG_BUILD 1
-        LOG_TEST 1
-        LOG_INSTALL 1
-        )
-
-    ExternalProject_Add( zlib-release
-        DEPENDS zlib-fetch
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/zlib-src
-        DOWNLOAD_COMMAND ${CMAKE_COMMAND} -E echo
-        LIST_SEPARATOR ^^
-        CMAKE_ARGS -DCMAKE_SYSTEM_IGNORE_PATH=/lib^^/usr/lib^^/usr/local/lib^^/usr/include^^/usr/local/include -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_PREFIX_PATH:PATH=${JEDI_PREFIX}
-        LOG_DOWNLOAD 1
-        LOG_UPDATE 1
-        LOG_CONFIGURE 1
-        LOG_BUILD 1
-        LOG_TEST 1
-        LOG_INSTALL 1
-        )
-
-    ExternalProject_Add( zlib
-        DEPENDS zlib-release zlib-debug
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/zlib-src
-        DOWNLOAD_COMMAND ${CMAKE_COMMAND} -E echo
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND ""
         )
 
     file(MAKE_DIRECTORY ${JEDI_PREFIX}/licenses/libpng)
-    ExternalProject_Add( libpng-fetch
+    ExternalProject_Add( libpng
+        DEPENDS zlib
         SOURCE_DIR ${CMAKE_BINARY_DIR}/libpng-src
         DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
         URL ${libpng_URL}
         URL_MD5 ${libpng_MD5}
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND ""
-        TEST_COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/LICENSE ${JEDI_PREFIX}/licenses/libpng
+        CONFIGURE_COMMAND 
+         <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX}
+        BUILD_COMMAND make test
+        INSTALL_COMMAND make install
         LOG_DOWNLOAD 1
         LOG_UPDATE 1
         LOG_CONFIGURE 1
         LOG_BUILD 1
         LOG_TEST 1
         LOG_INSTALL 1
-        )
-
-    ExternalProject_Add( libpng-debug
-        DEPENDS zlib libpng-fetch
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/libpng-src
-        DOWNLOAD_COMMAND ${CMAKE_COMMAND} -E echo
-        CMAKE_ARGS
-        -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MODULE_PATH:PATH=${JEDI_MODULE_PATH} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_PREFIX_PATH:PATH=${JEDI_PREFIX}
-        LOG_DOWNLOAD 1
-        LOG_UPDATE 1
-        LOG_CONFIGURE 1
-        LOG_BUILD 1
-        LOG_TEST 1
-        LOG_INSTALL 1
-        )
-    ExternalProject_Add( libpng-release
-        DEPENDS zlib libpng-fetch
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/libpng-src
-        DOWNLOAD_COMMAND ${CMAKE_COMMAND} -E echo
-        CMAKE_ARGS
-        -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MODULE_PATH:PATH=${JEDI_MODULE_PATH} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_PREFIX_PATH:PATH=${JEDI_PREFIX}
-        LOG_DOWNLOAD 1
-        LOG_UPDATE 1
-        LOG_CONFIGURE 1
-        LOG_BUILD 1
-        LOG_TEST 1
-        LOG_INSTALL 1
-        )
-
-    ExternalProject_Add( libpng
-        DEPENDS libpng-release libpng-debug
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/libpng-src
-        DOWNLOAD_COMMAND ${CMAKE_COMMAND} -E echo
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND ""
         )
 
     file(MAKE_DIRECTORY ${JEDI_PREFIX}/licenses/libjpeg)
@@ -178,9 +112,10 @@ ELSE ( FETCH_ONLY )
         DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
         URL ${libjpeg_URL}
         URL_MD5 ${libjpeg_MD5}
-        LIST_SEPARATOR ^^
-	CMAKE_ARGS -DCMAKE_SYSTEM_IGNORE_PATH=/lib^^/usr/lib^^/usr/local/lib^^/usr/include^^/usr/local/include -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_PREFIX_PATH:PATH=${JEDI_PREFIX}
-        TEST_COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/README ${JEDI_PREFIX}/licenses/libjpeg/
+        CONFIGURE_COMMAND
+        <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --enable-shared=yes
+        BUILD_COMMAND make
+        INSTALL_COMMAND make install
         LOG_DOWNLOAD 1
         LOG_UPDATE 1
         LOG_CONFIGURE 1
@@ -206,6 +141,54 @@ ELSE ( FETCH_ONLY )
         LOG_INSTALL 1
         )
 
+    ExternalProject_Add( jasper
+        DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
+        URL ${libjasper_URL}
+        CONFIGURE_COMMAND
+        <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} 
+        BUILD_COMMAND make
+        INSTALL_COMMAND make install
+        LOG_DOWNLOAD 1
+        LOG_UPDATE 1
+        LOG_CONFIGURE 1
+        LOG_BUILD 1
+        LOG_TEST 1
+        LOG_INSTALL 1
+        )
+
+    ExternalProject_Add( hdf5
+        DEPENDS zlib
+        DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
+        URL ${hdf5_URL}
+        URL_MD5 ${hdf5_MD5}
+        CONFIGURE_COMMAND
+        <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --with-zlib=${JEDI_PREFIX} --enable-fortran --enable-fortran2003
+        BUILD_COMMAND make 
+        INSTALL_COMMAND make install
+        LOG_DOWNLOAD 1
+        LOG_UPDATE 1
+        LOG_CONFIGURE 1
+        LOG_BUILD 1
+        LOG_TEST 1
+        LOG_INSTALL 1
+        )
+
+    ExternalProject_Add( netcdf
+        DEPENDS hdf5
+        DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
+        URL ${netcdf_URL}
+        CONFIGURE_COMMAND
+        <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --includedir=${JEDI_PREFIX}/include --libdir=${JEDI_PREFIX}/lib --disable-dap
+        BUILD_COMMAND make
+        INSTALL_COMMAND make install
+        LOG_DOWNLOAD 1
+        LOG_UPDATE 1
+        LOG_CONFIGURE 1
+        LOG_BUILD 1
+        LOG_TEST 1
+        LOG_INSTALL 1
+        )
+
     set( _OLDPATH $ENV{PATH} )
     set( _NEWPATH ${JEDI_PREFIX}\\bin ${_OLDPATH} )
     set( ENV{PATH} "${_NEWPATH}" )
@@ -214,7 +197,7 @@ ELSE ( FETCH_ONLY )
 
 
    INSTALL(DIRECTORY "${JEDI_PREFIX}/licenses" DESTINATION "." COMPONENT binaries)
-   INSTALL(DIRECTORY "${JEDI_PREFIX}/docs-to-install/" DESTINATION "doc" COMPONENT documentation)
+   #INSTALL(DIRECTORY "${JEDI_PREFIX}/docs-to-install/" DESTINATION "doc" COMPONENT documentation)
 
 
    FILE(GLOB bzip2_libs "${JEDI_PREFIX}/lib/libbz2*")
