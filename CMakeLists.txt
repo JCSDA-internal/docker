@@ -23,6 +23,7 @@ option(BUILD_JASPER "Build jasper " ON)
 option(BUILD_HDF5 "Build hdf5 " ON)
 option(BUILD_FREETYPE "Build freetype " ON)
 option(BUILD_NETCDF "Build netcdf " ON)
+option(BUILD_LAPACK "Build lapack " ON)
 
 # This variable is set in the bootstrapping script (jedi/jedi.bat)
 set(JEDI_PREFIX ${PROJECT_SOURCE_DIR})
@@ -77,6 +78,10 @@ set( netcdf_fortran_URL ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-4.4
 set( netcdf_fortran_MD5 "" )
 set( _PACKAGES ${_PACKAGES} netcdf_fortran )
 
+set( lapack_URL http://www.netlib.org/lapack/lapack-3.7.0.tgz )
+set( lapack_MD5 "" )
+set( _PACKAGES ${_PACKAGES} lapack )
+
 # If in fetch mode, only download and set a "fetch-only" indicator
 if ( FETCH_ONLY )
     foreach( pkg ${_PACKAGES} )
@@ -92,6 +97,22 @@ ELSE ( FETCH_ONLY )
     # Make sure autotools-based 3rd-parties use the bootstrapped libraries
     file( WRITE ${JEDI_PREFIX}/share/config.site "CPPFLAGS='-I${JEDI_PREFIX}/include'\nLDFLAGS='-L${JEDI_PREFIX}/lib'\n" )
     file(MAKE_DIRECTORY ${JEDI_PREFIX}/licenses/zlib)
+
+    if (BUILD_LAPACK)
+       ExternalProject_Add( lapack
+           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
+           URL ${lapack_URL}
+           URL_HASH ${lapack_HASH}
+           LIST_SEPARATOR ^^
+           CMAKE_ARGS -DCMAKE_SYSTEM_IGNORE_PATH=/lib^^/usr/lib^^/usr/local/lib^^/usr/include^^/usr/local/include -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} 
+           LOG_DOWNLOAD 1
+           LOG_UPDATE 1
+           LOG_CONFIGURE 1
+           LOG_BUILD 1
+           LOG_TEST 1
+           LOG_INSTALL 1
+           )
+    endif (BUILD_LAPACK)
 
     if (BUILD_ZLIB)
        ExternalProject_Add( zlib
@@ -263,46 +284,4 @@ ELSE ( FETCH_ONLY )
    FILE(GLOB jpeg_libs "${JEDI_PREFIX}/lib/libjpeg*")
    INSTALL(FILES ${jpeg_libs} DESTINATION "lib" COMPONENT binaries)
 
-# TODO include, share
-
-   # Packages/installers
-   #
-
-   # Put everything in a single ZIP file
-#  set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 1)
-
-#  set(CMAKE_INSTALL_PREFIX "${JEDI_BASEDIR}/build/installation" CACHE PATH "Installation prefix, required for CPack due to absolute paths" FORCE)
-#  SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Wt binary build")
-#  SET(CPACK_PACKAGE_VENDOR "emweb bvba")
-#  SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
-#  SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
-#  SET(CPACK_PACKAGE_VERSION_MAJOR ${WT_VERSION_MAJOR})
-#  SET(CPACK_PACKAGE_VERSION_MINOR ${WT_VERSION_MINOR})
-#  SET(CPACK_PACKAGE_VERSION_PATCH ${WT_VERSION_PATCH})
-#  SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Wt ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH} ${_WT_COMPILER} ${_WT_ARCH}")
-
-#  if(WIN32)
-#   SET(CPACK_GENERATOR "ZIP;NSIS")
-#  elseif(CMAKE_HOST_APPLE)
-#   SET(CPACK_GENERATOR "Bundle")
-#  else(WIN32)
-#   SET(CPACK_GENERATOR "TBZ2")
-#  endif(WIN32)
-
-#  set(CPACK_COMPONENTS_ALL binaries documentation examples symbols)
-
-#  set(CPACK_COMPONENT_BINARIES_DISPLAY_NAME "Binaries")
-#  set(CPACK_COMPONENT_BINARIES_DESCRIPTION "Wt binaries and third party dependencies. Includes DLLs and import libraries.")
-#  set(CPACK_COMPONENT_EXAMPLES_DISPLAY_NAME "Examples")
-#  set(CPACK_COMPONENT_EXAMPLES_DESCRIPTION "Examples, ready to run. Source code is not included.")
-#  set(CPACK_COMPONENT_DOCUMENTATION_DISPLAY_NAME "Documentation")
-#  set(CPACK_COMPONENT_DOCUMENTATION_DESCRIPTION "Wt documentation in HTML format")
-#  set(CPACK_COMPONENT_SYMBOLS_DISPLAY_NAME "Debug Symbols")
-#  set(CPACK_COMPONENT_SYMBOLS_DESCRIPTION "PDB files for all debug DLLs")
-
-#  set(CPACK_COMPONENT_BINARIES_REQUIRED TRUE)
-
-#  #set(CPACK_COMPONENT_EXAMPLES_DEPENDS binaries)
-
-#  INCLUDE(CPack)
 ENDIF( FETCH_ONLY )
