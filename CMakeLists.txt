@@ -103,6 +103,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${lapack_URL}
            URL_HASH ${lapack_HASH}
+           TIMEOUT 60
            LIST_SEPARATOR ^^
            CMAKE_ARGS -DCMAKE_SYSTEM_IGNORE_PATH=/lib^^/usr/lib^^/usr/local/lib^^/usr/include^^/usr/local/include -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} 
            LOG_DOWNLOAD 1
@@ -119,6 +120,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${zlib_URL}
            URL_HASH ${zlib_HASH}
+           TIMEOUT 60
            CONFIGURE_COMMAND
            <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} 
            BUILD_COMMAND ${CMAKE_BUILD_TOOL}
@@ -140,6 +142,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libpng_URL}
            URL_MD5 ${libpng_MD5}
+           TIMEOUT 60
            CONFIGURE_COMMAND 
             <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX}
            BUILD_COMMAND ${CMAKE_BUILD_TOOL} test
@@ -159,6 +162,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libjpeg_URL}
            URL_MD5 ${libjpeg_MD5}
+           TIMEOUT 60
            CONFIGURE_COMMAND
            <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --enable-shared=yes
            BUILD_COMMAND ${CMAKE_BUILD_TOOL}
@@ -179,6 +183,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${freetype_URL}
            URL_MD5 ${freetype_MD5}
+           TIMEOUT 60
            LIST_SEPARATOR ^^
            CMAKE_ARGS -DCMAKE_SYSTEM_IGNORE_PATH=/lib^^/usr/lib^^/usr/local/lib^^/usr/include^^/usr/local/include -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_PREFIX_PATH:PATH=${JEDI_PREFIX}
            TEST_COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/docs/LICENSE.TXT ${JEDI_PREFIX}/licenses/freetype/
@@ -196,6 +201,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libjasper_URL}
            URL_MD5 ${libjasper_MD5}
+           TIMEOUT 60
            CONFIGURE_COMMAND
            <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} 
            BUILD_COMMAND ${CMAKE_BUILD_TOOL}
@@ -215,6 +221,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${hdf5_URL}
            URL_MD5 ${hdf5_MD5}
+           TIMEOUT 60
            CONFIGURE_COMMAND
            <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --with-zlib=${JEDI_PREFIX} --enable-fortran --enable-fortran2003
            BUILD_COMMAND ${CMAKE_BUILD_TOOL} 
@@ -234,6 +241,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${netcdf_c_URL}
            URL_MD5 ${netcdf_c_MD5}
+           TIMEOUT 60
            BUILD_COMMAND   ${CMAKE_BUILD_TOOL} 
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install 
            CONFIGURE_COMMAND 
@@ -251,6 +259,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${netcdf_fortran_URL}
            URL_MD5 ${netcdf_fortran_MD5}
+           TIMEOUT 60
            BUILD_COMMAND   ${CMAKE_BUILD_TOOL} 
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install 
            CONFIGURE_COMMAND 
