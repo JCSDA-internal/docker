@@ -40,7 +40,7 @@ endif()
 #-----------------------------------------------------------------------------
 option(BUILD_ZLIB "Build zlib " ON)
 option(BUILD_JPEG "Build jpeg " ON)
-option(BUILD_PNG "Build png " OFF)
+option(BUILD_PNG "Build png " ON)
 option(BUILD_JASPER "Build jasper " ON)
 option(BUILD_HDF5 "Build hdf5 " ON)
 option(BUILD_FREETYPE "Build freetype " ON)
@@ -48,7 +48,6 @@ option(BUILD_NETCDF "Build netcdf " ON)
 option(BUILD_LAPACK "Build lapack " ON)
 
 #-----------------------------------------------------------------------------
-# This variable is set in the bootstrapping script (jedi/jedi.bat)
 set(JEDI_PREFIX ${PROJECT_SOURCE_DIR})
 set(JEDI_BASEDIR ${PROJECT_SOURCE_DIR})
 set(JEDI_BATDIR ${PROJECT_SOURCE_DIR})
@@ -61,11 +60,12 @@ SET(JEDI_DOWNLOADS_DIR ${JEDI_BASEDIR}/downloads CACHE PATH "path for downloads"
 
 set(CMAKE_LIBRARY_PATH ${JEDI_BASEDIR}/lib ${CMAKE_LIBRARY_PATH})
 
-#our version of FindXXX.cmake
 set(JEDI_MODULE_PATH ${JEDI_BATDIR}/cmake/Modules)
 
-# Make sure we use bootstrapped dependencies
-set(CMAKE_PREFIX_PATH ${JEDI_PREFIX} )
+#-----------------------------------------------------------------------------
+set(CMAKE_PREFIX_PATH ${JEDI_PREFIX}/lib )
+include_directories( ${JEDI_PREFIX}/include )
+link_directories( ${JEDI_PREFIX}/lib )
 
 # Files to download
 
@@ -130,12 +130,10 @@ ELSE ( FETCH_ONLY )
            URL_HASH ${lapack_HASH}
            # Add CMAKE_INSTALL_LIBDIR to make sure it will be install under
            # lib not lib64
-           CMAKE_ARGS -DCMAKE_LIBRARY_PAH=${CMAKE_LIBRARY_PAH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib
+           CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib
            LOG_DOWNLOAD 1
-           LOG_UPDATE 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
-           LOG_TEST 1
            LOG_INSTALL 1
            )
     endif (BUILD_LAPACK)
@@ -150,10 +148,8 @@ ELSE ( FETCH_ONLY )
            BUILD_COMMAND ${CMAKE_BUILD_TOOL}
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} check install
            LOG_DOWNLOAD 1
-           LOG_UPDATE 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
-           LOG_TEST 1
            LOG_INSTALL 1
            )
     endif (BUILD_ZLIB)
@@ -165,12 +161,10 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libpng_URL}
            URL_MD5 ${libpng_MD5}
-           CMAKE_ARGS -DCMAKE_LIBRARY_PATH=${CMAKE_LIBRARY_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX}
+           CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX}
            LOG_DOWNLOAD 1
-           LOG_UPDATE 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
-           LOG_TEST 1
            LOG_INSTALL 1
            )
     endif (BUILD_PNG)
@@ -186,10 +180,8 @@ ELSE ( FETCH_ONLY )
            BUILD_COMMAND ${CMAKE_BUILD_TOOL}
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
            LOG_DOWNLOAD 1
-           LOG_UPDATE 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
-           LOG_TEST 1
            LOG_INSTALL 1
            )
     endif (BUILD_JPEG)
@@ -201,12 +193,10 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${freetype_URL}
            URL_MD5 ${freetype_MD5}
-           CMAKE_ARGS -DCMAKE_LIBRARY_PATH=${CMAKE_LIBRARY_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX}
+           CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX}
            LOG_DOWNLOAD 1
-           LOG_UPDATE 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
-           LOG_TEST 1
            LOG_INSTALL 1
            )
     endif (BUILD_FREETYPE)
@@ -221,10 +211,8 @@ ELSE ( FETCH_ONLY )
            BUILD_COMMAND ${CMAKE_BUILD_TOOL}
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
            LOG_DOWNLOAD 1
-           LOG_UPDATE 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
-           LOG_TEST 1
            LOG_INSTALL 1
            )
     endif (BUILD_JASPER)
@@ -240,10 +228,8 @@ ELSE ( FETCH_ONLY )
            BUILD_COMMAND ${CMAKE_BUILD_TOOL} 
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
            LOG_DOWNLOAD 1
-           LOG_UPDATE 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
-           LOG_TEST 1
            LOG_INSTALL 1
            )
     endif (BUILD_HDF5)
@@ -254,15 +240,10 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${netcdf_c_URL}
            URL_MD5 ${netcdf_c_MD5}
-           CONFIGURE_COMMAND 
-           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --libdir=${JEDI_PREFIX}/lib --with-pic --disable-hdf4 --disable-dap  
-           BUILD_COMMAND   ${CMAKE_BUILD_TOOL} 
-           INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install 
+           CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DENABLE_HDF4=OFF -DENABLE_DAP=OFF
            LOG_DOWNLOAD 1
-           LOG_UPDATE 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
-           LOG_TEST 1
            LOG_INSTALL 1
            )
 
@@ -271,35 +252,12 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${netcdf_fortran_URL}
            URL_MD5 ${netcdf_fortran_MD5}
-           BUILD_COMMAND   ${CMAKE_BUILD_TOOL} 
-           INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install 
-           CONFIGURE_COMMAND 
-           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --libdir=${JEDI_PREFIX}/lib --with-pic 
+           CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DENABLE_DAP=OFF
            LOG_DOWNLOAD 1
-           LOG_UPDATE 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
-           LOG_TEST 1
            LOG_INSTALL 1
            )
     endif (BUILD_NETCDF)
-
-    set( _OLDPATH $ENV{PATH} )
-    set( _NEWPATH ${JEDI_PREFIX}\\bin ${_OLDPATH} )
-    set( ENV{PATH} "${_NEWPATH}" )
-
-# INSTALLATION
-
-   INSTALL(DIRECTORY "${JEDI_PREFIX}/licenses" DESTINATION "." COMPONENT binaries)
-
-
-   FILE(GLOB bzip2_libs "${JEDI_PREFIX}/lib/libbz2*")
-   INSTALL(FILES ${bzip2_libs} DESTINATION "lib" COMPONENT binaries)
-
-   FILE(GLOB zlib_libs "${JEDI_PREFIX}/lib/libz*")
-   INSTALL(FILES ${zlib_libs} DESTINATION "lib" COMPONENT binaries)
-
-   FILE(GLOB jpeg_libs "${JEDI_PREFIX}/lib/libjpeg*")
-   INSTALL(FILES ${jpeg_libs} DESTINATION "lib" COMPONENT binaries)
 
 ENDIF( FETCH_ONLY )
