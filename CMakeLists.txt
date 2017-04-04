@@ -119,10 +119,6 @@ if ( FETCH_ONLY )
 
 ELSE ( FETCH_ONLY )
 
-    # Make sure autotools-based 3rd-parties use the bootstrapped libraries
-    file( WRITE ${JEDI_PREFIX}/share/config.site "CPPFLAGS='-I${JEDI_PREFIX}/include'\nLDFLAGS='-L${JEDI_PREFIX}/lib'\n" )
-    file(MAKE_DIRECTORY ${JEDI_PREFIX}/licenses/zlib)
-
     if (BUILD_LAPACK)
        ExternalProject_Add( lapack
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
@@ -155,7 +151,6 @@ ELSE ( FETCH_ONLY )
     endif (BUILD_ZLIB)
 
     if (BUILD_PNG)
-       file(MAKE_DIRECTORY ${JEDI_PREFIX}/licenses/libpng)
        ExternalProject_Add( libpng
            DEPENDS zlib
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
@@ -170,7 +165,6 @@ ELSE ( FETCH_ONLY )
     endif (BUILD_PNG)
 
     if (BUILD_JPEG)
-       file(MAKE_DIRECTORY ${JEDI_PREFIX}/licenses/libjpeg)
        ExternalProject_Add( libjpeg
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libjpeg_URL}
@@ -187,7 +181,6 @@ ELSE ( FETCH_ONLY )
     endif (BUILD_JPEG)
 
     if (BUILD_FREETYPE)
-       file(MAKE_DIRECTORY ${JEDI_PREFIX}/licenses/freetype)
        ExternalProject_Add( freetype
            DEPENDS zlib
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
