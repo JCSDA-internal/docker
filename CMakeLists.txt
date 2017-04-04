@@ -20,6 +20,16 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     "MinSizeRel" "RelWithDebInfo")
 endif()
 
+
+#-----------------------------------------------------------------------------
+# For Darwin, force to use GNU C and CXX
+#-----------------------------------------------------------------------------
+
+if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+   set(CMAKE_C_COMPILER "gcc")
+   set(CMAKE_CXX_COMPILER "g++")
+endif()
+
 #-----------------------------------------------------------------------------
 # Prerequisites
 #-----------------------------------------------------------------------------
@@ -32,8 +42,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # require at least gcc 4.8.4
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.4)
         message(FATAL_ERROR "GCC version must be at least 4.8.4!")
-    else()
-        message(WARNING "You are using an unsupported compiler! ")
     endif()
 endif()
 
