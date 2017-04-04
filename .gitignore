@@ -2,6 +2,7 @@ bin
 build
 downloads
 lib
+lib64
 include
 share
 licenses
