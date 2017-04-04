@@ -32,9 +32,9 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # require at least gcc 4.8.4
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.4)
         message(FATAL_ERROR "GCC version must be at least 4.8.4!")
+    else()
+        message(WARNING "You are using an unsupported compiler! ")
     endif()
-else()
-    message(WARNING "You are using an unsupported compiler! ")
 endif()
 
 #-----------------------------------------------------------------------------
@@ -245,7 +245,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${netcdf_fortran_URL}
            URL_MD5 ${netcdf_fortran_MD5}
-           CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DENABLE_DAP=OFF
+           CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DENABLE_DAP=OFF -DENABLE_TESTS=OFF
            LOG_DOWNLOAD 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
