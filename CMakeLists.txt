@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.1.0)
 
 #-----------------------------------------------------------------------------
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
@@ -48,7 +48,7 @@ endif()
 #-----------------------------------------------------------------------------
 option(BUILD_ZLIB "Build zlib " ON)
 option(BUILD_JPEG "Build jpeg " ON)
-option(BUILD_PNG "Build png " ON)
+option(BUILD_PNG "Build png " OFF)
 option(BUILD_JASPER "Build jasper " ON)
 option(BUILD_HDF5 "Build hdf5 " ON)
 option(BUILD_FREETYPE "Build freetype " ON)
@@ -224,10 +224,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${hdf5_URL}
            URL_MD5 ${hdf5_MD5}
-           CONFIGURE_COMMAND
-           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --with-zlib=${JEDI_PREFIX} --enable-fortran --enable-fortran2003
-           BUILD_COMMAND ${CMAKE_BUILD_TOOL} 
-           INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
+           CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DHDF5_BUILD_FORTRAN=ON 
            LOG_DOWNLOAD 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
