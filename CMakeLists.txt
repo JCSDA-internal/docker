@@ -36,14 +36,15 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 #-----------------------------------------------------------------------------
-option(BUILD_ZLIB "Build zlib " ON)
-option(BUILD_JPEG "Build jpeg " ON)
-option(BUILD_PNG "Build png " ON)
-option(BUILD_JASPER "Build jasper " ON)
-option(BUILD_HDF5 "Build hdf5 " ON)
-option(BUILD_FREETYPE "Build freetype " ON)
-option(BUILD_NETCDF "Build netcdf " ON)
-option(BUILD_LAPACK "Build lapack " ON)
+option(BUILD_OMPI "Build open-mpi " ON)
+option(BUILD_ZLIB "Build zlib " OFF)
+option(BUILD_JPEG "Build jpeg " OFF)
+option(BUILD_PNG "Build png " OFF)
+option(BUILD_JASPER "Build jasper " OFF)
+option(BUILD_HDF5 "Build hdf5 " OFF)
+option(BUILD_FREETYPE "Build freetype " OFF)
+option(BUILD_NETCDF "Build netcdf " OFF)
+option(BUILD_LAPACK "Build lapack " OFF)
 
 #-----------------------------------------------------------------------------
 set(JEDI_PREFIX ${PROJECT_SOURCE_DIR})
@@ -66,6 +67,10 @@ include_directories( ${JEDI_PREFIX}/include )
 link_directories( ${JEDI_PREFIX}/lib )
 
 # Files to download
+
+set( ompi_URL https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.0.tar.gz )
+set( ompi_MD5 "")
+set( _PACKAGES ${_PACKAGES} ompi )
 
 set( zlib_URL http://www.zlib.net/zlib-1.2.11.tar.gz )
 set( zlib_HASH SHA256=c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1)
@@ -158,6 +163,24 @@ ELSE ( FETCH_ONLY )
            LOG_INSTALL 1
            )
     endif (BUILD_PNG)
+
+    if (BUILD_OMPI)
+       ExternalProject_Add( ompi
+           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
+           URL ${ompi_URL}
+           URL_MD5 ${ompi_MD5}
+           CONFIGURE_COMMAND
+           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} 
+           CC=${CMAKE_C_COMPILER}
+           CXX=${CMAKE_CXX_COMPILER}
+           BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j 4 all
+           INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
+           LOG_DOWNLOAD 1
+           LOG_CONFIGURE 1
+           LOG_BUILD 1
+           LOG_INSTALL 1
+           )
+    endif (BUILD_OMPI)
 
     if (BUILD_JPEG)
        ExternalProject_Add( libjpeg
