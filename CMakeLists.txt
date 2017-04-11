@@ -36,15 +36,9 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 #-----------------------------------------------------------------------------
-option(BUILD_OMPI "Build open-mpi " ON)
 option(BUILD_ZLIB "Build zlib " ON)
-option(BUILD_JPEG "Build jpeg " ON)
-option(BUILD_PNG "Build png " ON)
-option(BUILD_JASPER "Build jasper " ON)
+option(BUILD_SZIP "Build szip " ON)
 option(BUILD_HDF5 "Build hdf5 " ON)
-option(BUILD_FREETYPE "Build freetype " ON)
-option(BUILD_NETCDF "Build netcdf " ON)
-option(BUILD_LAPACK "Build lapack " ON)
 
 #-----------------------------------------------------------------------------
 set(JEDI_PREFIX ${PROJECT_SOURCE_DIR})
@@ -75,6 +69,10 @@ set( _PACKAGES ${_PACKAGES} ompi )
 set( zlib_URL http://www.zlib.net/zlib-1.2.11.tar.gz )
 set( zlib_HASH SHA256=c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1)
 set( _PACKAGES ${_PACKAGES} zlib )
+
+set( szip_URL https://support.hdfgroup.org/ftp/lib-external/szip/2.1.1/src/szip-2.1.1.tar.gz )
+set( szip_MD5 "")
+set( _PACKAGES ${_PACKAGES} szip )
 
 set( libpng_URL http://sourceforge.net/projects/libpng/files/libpng14/1.4.19/libpng-1.4.19.tar.gz )
 set( libpng_MD5 89bcbc4fc8b31f4a403906cf4f662330 )
@@ -136,6 +134,19 @@ ELSE ( FETCH_ONLY )
            LOG_INSTALL 1
            )
     endif (BUILD_LAPACK)
+
+    if (BUILD_SZIP)
+       ExternalProject_Add( szip
+           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
+           URL ${szip_URL}
+	   URL_HASH ${szip_MD5}
+	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DSZIP_ENABLE_ENCODING=ON -DBUILD_SHARED_LIBS=ON
+           LOG_DOWNLOAD 1
+           LOG_CONFIGURE 1
+           LOG_BUILD 1
+           LOG_INSTALL 1
+           )
+    endif (BUILD_SZIP)
 
     if (BUILD_ZLIB)
        ExternalProject_Add( zlib
@@ -237,11 +248,11 @@ ELSE ( FETCH_ONLY )
 
     if (BUILD_HDF5)
        ExternalProject_Add( hdf5
-           DEPENDS zlib
+           DEPENDS zlib szip
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${hdf5_URL}
            URL_MD5 ${hdf5_MD5}
-	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DHDF5_BUILD_FORTRAN=ON  -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}
+	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DHDF5_BUILD_FORTRAN=ON  -DHDF5_ENABLE_F2003:BOOL=ON -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DHDF5_BUILD_CPP_LIB:BOOL=ON -DHDF5_ENABLE_SZIP_SUPPORT=BOLL=ON -DHDF5_ENABLE_SZIP_ENCODING:BOOL=ON -DSZIP_DIR=${JEDI_PREFIX}/share/cmake
            LOG_DOWNLOAD 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
