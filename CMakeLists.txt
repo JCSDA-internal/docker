@@ -36,9 +36,17 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 #-----------------------------------------------------------------------------
-option(BUILD_ZLIB "Build zlib " ON)
-option(BUILD_SZIP "Build szip " ON)
-option(BUILD_HDF5 "Build hdf5 " ON)
+option(BUILD_OMPI     "Build open-mpi " ON)
+option(BUILD_ZLIB     "Build zlib "     ON)
+option(BUILD_SZIP     "Build szip "     ON)
+option(BUILD_JPEG     "Build jpeg "     ON)
+option(BUILD_PNG      "Build png "      ON)
+option(BUILD_JASPER   "Build jasper "   ON)
+option(BUILD_HDF5     "Build hdf5 "     ON)
+option(BUILD_FREETYPE "Build freetype " ON)
+option(BUILD_NETCDF   "Build netcdf "   ON)
+option(BUILD_LAPACK   "Build lapack "   ON)
+
 
 #-----------------------------------------------------------------------------
 set(JEDI_PREFIX ${PROJECT_SOURCE_DIR})
