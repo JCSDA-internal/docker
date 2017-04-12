@@ -193,13 +193,21 @@ ELSE ( FETCH_ONLY )
            CC=${CMAKE_C_COMPILER}
            CXX=${CMAKE_CXX_COMPILER}
 	   FC=${CMAKE_Fortran_COMPILER}
-           BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j 4 all
+           BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j 2 all
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
            LOG_DOWNLOAD 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
            LOG_INSTALL 1
            )
+
+       ExternalProject_Add_Step(
+	   ompi touchConfigs
+	   COMMAND ${CMAKE_COMMAND} -E touch <SOURCE_DIR>/configure <SOURCE_DIR>/aclocal.m4 <SOURCE_DIR>/Makefile.am <SOURCE_DIR>/Makefile.in
+	   COMMENT "Updating the timestamp of configure aclocal.m4 Makefile.am Makefile.in to avoid errors on some platforms"
+	   DEPENDEES configure
+	   DEPENDERS build
+	   )
     endif (BUILD_OMPI)
 
     if (BUILD_JPEG)
