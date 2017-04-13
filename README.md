@@ -38,10 +38,10 @@ Download, build, and install the following libraries :
 
 6. use cmake to configure the system
 
-     * *Build all libs*
-     * cmake -DBUILD\_ALL ..
-     * *Build NETCDF and its dependees*
-     * cmake -DBUILD\_NETCDF ..
+   * *Build all libs*
+   * cmake -DBUILD\_ALL ..
+   * *Build NETCDF and its dependees*
+   * cmake -DBUILD\_NETCDF ..
 
 7. Use 4 threads to do the parallel build parallell
 
