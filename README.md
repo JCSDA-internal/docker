@@ -23,11 +23,13 @@ Download, build, and install the following libraries :
 1. Make sure that your computer has the internet connection
 
 2. clone the codes
+
    * git clone git@bitbucket.org:jcsda/common\_libs.git your\_disired\_path\_name
   
 3. cd your\_disired\_path\_name
 
 4. set your desired compilers in environmental variables, for example:
+
    * export CC=gcc
    * export CXX=g++
    * export FC=gfortran
