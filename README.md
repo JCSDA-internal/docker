@@ -37,11 +37,13 @@ Download, build, and install the following libraries :
 5. mdkir build; cd build
 
 6. use cmake to configure the system
+   * *Build all libs*
+   * cmake -DBUILD\_ALL ..
+   * *Build NETCDF and its dependees*
+   * cmake -DBUILD\_NETCDF ..
 
-   * cmake -DBUILD\_ALL ..                  \    #####  Build all libs
-   * cmake -DBUILD\_NETCDF ..               \    #####  Build NETCDF and its dependees
-
-7. make -j4                                 \    #####  Use 4 threads to build
+7. Use 4 threads to do the parallel build parallell
+   * make -j4
 
 8. If built successfully, please add the bin to PATH, addlib to LD\_LIBRARY\_PATH in your environmental setting. For example: in $HOME/.bashrc, add following lines:
 
@@ -49,3 +51,5 @@ Download, build, and install the following libraries :
    * export LD\_LIBRARY\_PATH=your\_disired\_path\_name/bin:$LD\_LIBRARY\_PATH
   
 ### Highly recommend compile all libraries with the same compiler family ###
+
+*Please contact xin.l.zhang@noaa.gov, if you need more libraries being included*
