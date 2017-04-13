@@ -23,8 +23,8 @@ Download, build, and install the following libraries :
 1. Make sure that your computer has the internet connection
 1. clone the codes
 
-  * git clone git@bitbucket.org:jcsda/common_libs.git your\_disired\_path\_name
-1. cd your\_disired\_path_name
+  * git clone git@bitbucket.org:jcsda/common\_libs.git your\_disired\_path\_name
+1. cd your\_disired\_path\_name
 1. set your desired compilers in environmental variables, for example:
 
   * export CC=gcc
