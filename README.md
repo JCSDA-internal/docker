@@ -24,9 +24,9 @@ Download, build, and install the following libraries :
 
 2. clone the codes
 
-   * git clone git@bitbucket.org:jcsda/common\_libs.git your\_disired\_path\_name
+   * git clone git@bitbucket.org:jcsda/common\_libs.git your\_desired\_path\_name
   
-3. cd your\_disired\_path\_name
+3. cd your\_desired\_path\_name
 
 4. set your desired compilers in environmental variables, for example:
 
@@ -49,8 +49,8 @@ Download, build, and install the following libraries :
 
 8. If built successfully, please add the bin to PATH, addlib to LD\_LIBRARY\_PATH in your environmental setting. For example: in $HOME/.bashrc, add following lines:
 
-   * export PATH=your\_disired\_path_name/bin:$PATH
-   * export LD\_LIBRARY\_PATH=your\_disired\_path\_name/bin:$LD\_LIBRARY\_PATH
+   * export PATH=your\_desired\_path_name/bin:$PATH
+   * export LD\_LIBRARY\_PATH=your\_desired\_path\_name/bin:$LD\_LIBRARY\_PATH
   
 ### Highly recommend compile all libraries with the same compiler family ###
 
