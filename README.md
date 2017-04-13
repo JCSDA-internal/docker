@@ -21,25 +21,29 @@ Download, build, and install the following libraries :
 ### How do I get set up? ###
 
 1. Make sure that your computer has the internet connection
-1. clone the codes
+
+2. clone the codes
 
   * git clone git@bitbucket.org:jcsda/common\_libs.git your\_disired\_path\_name
   
-1. cd your\_disired\_path\_name
+3. cd your\_disired\_path\_name
 
-1. set your desired compilers in environmental variables, for example:
+4. set your desired compilers in environmental variables, for example:
 
   * export CC=gcc
   * export CXX=g++
   * export FC=gfortran
-1. mdkir build; cd build
+  
+5. mdkir build; cd build
 
-1. use cmake to configure the system
+6. use cmake to configure the system
 
   * cmake -DBUILD\_ALL ..      \#Build all libs
   * cmake -DBUILD\_NETCDF ..   \#Build NETCDF and its dependees
-1. make -j4                     \#Use 4 threads to build
-1. If build successful, please add the bin to PATH, addlib to LD\_LIBRARY\_PATH in your environmental setting. For example: in $HOME/.bashrc, add following lines:
+
+7. make -j4                    \#Use 4 threads to build
+
+8. If build successful, please add the bin to PATH, addlib to LD\_LIBRARY\_PATH in your environmental setting. For example: in $HOME/.bashrc, add following lines:
 
   * export PATH=your\_disired\_path_name/bin:$PATH
   * export LD\_LIBRARY\_PATH=your\_disired\_path\_name/bin:$LD\_LIBRARY\_PATH
