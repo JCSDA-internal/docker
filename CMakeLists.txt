@@ -203,7 +203,7 @@ ELSE ( FETCH_ONLY )
 
        ExternalProject_Add_Step(
 	   ompi touchConfigs
-	   COMMAND ${CMAKE_COMMAND} -E touch <SOURCE_DIR>/configure <SOURCE_DIR>/aclocal.m4 <SOURCE_DIR>/Makefile.am <SOURCE_DIR>/Makefile.in
+	   COMMAND ${CMAKE_COMMAND} -E touch <SOURCE_DIR>/configure <SOURCE_DIR>/aclocal.m4 <SOURCE_DIR>/Makefile.am <SOURCE_DIR>/Makefile.in  <SOURCE_DIR>/ompi/mca/io/romio314/romio/configure <SOURCE_DIR>/ompi/mca/io/romio314/romio/aclocal.m4 <SOURCE_DIR>/ompi/mca/io/romio314/romio/Makefile.am <SOURCE_DIR>/ompi/mca/io/romio314/romio/Makefile.in <SOURCE_DIR>/opal/mca/event/libevent2022/libevent/configure <SOURCE_DIR>/opal/mca/event/libevent2022/libevent/aclocal.m4 <SOURCE_DIR>/opal/mca/event/libevent2022/libevent/Makefile.am <SOURCE_DIR>/opal/mca/event/libevent2022/libevent/Makefile.in <SOURCE_DIR>/opal/mca/pmix/pmix112/pmix/configure <SOURCE_DIR>/opal/mca/pmix/pmix112/pmix/aclocal.m4 <SOURCE_DIR>/opal/mca/pmix/pmix112/pmix/Makefile.am <SOURCE_DIR>/opal/mca/pmix/pmix112/pmix/Makefile.in
 	   COMMENT "Updating the timestamp of configure aclocal.m4 Makefile.am Makefile.in to avoid errors on some platforms"
 	   DEPENDEES configure
 	   DEPENDERS build
