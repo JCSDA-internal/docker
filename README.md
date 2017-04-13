@@ -37,10 +37,11 @@ Download, build, and install the following libraries :
 5. mdkir build; cd build
 
 6. use cmake to configure the system
-   * cmake -DBUILD\_ALL ..      \#Build all libs
-   * cmake -DBUILD\_NETCDF ..   \#Build NETCDF and its dependees
 
-7. make -j4                    \#Use 4 threads to build
+   * cmake -DBUILD\_ALL ..                  \#Build all libs
+   * cmake -DBUILD\_NETCDF ..               \#Build NETCDF and its dependees
+
+7. make -j4                                  \#Use 4 threads to build
 
 8. If build successful, please add the bin to PATH, addlib to LD\_LIBRARY\_PATH in your environmental setting. For example: in $HOME/.bashrc, add following lines:
 
