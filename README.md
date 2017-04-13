@@ -38,12 +38,12 @@ Download, build, and install the following libraries :
 
 6. use cmake to configure the system
 
-   * cmake -DBUILD\_ALL ..                  \#Build all libs
-   * cmake -DBUILD\_NETCDF ..               \#Build NETCDF and its dependees
+   * cmake -DBUILD\_ALL ..                  \    #####  Build all libs
+   * cmake -DBUILD\_NETCDF ..               \    #####  Build NETCDF and its dependees
 
-7. make -j4                                  \#Use 4 threads to build
+7. make -j4                                 \    #####  Use 4 threads to build
 
-8. If build successful, please add the bin to PATH, addlib to LD\_LIBRARY\_PATH in your environmental setting. For example: in $HOME/.bashrc, add following lines:
+8. If built successfully, please add the bin to PATH, addlib to LD\_LIBRARY\_PATH in your environmental setting. For example: in $HOME/.bashrc, add following lines:
 
    * export PATH=your\_disired\_path_name/bin:$PATH
    * export LD\_LIBRARY\_PATH=your\_disired\_path\_name/bin:$LD\_LIBRARY\_PATH
