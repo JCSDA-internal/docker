@@ -24,7 +24,7 @@ Download, build, and install the following libraries :
 
 2. clone the codes
 
-   * git clone git@bitbucket.org:jcsda/common\_libs.git your\_desired\_path\_name
+   * git clone https://${USERID}@bitbucket.org/jcsda/common\_libs.git your\_desired\_path\_name
   
 3. cd your\_desired\_path\_name
 
@@ -39,9 +39,9 @@ Download, build, and install the following libraries :
 6. use cmake to configure the system
 
    * *Build all libs*
-   * cmake -DBUILD\_ALL ..
+   * cmake -DBUILD\_ALL=ON ..
    * *Build NETCDF and its dependees*
-   * cmake -DBUILD\_NETCDF ..
+   * cmake -DBUILD\_NETCDF=ON ..
 
 7. Use 4 threads to do the parallel build parallell
 
