@@ -49,8 +49,8 @@ Download, build, and install the following libraries :
 
 8. If built successfully, please add the bin to PATH, addlib to LD\_LIBRARY\_PATH in your environmental setting. For example: in $HOME/.bashrc, add following lines:
 
-   * export PATH=your\_desired\_path_name/bin:$PATH
-   * export LD\_LIBRARY\_PATH=your\_desired\_path\_name/bin:$LD\_LIBRARY\_PATH
+   * export PATH=your\_desired\_path\_name/bin:$PATH
+   * export LD\_LIBRARY\_PATH=your\_desired\_path\_name/path:$LD\_LIBRARY\_PATH
   
 ### Highly recommend compile all libraries with the same compiler family ###
 
