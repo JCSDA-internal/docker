@@ -20,37 +20,68 @@ Download, build, and install the following libraries :
 
 ### How do I get set up? ###
 
-1. Make sure that your computer has the internet connection
+* Make sure that your computer has the internet connection
 
-2. clone the codes
+* clone the codes
 
-   * git clone https://${USERID}@bitbucket.org/jcsda/common\_libs.git your\_desired\_path\_name
+```
+#!bash
+
+git clone https://${USERID}@bitbucket.org/jcsda/common_libs.git your_desired_path_name
+```
   
-3. cd your\_desired\_path\_name
+* cd into the directory
 
-4. set your desired compilers in environmental variables, for example:
+```
+#!bash
 
-   * export CC=gcc
-   * export CXX=g++
-   * export FC=gfortran
+cd your_desired_path_name
+```
+
+* set your desired compilers in environmental variables, e.g. for GNU compilers:
+
+```
+#!bash
+
+export CC=gcc
+export CXX=g++
+export FC=gfortran
+```
   
-5. mdkir build; cd build
+* Create and cd into a build directory
+```
+#!bash
 
-6. use cmake to configure the system
+mkdir build; cd build
+```
 
-   * *Build all libs*
-   * cmake -DBUILD\_ALL=ON ..
-   * *Build NETCDF and its dependees*
-   * cmake -DBUILD\_NETCDF=ON ..
+* use cmake to configure the system
 
-7. Use 4 threads to do the parallel build parallell
+```
+#!bash
 
-   * make -j4
+# Build all libs
+cmake -DBUILD_ALL=ON ..
 
-8. If built successfully, please add the bin to PATH, addlib to LD\_LIBRARY\_PATH in your environmental setting. For example: in $HOME/.bashrc, add following lines:
+# Build specific libraries e.g. netCDF and its dependencies
+cmake -DBUILD_NETCDF=ON ..
+```
 
-   * export PATH=your\_desired\_path\_name/bin:$PATH
-   * export LD\_LIBRARY\_PATH=your\_desired\_path\_name/path:$LD\_LIBRARY\_PATH
+* Build in parallel e.g. use 4 threads
+```
+#!bash
+
+make -j4
+```
+
+* If built successfully, add the **bin** to **PATH**, add **lib** to **LD\_LIBRARY\_PATH** to your environment. For example: in $HOME/.bashrc, add following lines:
+
+```
+#!bash
+
+export PATH=your_desired_path_name/bin:$PATH
+export LD_LIBRARY_PATH=your_desired_path_name/path:$LD_LIBRARY_PATH
+```
   
 ### Highly recommend compile all libraries with the same compiler family ###
 
