@@ -17,6 +17,9 @@ Download, build, and install the following libraries :
 * netcdf-c v4.4.11
 * netcdf-fortran v4.4.4
 * lapack v3.7.0
+* parallel-netcdf v1.8.1
+* xerces-c v3.1.4
+* esmf v7.0.0
 
 ### How do I get set up? ###
 
@@ -83,6 +86,11 @@ export PATH=your_desired_path_name/bin:$PATH
 export LD_LIBRARY_PATH=your_desired_path_name/path:$LD_LIBRARY_PATH
 ```
   
+8. If built ESMF successfully, please find the esmf.mk file and add ESMFMKFILE (pointed to the esmf.mk) into environment variable.
+ 
+   * find . -name esmf.mk
+   * export ESMFMKFILE=the\_absolute\_path\_of\_esmf.mk
+   
 ### Highly recommend compile all libraries with the same compiler family ###
 
 *Please contact xin.l.zhang@noaa.gov, if you need more libraries being included*
