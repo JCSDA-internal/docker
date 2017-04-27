@@ -1,0 +1,22 @@
+# This is a sample build configuration for C++ – Make.
+# Check our guides at https://confluence.atlassian.com/x/5Q4SMw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+# image: gcc:6.1
+
+pipelines:
+  default:
+    - step:
+        script: # Modify the commands below to build your repository.
+          # Print the Linux version.
+          - uname -a
+          # Print the gcc version.
+          - gcc --version
+          - cmake --version          
+          - mkdir build
+          - cd build
+          # Call the CMake.
+          - cmake -DBUILD_ALL=ON ..
+          # Build the porject.
+          - make -j2
