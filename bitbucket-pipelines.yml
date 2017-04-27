@@ -13,6 +13,8 @@ pipelines:
           - uname -a
           # Print the gcc version.
           - gcc --version
+          # install gfortran
+          - apt-get install gfortran 
           - gfortran --version
           # Install a CMake 3.0.2 version.
           - apt-get update -qq
