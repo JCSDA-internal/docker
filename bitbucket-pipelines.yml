@@ -1,4 +1,4 @@
-# This is a sample build configuration for C++ â€“ Make.
+# This is a sample build configuration for C++ – Make.
 # Check our guides at https://confluence.atlassian.com/x/5Q4SMw for more examples.
 # Only use spaces to indent your .yml configuration.
 # -----
@@ -13,6 +13,10 @@ pipelines:
           - uname -a
           # Print the gcc version.
           - gcc --version
+          - gfortran --version
+          # Install a CMake 3.0.2 version.
+          - apt-get update -qq
+          - apt-get install cmake -y
           - cmake --version          
           - mkdir build
           - cd build
