@@ -27,6 +27,6 @@ pipelines:
           - mkdir build
           - cd build
           # Call the CMake.
-          - cmake -DBUILD_ALL=ON ..
+          - cmake -DBUILD_NETCDF=ON -DBUILD_LAPACK=ON -DBUILD_XERCES=ON ..
           # Build the porject.
           - make -j2
