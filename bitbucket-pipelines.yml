@@ -14,7 +14,7 @@ pipelines:
           # Print the gcc version.
           - gcc --version
           # install gfortran
-          - apt-get install gfortran  -y
+          # - apt-get install gfortran  -y
           - gfortran --version
          # install a CMake 3.2.2 version through PPA repository. 
           - apt-get update -qq
