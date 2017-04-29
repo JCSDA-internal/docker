@@ -64,4 +64,4 @@ Download, build, and install the following libraries :
    
 ### Highly recommend compile all libraries with the same compiler family ###
 
-*Please contact xin.l.zhang@noaa.gov, if you need more libraries being included*
+*Please contact `xin.l.zhang@noaa.gov`, if you need more libraries being included*
