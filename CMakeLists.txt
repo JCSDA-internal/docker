@@ -57,6 +57,14 @@ option(BUILD_ESMF     "Build esmf "     OFF)
 option(BUILD_UDUNITS  "Build udunits "  OFF)
 option(BUILD_NCO      "Build nco "      OFF)
 
+if (BUILD_NCO)
+    message("setting values for NCO")
+    set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
+    set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
+    set(BUILD_NETCDF "ON" CACHE STRING "Build the NETCDF library" FORCE )
+    set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
+endif(BUILD_NCO)
+
 if (BUILD_ESMF)
     message("setting values for ESMF")
     set(BUILD_PNETCDF "ON" CACHE STRING "Build the PNETCDF library" FORCE )
@@ -271,7 +279,7 @@ ELSE ( FETCH_ONLY )
 
     if (BUILD_NCO)
        ExternalProject_Add( nco
-           #DEPENDS zlib
+           DEPENDS zlib szip netcdf hdf5
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${nco_URL}
            URL_MD5 ${nco_MD5}
@@ -283,6 +291,20 @@ ELSE ( FETCH_ONLY )
            LOG_BUILD 1
            LOG_INSTALL 1
            )
+ szip netcdf hdf5
+
+       ExternalProject_Add_Step(
+	   nco copyExe
+	   COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/ncbo ${JEDI_PREFIX}/bin/ncbo
+	   COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/ncecat ${JEDI_PREFIX}/bin/ncecat
+	   COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/ncflint ${JEDI_PREFIX}/bin/ncflint
+	   COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/ncks ${JEDI_PREFIX}/bin/ncks
+	   COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/ncpdq ${JEDI_PREFIX}/bin/ncpdq
+	   COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/ncra ${JEDI_PREFIX}/bin/ncra
+	   COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/ncrename ${JEDI_PREFIX}/bin/ncrename
+	   COMMENT "nco install, copy executables to the bin"
+	   DEPENDEES install
+	   )
     endif (BUILD_NCO)
 
     if (BUILD_OMPI)

@@ -20,6 +20,8 @@ Download, build, and install the following libraries :
 * parallel-netcdf v1.8.1
 * xerces-c v3.1.4
 * esmf v7.0.0
+* udunites-2 v2.2.24
+* nco v4.6.6
 
 ### How do I get set up? ###
 
