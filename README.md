@@ -84,12 +84,12 @@ make -j4
 ```
 #!bash
 
-export PATH=your_desired_path_name/bin:$PATH
-export LD_LIBRARY_PATH=your_desired_path_name/lib:$LD_LIBRARY_PATH
+export PATH=your_desired_path_name/bin${PATH:+:}${PATH}
+export LD_LIBRARY_PATH=your_desired_path_name/lib${LD_LIBRARY_PATH:+:}${LD_LIBRARY_PATH}
 ```
 * On MacOS system you might need to set: 
 ```
-export DYLD_FALLBACK_LIBRARY_PATH=your_desired_path_name/lib
+export DYLD_FALLBACK_LIBRARY_PATH=your_desired_path_name/lib${DYLD_FALLBACK_LIBRARY_PATH:+:}${DYLD_FALLBACK_LIBRARY_PATH}
 ```
   
 8. If built ESMF successfully, please find the esmf.mk file and add ESMFMKFILE (pointed to the esmf.mk) into environment variable.
