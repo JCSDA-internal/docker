@@ -56,6 +56,8 @@ Download, build, and install the following libraries :
 
    * `export PATH=your_desired_path_name/bin:$PATH`
    * `export LD_LIBRARY_PATH=your_desired_path_name/path:$LD_LIBRARY_PATH`
+   * * On MacOS system you might need to set :*
+   * `export DYLD_FALLBACK_LIBRARY_PATH=your_desired_path_name/path:$LD_LIBRARY_PATH`
   
 8. If built ESMF successfully, please find the esmf.mk file and add ESMFMKFILE (pointed to the esmf.mk) into environment variable.
  
