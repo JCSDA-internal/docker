@@ -1,0 +1,32 @@
+# This is a sample build configuration for C++ – Make.
+# Check our guides at https://confluence.atlassian.com/x/5Q4SMw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: gcc:5.4
+
+pipelines:
+  default:
+    - step:
+        script: # Modify the commands below to build your repository.
+          # Print the Linux version.
+          - uname -a
+          # Print the gcc version.
+          - gcc --version
+          # install gfortran
+          # - apt-get install gfortran  -y
+          - gfortran --version
+         # install a CMake 3.2.2 version through PPA repository. 
+          - apt-get update -qq
+          - apt-get install software-properties-common -y
+          # Add PPA repository.
+          - echo 'deb http://ppa.launchpad.net/george-edison55/cmake-3.x/ubuntu trusty main' | tee -a /etc/apt/sources.list.d/cmake.list
+          - apt-get update -qq
+          - apt-get install cmake -y --force-yes
+          - cmake --version          
+          - mkdir build
+          - cd build
+          # Call the CMake.
+          - cmake -DBUILD_ALL=ON ..
+          # Build the porject.
+          - make -j1
