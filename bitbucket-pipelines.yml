@@ -3,7 +3,7 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-# image: gcc:6.1
+image: gcc:5.4
 
 pipelines:
   default:
@@ -27,6 +27,6 @@ pipelines:
           - mkdir build
           - cd build
           # Call the CMake.
-          - cmake -DBUILD_NETCDF=ON -DBUILD_LAPACK=ON -DBUILD_XERCES=ON -DBUILD_PNG=ON -DBUILD_FREETYPE=ON -DBUILD_JASPER=ON -DBUILD_JPEG=ON ..
+          - cmake -DBUILD_ALL=ON ..
           # Build the porject.
-          - make -j2
+          - make -j1
