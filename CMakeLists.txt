@@ -54,6 +54,8 @@ option(BUILD_PNETCDF  "Build pnetcdf "  OFF)
 option(BUILD_LAPACK   "Build lapack "   OFF)
 option(BUILD_XERCES   "Build xerces "   OFF)
 option(BUILD_ESMF     "Build esmf "     OFF)
+option(BUILD_UDUNITS  "Build udunits "  OFF)
+option(BUILD_NCO      "Build nco "      OFF)
 
 if (BUILD_ESMF)
     message("setting values for ESMF")
@@ -100,6 +102,8 @@ if(BUILD_ALL )
   set(BUILD_PNETCDF "ON" CACHE STRING "Build the PNETCDF library" FORCE )
   set(BUILD_XERCES "ON" CACHE STRING "Build the XCERCES library" FORCE )
   set(BUILD_ESMF "ON" CACHE STRING "Build the ESMF library" FORCE )
+  set(BUILD_UDUNITS "ON" CACHE STRING "Build the UDUNITS library" FORCE )
+  set(BUILD_NCO "ON" CACHE STRING "Build the NCO library" FORCE )
 endif(BUILD_ALL)
 
 #-----------------------------------------------------------------------------
@@ -180,6 +184,14 @@ set( xerces_URL http://apache.mirrors.lucidnetworks.net//xerces/c/3/sources/xerc
 set( xerces_MD5 "21bb097b711a513275379b59757cba4c" )
 set( _PACKAGES ${_PACKAGES} xerces )
 
+set( udunits_URL ftp://ftp.unidata.ucar.edu/pub/udunits/udunits-2.2.24.tar.gz )
+set( udunits_MD5 "")
+set( _PACKAGES ${_PACKAGES} udunits )
+
+set( nco_URL https://github.com/nco/nco/archive/4.6.6.tar.gz )
+set( nco_MD5 "df6fa47aaf6e41adfc0631912a7a341f")
+set( _PACKAGES ${_PACKAGES} nco )
+
 slicer_check_cmake_https()
 
 # If in fetch mode, only download and set a "fetch-only" indicator
@@ -220,6 +232,14 @@ ELSE ( FETCH_ONLY )
            LOG_BUILD 1
            LOG_INSTALL 1
            )
+
+       ExternalProject_Add_Step(
+	   szip rename
+	   COMMAND ${CMAKE_COMMAND} -E copy ${JEDI_PREFIX}/lib/libszip.a ${JEDI_PREFIX}/lib/libsz.a
+	   COMMAND ${CMAKE_COMMAND} -E copy ${JEDI_PREFIX}/lib/libszip.so ${JEDI_PREFIX}/lib/libsz.so
+	   COMMENT "Some lib seeks sz , other than szip"
+	   DEPENDEES install
+	   )
     endif (BUILD_SZIP)
 
     if (BUILD_ZLIB)
@@ -249,6 +269,22 @@ ELSE ( FETCH_ONLY )
            )
     endif (BUILD_PNG)
 
+    if (BUILD_NCO)
+       ExternalProject_Add( nco
+           #DEPENDS zlib
+           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
+           URL ${nco_URL}
+           URL_MD5 ${nco_MD5}
+	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+           INSTALL_COMMAND ""
+	   BUILD_IN_SOURCE 1
+           LOG_DOWNLOAD 1
+           LOG_CONFIGURE 1
+           LOG_BUILD 1
+           LOG_INSTALL 1
+           )
+    endif (BUILD_NCO)
+
     if (BUILD_OMPI)
        ExternalProject_Add( ompi
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
@@ -261,7 +297,7 @@ ELSE ( FETCH_ONLY )
            CFLAGS=${CFLAGS}
            CXXFLAGS=${CXXFLAGS}
 	   FC=${CMAKE_Fortran_COMPILER}
-           BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j 2 all
+           BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j 1 all
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
            LOG_DOWNLOAD 1
            LOG_CONFIGURE 1
@@ -334,6 +370,19 @@ ELSE ( FETCH_ONLY )
            )
     endif (BUILD_JASPER)
 
+    if (BUILD_UDUNITS)
+       ExternalProject_Add( udunits
+           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
+           URL ${udunits_URL}
+           URL_MD5 ${udunits_MD5}
+	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+           LOG_DOWNLOAD 1
+           LOG_CONFIGURE 1
+           LOG_BUILD 1
+           LOG_INSTALL 1
+           )
+    endif (BUILD_UDUNITS)
+
     if (BUILD_HDF5)
        ExternalProject_Add( hdf5
            DEPENDS zlib szip
@@ -404,7 +453,7 @@ ELSE ( FETCH_ONLY )
 	   MPIF77=${JEDI_PREFIX}/bin/mpif77
 	   F90=${CMAKE_Fortran_COMPILER}
 	   MPIF90=${JEDI_PREFIX}/bin/mpif90
-           BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j2
+           BUILD_COMMAND ${CMAKE_BUILD_TOOL}
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
 	   BUILD_IN_SOURCE 1
            LOG_DOWNLOAD 1
@@ -494,7 +543,7 @@ ELSE ( FETCH_ONLY )
 	   ${CMAKE_COMMAND} -E env "ESMF_XERCES_LIBS=-lxerces-c" 
 	   ${CMAKE_COMMAND} -E env "ESMF_SHARED_LIB_BUILD=ON" 
 	   ${CMAKE_COMMAND} -E env "PATH=${JEDI_PREFIX}/bin:$ENV{PATH}"
-	   ${CMAKE_BUILD_TOOL} -j2
+	   ${CMAKE_BUILD_TOOL}
 	   INSTALL_COMMAND ${CMAKE_COMMAND} -E env "ESMF_DIR=<SOURCE_DIR>" 
 	   ${CMAKE_COMMAND} -E env "ESMF_COMM=openmpi"
 	   ${CMAKE_COMMAND} -E env "ESMF_COMPILER=${ESMF_COMPILER}" 
