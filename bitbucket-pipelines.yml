@@ -30,6 +30,6 @@ pipelines:
             - mkdir build
             - cd build
             # Call the CMake.
-            - cmake -DBUILD_ZLIB=ON ..
+            - cmake -DBUILD_ESMF=ON ..
             # Build the porject.
-            - make -j1
+            - make -j`nproc`
