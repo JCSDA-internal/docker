@@ -29,9 +29,9 @@ Download, build, and install the following libraries :
 
 2. clone the codes
 
-   * `git clone https://${USERID}@bitbucket.org/jcsda/common\_libs.git your\_desired\_path\_name`
+   * `git clone https://${USERID}@bitbucket.org/jcsda/common_libs.git your_desired_path_name`
   
-3. `cd your\_desired\_path\_name`
+3. `cd your_desired_path_name`
 
 4. set your desired compilers in environmental variables, for example:
 
@@ -44,9 +44,9 @@ Download, build, and install the following libraries :
 6. use cmake to configure the system
 
    * *Build all libs*
-   * `cmake -DBUILD\_ALL=ON ..`
+   * `cmake -DBUILD_ALL=ON ..`
    * *Build NETCDF and its dependees*
-   * `cmake -DBUILD\_NETCDF=ON ..`
+   * `cmake -DBUILD_NETCDF=ON ..`
 
 7. Use 4 threads to do the parallel build parallell
 
@@ -54,13 +54,13 @@ Download, build, and install the following libraries :
 
 8. If built successfully, please add the bin to PATH, addlib to LD\_LIBRARY\_PATH in your environmental setting. For example: in $HOME/.bashrc, add following lines:
 
-   * `export PATH=your\_desired\_path\_name/bin:$PATH`
-   * `export LD\_LIBRARY\_PATH=your\_desired\_path\_name/path:$LD\_LIBRARY\_PATH`
+   * `export PATH=your_desired_path_name/bin:$PATH`
+   * `export LD_LIBRARY_PATH=your_desired_path_name/path:$LD_LIBRARY_PATH`
   
 8. If built ESMF successfully, please find the esmf.mk file and add ESMFMKFILE (pointed to the esmf.mk) into environment variable.
  
    * `find . -name esmf.mk`
-   * `export ESMFMKFILE=the\_absolute\_path\_of\_esmf.mk`
+   * `export ESMFMKFILE=the_absolute_path_of_esmf.mk`
    
 ### Highly recommend compile all libraries with the same compiler family ###
 
