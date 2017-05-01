@@ -8,6 +8,7 @@ Download, build, and install the following libraries :
 
 * open-mpi v2.1.0
 * zlib v1.2.11
+* curl v7.54.0
 * szip v2.1.1
 * jpeg v9b
 * png v1.4.19

@@ -43,6 +43,7 @@ endif()
 option(BUILD_ALL      "Build all libs " OFF)
 option(BUILD_OMPI     "Build open-mpi " OFF)
 option(BUILD_ZLIB     "Build zlib "     OFF)
+option(BUILD_CURL     "Build curl "     OFF)
 option(BUILD_SZIP     "Build szip "     OFF)
 option(BUILD_JPEG     "Build jpeg "     OFF)
 option(BUILD_PNG      "Build png "      OFF)
@@ -60,6 +61,7 @@ option(BUILD_NCO      "Build nco "      OFF)
 if (BUILD_NCO)
     message("setting values for NCO")
     set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
+    set(BUILD_CURL "ON" CACHE STRING "Build the CURL library" FORCE )
     set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
     set(BUILD_NETCDF "ON" CACHE STRING "Build the NETCDF library" FORCE )
     set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
@@ -100,6 +102,7 @@ if(BUILD_ALL )
   set(BUILD_OMPI "ON" CACHE STRING "Build the OMPI library" FORCE )
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
   set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
+  set(BUILD_CURL "ON" CACHE STRING "Build the CURL library" FORCE )
   set(BUILD_JPEG "ON" CACHE STRING "Build the JPEG library" FORCE )
   set(BUILD_PNG "ON" CACHE STRING "Build the PNG library" FORCE )
   set(BUILD_JASPER "ON" CACHE STRING "Build the JASPER library" FORCE )
@@ -200,6 +203,10 @@ set( nco_URL https://github.com/nco/nco/archive/4.6.6.tar.gz )
 set( nco_MD5 "df6fa47aaf6e41adfc0631912a7a341f")
 set( _PACKAGES ${_PACKAGES} nco )
 
+set( curl_URL https://curl.haxx.se/download/curl-7.54.0.tar.gz )
+set( curl_MD5 "")
+set( _PACKAGES ${_PACKAGES} curl )
+
 slicer_check_cmake_https()
 
 # If in fetch mode, only download and set a "fetch-only" indicator
@@ -276,6 +283,27 @@ ELSE ( FETCH_ONLY )
            LOG_INSTALL 1
            )
     endif (BUILD_PNG)
+
+    if (BUILD_CURL)
+       ExternalProject_Add( curl
+           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
+           URL ${curl_URL}
+           URL_MD5 ${curl_MD5}
+           CONFIGURE_COMMAND
+           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX}
+           CC=${CMAKE_C_COMPILER}
+           CXX=${CMAKE_CXX_COMPILER}
+           CFLAGS=${CFLAGS}
+           CXXFLAGS=${CXXFLAGS}
+           BUILD_COMMAND ${CMAKE_BUILD_TOOL}
+           INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
+           LOG_DOWNLOAD 1
+           LOG_CONFIGURE 1
+           LOG_BUILD 1
+           LOG_INSTALL 1
+           )
+
+    endif (BUILD_CURL)
 
     if (BUILD_OMPI)
        ExternalProject_Add( ompi
@@ -429,7 +457,7 @@ ELSE ( FETCH_ONLY )
 
     if (BUILD_NCO)
        ExternalProject_Add( nco
-           DEPENDS zlib szip netcdf_c netcdf_fortran hdf5
+           DEPENDS zlib curl szip netcdf_c netcdf_fortran hdf5
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${nco_URL}
            URL_MD5 ${nco_MD5}
