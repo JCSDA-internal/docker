@@ -3,7 +3,8 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: gcc:5.4
+# image: gcc:5.4
+image: 'xinzhang8noaa/jedibox_dockerfile:latest
 
 pipelines:
   custom:
@@ -15,17 +16,17 @@ pipelines:
             # Print the Linux version.
             - uname -a
             # Print the gcc version.
-            - gcc --version
+             - gcc --version
             # install gfortran
             # - apt-get install gfortran  -y
-            - gfortran --version
+             - gfortran --version
             # install a CMake 3.2.2 version through PPA repository. 
-            - apt-get update -qq
-            - apt-get install software-properties-common -y
+            # - apt-get update -qq
+            # - apt-get install software-properties-common -y
             # Add PPA repository.
-            - echo 'deb http://ppa.launchpad.net/george-edison55/cmake-3.x/ubuntu trusty main' | tee -a /etc/apt/sources.list.d/cmake.list
-            - apt-get update -qq
-            - apt-get install cmake -y --force-yes
+            # - echo 'deb http://ppa.launchpad.net/george-edison55/cmake-3.x/ubuntu trusty main' | tee -a /etc/apt/sources.list.d/cmake.list
+            # - apt-get update -qq
+            # - apt-get install cmake -y --force-yes
             - cmake --version          
             - mkdir build
             - cd build
