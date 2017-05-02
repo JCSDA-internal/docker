@@ -10,6 +10,7 @@ Download, build, and install the following libraries :
 * zlib v1.2.11
 * curl v7.54.0
 * szip v2.1.1
+* expat latest
 * jpeg v9b
 * png v1.4.19
 * jasper v1.900.2 

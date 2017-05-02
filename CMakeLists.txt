@@ -43,6 +43,7 @@ endif()
 option(BUILD_ALL      "Build all libs " OFF)
 option(BUILD_OMPI     "Build open-mpi " OFF)
 option(BUILD_ZLIB     "Build zlib "     OFF)
+option(BUILD_EXPAT    "Build zlib "     OFF)
 option(BUILD_CURL     "Build curl "     OFF)
 option(BUILD_SZIP     "Build szip "     OFF)
 option(BUILD_JPEG     "Build jpeg "     OFF)
@@ -82,6 +83,11 @@ if (BUILD_NETCDF)
   set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
 endif(BUILD_NETCDF)
 
+if (BUILD_UDUNITS)
+  message("setting values for UDUNITS")
+  set(BUILD_EXPAT "ON" CACHE STRING "Build the EXPAT library" FORCE )
+endif(BUILD_UDUNITS)
+
 if (BUILD_PNG)
   message("setting values for PNG")
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
@@ -102,6 +108,7 @@ if(BUILD_ALL )
   set(BUILD_OMPI "ON" CACHE STRING "Build the OMPI library" FORCE )
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
   set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
+  set(BUILD_EXPAT "ON" CACHE STRING "Build the EXPAT library" FORCE )
   set(BUILD_CURL "ON" CACHE STRING "Build the CURL library" FORCE )
   set(BUILD_JPEG "ON" CACHE STRING "Build the JPEG library" FORCE )
   set(BUILD_PNG "ON" CACHE STRING "Build the PNG library" FORCE )
@@ -206,6 +213,10 @@ set( _PACKAGES ${_PACKAGES} nco )
 set( curl_URL https://curl.haxx.se/download/curl-7.54.0.tar.gz )
 set( curl_MD5 "")
 set( _PACKAGES ${_PACKAGES} curl )
+
+set( expat_URL https://github.com/libexpat/libexpat.git )
+set( expat_MD5 "")
+set( _PACKAGES ${_PACKAGES} expat )
 
 slicer_check_cmake_https()
 
@@ -390,8 +401,30 @@ ELSE ( FETCH_ONLY )
            )
     endif (BUILD_JASPER)
 
+    if (BUILD_EXPAT)
+       ExternalProject_Add( expat
+           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
+           GIT_REPOSITORY ${expat_URL}
+           UPDATE_COMMAND ""
+	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} -DBUILD_doc=OFF 
+	   BUILD_IN_SOURCE 1
+           LOG_DOWNLOAD 1
+           LOG_CONFIGURE 1
+           LOG_BUILD 1
+           LOG_INSTALL 1
+           )
+
+       ExternalProject_Add_Step(
+	   expat copyExat
+	   COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR>/expat <SOURCE_DIR>
+	   COMMENT "Copy the CMakeList.txt directory to SOURCE_DIR"
+	   DEPENDEES download
+	   )
+    endif (BUILD_EXPAT)
+
     if (BUILD_UDUNITS)
        ExternalProject_Add( udunits
+           DEPENDS expat
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${udunits_URL}
            URL_MD5 ${udunits_MD5}
