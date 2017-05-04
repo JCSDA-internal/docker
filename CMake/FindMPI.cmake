@@ -273,6 +273,15 @@ function (interrogate_mpi_compiler lang try_libs)
         endif()
       endif()
 
+      # MPICH just uses "-show". Try it.
+      if (NOT MPI_COMPILER_RETURN EQUAL 0)
+        _mpi_check_compiler("${MPI_${lang}_COMPILER}" "-show" MPI_COMPILE_CMDLINE MPI_COMPILER_RETURN)
+        if (MPI_COMPILER_RETURN EQUAL 0)
+           set(MPI_IMPLEMENTATION "mpich" PARENT_SCOPE)
+           message(STATUS "Found mpich for ${lang}")
+        endif()
+      endif()
+
       # MVAPICH uses -compile-info and -link-info.  Try them.
       if (NOT MPI_COMPILER_RETURN EQUAL 0)
         _mpi_check_compiler("${MPI_${lang}_COMPILER}" "-compile-info" MPI_COMPILE_CMDLINE MPI_COMPILER_RETURN)
@@ -291,17 +300,8 @@ function (interrogate_mpi_compiler lang try_libs)
           set(MPI_COMPILE_CMDLINE)
           set(MPI_LINK_CMDLINE)
         else()
-          set(MPI_IMPLEMENTATION "mvapich" PARENT_SCOPE)
-          message(STATUS "Found mvapich for ${lang}")
-        endif()
-      endif()
-
-      # MPICH just uses "-show". Try it.
-      if (NOT MPI_COMPILER_RETURN EQUAL 0)
-        _mpi_check_compiler("${MPI_${lang}_COMPILER}" "-show" MPI_COMPILE_CMDLINE MPI_COMPILER_RETURN)
-        if (MPI_COMPILER_RETURN EQUAL 0)
-           set(MPI_IMPLEMENTATION "mpich" PARENT_SCOPE)
-           message(STATUS "Found mpich for ${lang}")
+          set(MPI_IMPLEMENTATION "mvapich2" PARENT_SCOPE)
+          message(STATUS "Found mvapich2 for ${lang}")
         endif()
       endif()
 
