@@ -541,12 +541,27 @@ ELSE ( FETCH_ONLY )
           set(PNETCDF_MPI_CXX_COMPILER ${MPI_CXX_COMPILER})
           set(PNETCDF_MPI_F77_COMPILER ${MPI_Fortran_COMPILER})
           set(PNETCDF_MPI_F90_COMPILER ${MPI_Fortran_COMPILER})
+          find_library( openmpi
+          NAMES libmpi_cxx.a
+          )
+          if (openmpi)
+             message(STATUS "openmpi implementation")
+             set(ESMF_COMM openmpi)
+          endif (openmpi)
+          find_library( mpich
+          NAMES libmpicxx.a
+          )
+          if (mpich)
+             message(STATUS "mpich implementation")
+             set(ESMF_COMM mpich)
+          endif (mpich)
        else (MPI_FOUND) 
           set(PNETCDF_MPI_C_COMPILER   ${JEDI_PREFIX}/bin/mpicc)
           set(PNETCDF_MPI_CXX_COMPILER ${JEDI_PREFIX}/bin/mpicxx)
           set(PNETCDF_MPI_F77_COMPILER ${JEDI_PREFIX}/bin/mpifort)
           set(PNETCDF_MPI_F90_COMPILER ${JEDI_PREFIX}/bin/mpifort)
           set(MPI ompi)
+          set(ESMF_COMM openmpi)
           message(STATUS "Not MPI_FOUND, will install ompi")
        endif (MPI_FOUND) 
 
@@ -639,7 +654,7 @@ ELSE ( FETCH_ONLY )
 	   CONFIGURE_COMMAND ""
 	   BUILD_COMMAND ${CMAKE_COMMAND} -E env "ESMF_DIR=<SOURCE_DIR>"
 	   ${CMAKE_COMMAND} -E env "ESMF_INSTALL_PREFIX=${JEDI_PREFIX}"  
-	   ${CMAKE_COMMAND} -E env "ESMF_COMM=openmpi"
+	   ${CMAKE_COMMAND} -E env "ESMF_COMM=${ESMF_COMM}"
 	   ${CMAKE_COMMAND} -E env "ESMF_COMPILER=${ESMF_COMPILER}" 
 	   ${CMAKE_COMMAND} -E env "ESMF_LAPACK_LIBPATH=${JEDI_PREFIX}/lib" 
 	   ${CMAKE_COMMAND} -E env "ESMF_LAPACK_LIBS=-llapack -lblas" 
@@ -660,7 +675,7 @@ ELSE ( FETCH_ONLY )
 	   ${CMAKE_COMMAND} -E env "PATH=${JEDI_PREFIX}/bin:$ENV{PATH}"
 	   ${CMAKE_BUILD_TOOL} -j${NPROC}
 	   INSTALL_COMMAND ${CMAKE_COMMAND} -E env "ESMF_DIR=<SOURCE_DIR>" 
-	   ${CMAKE_COMMAND} -E env "ESMF_COMM=openmpi"
+	   ${CMAKE_COMMAND} -E env "ESMF_COMM=${ESMF_COMM}"
 	   ${CMAKE_COMMAND} -E env "ESMF_COMPILER=${ESMF_COMPILER}" 
 	   ${CMAKE_COMMAND} -E env "ESMF_INSTALL_PREFIX=${JEDI_PREFIX}"  
 	   ${CMAKE_COMMAND} -E env "ESMF_LAPACK_LIBPATH=${JEDI_PREFIX}/lib" 
