@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.1.0)
 #-----------------------------------------------------------------------------
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include (ExternalProject)
-include (SlicerCheckCMakeHTTPS)
+include (jedi_check_cmake_https)
 
 project( jedi_common_libs C Fortran CXX )
 
@@ -35,10 +35,17 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     endif()
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    SET(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fPIC")
     SET(CFLAGS "${CMAKE_C_FLAGS}")
     SET(CXXFLAGS "${CMAKE_CXX_FLAGS}")
 endif()
 
+include(ProcessorCount)
+ProcessorCount(NPROC)
+if(NPROC GREATER 4)
+  set(NPROC 4)
+  message(STATUS "Using ${NPROC} threads for parallel building")
+endif(NPROC GREATER 4)
 #-----------------------------------------------------------------------------
 option(BUILD_ALL      "Build all libs " OFF)
 option(BUILD_OMPI     "Build open-mpi " OFF)
@@ -60,7 +67,7 @@ option(BUILD_UDUNITS  "Build udunits "  OFF)
 option(BUILD_NCO      "Build nco "      OFF)
 
 if (BUILD_NCO)
-    message("setting values for NCO")
+    message(STATUS "setting options for NCO")
     set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
     set(BUILD_CURL "ON" CACHE STRING "Build the CURL library" FORCE )
     set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
@@ -69,7 +76,7 @@ if (BUILD_NCO)
 endif(BUILD_NCO)
 
 if (BUILD_ESMF)
-    message("setting values for ESMF")
+    message(STATUS "setting options for ESMF")
     set(BUILD_PNETCDF "ON" CACHE STRING "Build the PNETCDF library" FORCE )
     set(BUILD_LAPACK "ON" CACHE STRING "Build the LAPACK library" FORCE )
     set(BUILD_NETCDF "ON" CACHE STRING "Build the NETCDF library" FORCE )
@@ -77,35 +84,35 @@ if (BUILD_ESMF)
 endif(BUILD_ESMF)
 
 if (BUILD_NETCDF)
-  message("setting values for NETCDF")
+  message(STATUS "setting values for NETCDF")
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
   set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
   set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
 endif(BUILD_NETCDF)
 
 if (BUILD_UDUNITS)
-  message("setting values for UDUNITS")
+  message(STATUS "setting options for UDUNITS")
   set(BUILD_EXPAT "ON" CACHE STRING "Build the EXPAT library" FORCE )
 endif(BUILD_UDUNITS)
 
 if (BUILD_PNG)
-  message("setting values for PNG")
+  message(STATUS "setting options for PNG")
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
 endif(BUILD_PNG)
 
 if (BUILD_FREETYPE)
-  message("setting values for FREETYPE")
+  message(STATUS "setting options for FREETYPE")
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
 endif(BUILD_FREETYPE)
 
 if (BUILD_PNETCDF)
-   message("setting values for PNETCDF")
-   set(BUILD_OMPI "ON" CACHE STRING "Build the OMPI library" FORCE )
+  message(STATUS "setting options for PNETCDF")
+  set(BUILD_OMPI "ON" CACHE STRING "Build the OMPI library" FORCE )
 endif(BUILD_PNETCDF)
 
+
 if(BUILD_ALL )
-  message("setting values for all libraries")
-  set(BUILD_OMPI "ON" CACHE STRING "Build the OMPI library" FORCE )
+  message(STATUS "setting options for all libraries")
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
   set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
   set(BUILD_EXPAT "ON" CACHE STRING "Build the EXPAT library" FORCE )
@@ -140,9 +147,30 @@ set(CMAKE_LIBRARY_PATH ${JEDI_BASEDIR}/lib ${CMAKE_LIBRARY_PATH})
 set(JEDI_MODULE_PATH ${JEDI_BATDIR}/cmake/Modules)
 
 #-----------------------------------------------------------------------------
-set(CMAKE_PREFIX_PATH ${JEDI_PREFIX}/lib )
+set(CMAKE_PREFIX_PATH ${JEDI_PREFIX})
 include_directories( ${JEDI_PREFIX}/include )
 link_directories( ${JEDI_PREFIX}/lib )
+
+# Determine if we have MPI package
+find_package(MPI QUIET)
+if (MPI_FOUND)
+   set(BUILD_OMPI "OFF" CACHE STRING "Build the OMPI library" FORCE )
+   set(JEDI_MPI_C_COMPILER   ${MPI_C_COMPILER})
+   set(JEDI_MPI_CXX_COMPILER ${MPI_CXX_COMPILER})
+   set(JEDI_MPI_F77_COMPILER ${MPI_Fortran_COMPILER})
+   set(JEDI_MPI_F90_COMPILER ${MPI_Fortran_COMPILER})
+else ()
+   if (BUILD_PNETCDF)
+      set(BUILD_OMPI "ON" CACHE STRING "Build the OMPI library" FORCE )
+      message(STATUS "Not MPI_FOUND, will install in source openmpi")
+   endif ()
+   set(JEDI_MPI_C_COMPILER   ${JEDI_PREFIX}/bin/mpicc)
+   set(JEDI_MPI_CXX_COMPILER ${JEDI_PREFIX}/bin/mpicxx)
+   set(JEDI_MPI_F77_COMPILER ${JEDI_PREFIX}/bin/mpifort)
+   set(JEDI_MPI_F90_COMPILER ${JEDI_PREFIX}/bin/mpifort)
+   set(MPI "ompi")
+   set(ESMF_COMM "openmpi")
+endif ()
 
 # Files to download
 
@@ -239,7 +267,7 @@ ELSE ( FETCH_ONLY )
            URL_HASH ${lapack_HASH}
            # Add CMAKE_INSTALL_LIBDIR to make sure it will be install under
            # lib not lib64
-	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}
+	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS} -DBUILD_SHARED_LIBS=ON
            LOG_DOWNLOAD 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
@@ -328,7 +356,7 @@ ELSE ( FETCH_ONLY )
            CFLAGS=${CFLAGS}
            CXXFLAGS=${CXXFLAGS}
 	   FC=${CMAKE_Fortran_COMPILER}
-           BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j 2 all
+           BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j ${NPROC} all
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
            LOG_DOWNLOAD 1
            LOG_CONFIGURE 1
@@ -518,24 +546,23 @@ ELSE ( FETCH_ONLY )
     endif (BUILD_NCO)
 
     if (BUILD_PNETCDF)
+
        ExternalProject_Add( pnetcdf
-	   DEPENDS ompi
+	   DEPENDS ${MPI}
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${pnetcdf_URL}
            URL_MD5 ${pnetcdf_MD5}
            CONFIGURE_COMMAND
 	   <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX}
-           CC=${CMAKE_C_COMPILER}
            CFLAGS=${CFLAGS}
            CXXFLAGS=${CXXFLAGS}
-	   MPICC=${JEDI_PREFIX}/bin/mpicc
-           CXX=${CMAKE_CXX_COMPILER}
-	   MPICXX=${JEDI_PREFIX}/bin/mpicxx
-	   FC=${CMAKE_Fortran_COMPILER}
-	   MPIF77=${JEDI_PREFIX}/bin/mpif77
-	   F90=${CMAKE_Fortran_COMPILER}
-	   MPIF90=${JEDI_PREFIX}/bin/mpif90
-           BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j2
+           FFLAGS=${CMAKE_Fortran_FLAGS}
+           FCFLAGS=${CMAKE_Fortran_FLAGS}
+	   MPICC=${JEDI_MPI_C_COMPILER}
+	   MPICXX=${JEDI_MPI_CXX_COMPILER}
+	   MPIF77=${JEDI_MPI_F77_COMPILER}
+	   MPIF90=${JEDI_MPI_F90_COMPILER}
+           BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j${NPROC}
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
 	   BUILD_IN_SOURCE 1
            LOG_DOWNLOAD 1
@@ -593,7 +620,7 @@ ELSE ( FETCH_ONLY )
 	 set (ESMF_COMPILER "intel" CACHE STRING "" FORCE )
        elseif (Fortran_COMPILER_NAME MATCHES "g95")
          # g95
-	 set (ESMF_COMPILER "g85" CACHE STRING "" FORCE )
+	 set (ESMF_COMPILER "g95" CACHE STRING "" FORCE )
        else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 	 message (FATAL_ERROR "Please make correspongding changes in CMakeLists to accomodate the new compiler ")
        endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
@@ -606,46 +633,50 @@ ELSE ( FETCH_ONLY )
 	   CONFIGURE_COMMAND ""
 	   BUILD_COMMAND ${CMAKE_COMMAND} -E env "ESMF_DIR=<SOURCE_DIR>"
 	   ${CMAKE_COMMAND} -E env "ESMF_INSTALL_PREFIX=${JEDI_PREFIX}"  
-	   ${CMAKE_COMMAND} -E env "ESMF_COMM=openmpi"
+	   ${CMAKE_COMMAND} -E env "ESMF_COMM=${MPI_IMPLEMENTATION}"
 	   ${CMAKE_COMMAND} -E env "ESMF_COMPILER=${ESMF_COMPILER}" 
+	   ${CMAKE_COMMAND} -E env "ESMF_LAPACK=system"
 	   ${CMAKE_COMMAND} -E env "ESMF_LAPACK_LIBPATH=${JEDI_PREFIX}/lib" 
 	   ${CMAKE_COMMAND} -E env "ESMF_LAPACK_LIBS=-llapack -lblas" 
 	   ${CMAKE_COMMAND} -E env "ESMF_NETCDF=split" 
 	   ${CMAKE_COMMAND} -E env "ESMF_NETCDF_INCLUDE=${JEDI_PREFIX}/include" 
 	   ${CMAKE_COMMAND} -E env "ESMF_NETCDF_LIBPATH=${JEDI_PREFIX}/lib" 
 	   ${CMAKE_COMMAND} -E env "ESMF_NETCDF_LIBS=-lnetcdff -lnetcdf" 
-	   #${CMAKE_COMMAND} -E env "ESMF_PNETCDF=standard" 
-	   #${CMAKE_COMMAND} -E env "ESMF_PNETCDF_INCLUDE=${JEDI_PREFIX}/include" 
-	   #${CMAKE_COMMAND} -E env "ESMF_PNETCDF_LIBPATH=${JEDI_PREFIX}/lib" 
-	   #${CMAKE_COMMAND} -E env "ESMF_PNETCDF_LIBS=-lpnetcdf" 
+	   ${CMAKE_COMMAND} -E env "ESMF_PNETCDF=standard" 
+	   ${CMAKE_COMMAND} -E env "ESMF_PNETCDF_INCLUDE=${JEDI_PREFIX}/include" 
+	   ${CMAKE_COMMAND} -E env "ESMF_PNETCDF_LIBPATH=${JEDI_PREFIX}/lib" 
+	   ${CMAKE_COMMAND} -E env "ESMF_PNETCDF_LIBS=-lpnetcdf" 
 	   ${CMAKE_COMMAND} -E env "ESMF_PIO=internal" 
 	   ${CMAKE_COMMAND} -E env "ESMF_XERCES=standard" 
 	   ${CMAKE_COMMAND} -E env "ESMF_XERCES_INCLUDE=${JEDI_PREFIX}/include" 
 	   ${CMAKE_COMMAND} -E env "ESMF_XERCES_LIBPATH=${JEDI_PREFIX}/lib" 
 	   ${CMAKE_COMMAND} -E env "ESMF_XERCES_LIBS=-lxerces-c" 
 	   ${CMAKE_COMMAND} -E env "ESMF_SHARED_LIB_BUILD=ON" 
+	   ${CMAKE_COMMAND} -E env "ESMF_CXX=${JEDI_MPI_CXX_COMPILER}"
 	   ${CMAKE_COMMAND} -E env "PATH=${JEDI_PREFIX}/bin:$ENV{PATH}"
-	   ${CMAKE_BUILD_TOOL} -j2
+	   ${CMAKE_BUILD_TOOL} -j${NPROC}
 	   INSTALL_COMMAND ${CMAKE_COMMAND} -E env "ESMF_DIR=<SOURCE_DIR>" 
-	   ${CMAKE_COMMAND} -E env "ESMF_COMM=openmpi"
+	   ${CMAKE_COMMAND} -E env "ESMF_COMM=${MPI_IMPLEMENTATION}"
 	   ${CMAKE_COMMAND} -E env "ESMF_COMPILER=${ESMF_COMPILER}" 
 	   ${CMAKE_COMMAND} -E env "ESMF_INSTALL_PREFIX=${JEDI_PREFIX}"  
+	   ${CMAKE_COMMAND} -E env "ESMF_LAPACK=system"
 	   ${CMAKE_COMMAND} -E env "ESMF_LAPACK_LIBPATH=${JEDI_PREFIX}/lib" 
 	   ${CMAKE_COMMAND} -E env "ESMF_LAPACK_LIBS=-llapack -lblas" 
 	   ${CMAKE_COMMAND} -E env "ESMF_NETCDF=split" 
 	   ${CMAKE_COMMAND} -E env "ESMF_NETCDF_INCLUDE=${JEDI_PREFIX}/include" 
 	   ${CMAKE_COMMAND} -E env "ESMF_NETCDF_LIBPATH=${JEDI_PREFIX}/lib" 
 	   ${CMAKE_COMMAND} -E env "ESMF_NETCDF_LIBS=-lnetcdff -lnetcdf" 
-	   #${CMAKE_COMMAND} -E env "ESMF_PNETCDF=standard" 
-	   #${CMAKE_COMMAND} -E env "ESMF_PNETCDF_INCLUDE=${JEDI_PREFIX}/include" 
-	   #${CMAKE_COMMAND} -E env "ESMF_PNETCDF_LIBPATH=${JEDI_PREFIX}/lib" 
-	   #${CMAKE_COMMAND} -E env "ESMF_PNETCDF_LIBS=-lpnetcdf" 
+	   ${CMAKE_COMMAND} -E env "ESMF_PNETCDF=standard" 
+	   ${CMAKE_COMMAND} -E env "ESMF_PNETCDF_INCLUDE=${JEDI_PREFIX}/include" 
+	   ${CMAKE_COMMAND} -E env "ESMF_PNETCDF_LIBPATH=${JEDI_PREFIX}/lib" 
+	   ${CMAKE_COMMAND} -E env "ESMF_PNETCDF_LIBS=-lpnetcdf" 
 	   ${CMAKE_COMMAND} -E env "ESMF_PIO=internal" 
 	   ${CMAKE_COMMAND} -E env "ESMF_XERCES=standard" 
 	   ${CMAKE_COMMAND} -E env "ESMF_XERCES_INCLUDE=${JEDI_PREFIX}/include" 
 	   ${CMAKE_COMMAND} -E env "ESMF_XERCES_LIBPATH=${JEDI_PREFIX}/lib" 
 	   ${CMAKE_COMMAND} -E env "ESMF_XERCES_LIBS=-lxerces-c" 
 	   ${CMAKE_COMMAND} -E env "ESMF_SHARED_LIB_BUILD=ON" 
+	   ${CMAKE_COMMAND} -E env "ESMF_CXX=${JEDI_MPI_CXX_COMPILER}"
 	   ${CMAKE_COMMAND} -E env "PATH=${JEDI_PREFIX}/bin:$ENV{PATH}"
 	   ${CMAKE_BUILD_TOOL} -d install
 	   BUILD_IN_SOURCE 1
