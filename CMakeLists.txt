@@ -287,13 +287,15 @@ ELSE ( FETCH_ONLY )
            LOG_INSTALL 1
            )
 
-       ExternalProject_Add_Step(
-	   szip rename
-	   COMMAND ${CMAKE_COMMAND} -E copy ${JEDI_PREFIX}/lib/libszip.a ${JEDI_PREFIX}/lib/libsz.a
-	   COMMAND ${CMAKE_COMMAND} -E copy ${JEDI_PREFIX}/lib/libszip.so ${JEDI_PREFIX}/lib/libsz.so
-	   COMMENT "Some lib seeks sz , other than szip"
-	   DEPENDEES install
-	   )
+       if (LINUX)
+          ExternalProject_Add_Step(
+	      szip rename
+              COMMAND ${CMAKE_COMMAND} -E copy ${JEDI_PREFIX}/lib/libszip.a ${JEDI_PREFIX}/lib/libsz.a
+	      COMMAND ${CMAKE_COMMAND} -E copy ${JEDI_PREFIX}/lib/libszip.so ${JEDI_PREFIX}/lib/libsz.so
+	      COMMENT "Some lib seeks sz , other than szip"
+	      DEPENDEES install
+	      )
+       endif ()
     endif (BUILD_SZIP)
 
     if (BUILD_ZLIB)
