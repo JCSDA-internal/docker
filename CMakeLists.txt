@@ -23,7 +23,7 @@ endif()
 #-----------------------------------------------------------------------------
 # Prerequisites
 #-----------------------------------------------------------------------------
-find_package(Git)
+find_package(Git QUIET)
 if(NOT GIT_FOUND)
   message(FATAL_ERROR "error: Install Git and try to re-configure")
 endif()
@@ -51,7 +51,6 @@ option(BUILD_ALL      "Build all libs " OFF)
 option(BUILD_OMPI     "Build open-mpi " OFF)
 option(BUILD_ZLIB     "Build zlib "     OFF)
 option(BUILD_EXPAT    "Build expat "    OFF)
-option(BUILD_CURL     "Build curl "     OFF)
 option(BUILD_SZIP     "Build szip "     OFF)
 option(BUILD_JPEG     "Build jpeg "     OFF)
 option(BUILD_PNG      "Build png "      OFF)
@@ -69,7 +68,6 @@ option(BUILD_NCO      "Build nco "      OFF)
 if (BUILD_NCO)
     message(STATUS "setting options for NCO")
     set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
-    set(BUILD_CURL "ON" CACHE STRING "Build the CURL library" FORCE )
     set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
     set(BUILD_NETCDF "ON" CACHE STRING "Build the NETCDF library" FORCE )
     set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
@@ -116,7 +114,6 @@ if(BUILD_ALL )
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
   set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
   set(BUILD_EXPAT "ON" CACHE STRING "Build the EXPAT library" FORCE )
-  set(BUILD_CURL "ON" CACHE STRING "Build the CURL library" FORCE )
   set(BUILD_JPEG "ON" CACHE STRING "Build the JPEG library" FORCE )
   set(BUILD_PNG "ON" CACHE STRING "Build the PNG library" FORCE )
   set(BUILD_JASPER "ON" CACHE STRING "Build the JASPER library" FORCE )
@@ -170,6 +167,10 @@ else ()
    set(JEDI_MPI_F90_COMPILER ${JEDI_PREFIX}/bin/mpifort)
    set(MPI "ompi")
    set(ESMF_COMM "openmpi")
+endif ()
+
+if (BUILD_NCO OR BUILD_XERCES)
+   find_package(CURL QUIET REQUIRED)
 endif ()
 
 # Files to download
@@ -238,10 +239,6 @@ set( nco_URL https://github.com/nco/nco/archive/4.6.6.tar.gz )
 set( nco_MD5 "df6fa47aaf6e41adfc0631912a7a341f")
 set( _PACKAGES ${_PACKAGES} nco )
 
-set( curl_URL https://curl.haxx.se/download/curl-7.54.0.tar.gz )
-set( curl_MD5 "")
-set( _PACKAGES ${_PACKAGES} curl )
-
 set( expat_URL https://github.com/libexpat/libexpat.git )
 set( expat_MD5 "")
 set( _PACKAGES ${_PACKAGES} expat )
@@ -287,7 +284,7 @@ ELSE ( FETCH_ONLY )
            LOG_INSTALL 1
            )
 
-       if (LINUX)
+       if (NOT APPLE)
           ExternalProject_Add_Step(
 	      szip rename
               COMMAND ${CMAKE_COMMAND} -E copy ${JEDI_PREFIX}/lib/libszip.a ${JEDI_PREFIX}/lib/libsz.a
@@ -324,27 +321,6 @@ ELSE ( FETCH_ONLY )
            LOG_INSTALL 1
            )
     endif (BUILD_PNG)
-
-    if (BUILD_CURL)
-       ExternalProject_Add( curl
-           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
-           URL ${curl_URL}
-           URL_MD5 ${curl_MD5}
-           CONFIGURE_COMMAND
-           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX}
-           CC=${CMAKE_C_COMPILER}
-           CXX=${CMAKE_CXX_COMPILER}
-           CFLAGS=${CFLAGS}
-           CXXFLAGS=${CXXFLAGS}
-           BUILD_COMMAND ${CMAKE_BUILD_TOOL}
-           INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
-           LOG_DOWNLOAD 1
-           LOG_CONFIGURE 1
-           LOG_BUILD 1
-           LOG_INSTALL 1
-           )
-
-    endif (BUILD_CURL)
 
     if (BUILD_OMPI)
        ExternalProject_Add( ompi
@@ -520,7 +496,7 @@ ELSE ( FETCH_ONLY )
 
     if (BUILD_NCO)
        ExternalProject_Add( nco
-           DEPENDS zlib curl szip netcdf_c netcdf_fortran hdf5
+           DEPENDS zlib szip netcdf_c netcdf_fortran hdf5
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${nco_URL}
            URL_MD5 ${nco_MD5}
@@ -596,7 +572,7 @@ ELSE ( FETCH_ONLY )
            URL ${xerces_URL}
            URL_MD5 ${xerces_MD5}
            CONFIGURE_COMMAND
-	   <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --without-curl --without-icu
+	   <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --with-curl --without-icu
            CC=${CMAKE_C_COMPILER}
            CXX=${CMAKE_CXX_COMPILER}
            CFLAGS=${CFLAGS}
