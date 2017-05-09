@@ -23,10 +23,9 @@ endif()
 #-----------------------------------------------------------------------------
 # Prerequisites
 #-----------------------------------------------------------------------------
-find_package(Git QUIET)
-if(NOT GIT_FOUND)
-  message(FATAL_ERROR "error: Install Git and try to re-configure")
-endif()
+find_package(Git   REQUIRED)
+find_package(CURL  REQUIRED)
+find_package(EXPAT REQUIRED)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # require at least gcc 4.8.4
@@ -246,9 +245,6 @@ if ( FETCH_ONLY )
 
 ELSE ( FETCH_ONLY )
 
-#include(jedi_install_grib_api)
-include(jedi_install_cdo)
-
     if (BUILD_LAPACK)
        ExternalProject_Add( lapack
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
@@ -301,7 +297,7 @@ include(jedi_install_cdo)
     endif (BUILD_ZLIB)
 
     if (BUILD_PNG)
-       ExternalProject_Add( libpng
+       ExternalProject_Add( png
            DEPENDS zlib
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libpng_URL}
@@ -344,7 +340,7 @@ include(jedi_install_cdo)
     endif (BUILD_OMPI)
 
     if (BUILD_JPEG)
-       ExternalProject_Add( libjpeg
+       ExternalProject_Add( jpeg
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libjpeg_URL}
            URL_MD5 ${libjpeg_MD5}
@@ -636,6 +632,9 @@ include(jedi_install_cdo)
            )
 
     endif (BUILD_ESMF)
+
+include(jedi_install_grib_api)
+#include(jedi_install_cdo)
 
 
 ENDIF( FETCH_ONLY )
