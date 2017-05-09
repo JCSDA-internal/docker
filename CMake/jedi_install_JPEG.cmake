@@ -6,6 +6,7 @@ function ( download_build_install )
        set( libjpeg_URL http://www.ijg.org/files/jpegsrc.v9b.tar.gz )
        set( libjpeg_MD5 6a9996ce116ec5c52b4870dbcd6d3ddb)
        ExternalProject_Add( JPEG
+           EPENDS ${deps_JPEG}
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libjpeg_URL}
            URL_MD5 ${libjpeg_MD5}

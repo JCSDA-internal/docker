@@ -1,11 +1,11 @@
 #
 # jedi_install_LAPACK
 #
-
 function ( download_build_install )
        set( lapack_URL http://www.netlib.org/lapack/lapack-3.7.0.tgz )
        set( lapack_MD5 "" )
        ExternalProject_Add( LAPACK
+           EPENDS ${deps_LAPACK}
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${lapack_URL}
            URL_HASH ${lapack_HASH}
