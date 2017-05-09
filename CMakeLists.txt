@@ -5,6 +5,8 @@ cmake_minimum_required(VERSION 3.1.0)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include (ExternalProject)
 include (jedi_check_cmake_https)
+include (jedi_install_grib_api)
+include (jedi_install_cdo)
 
 project( jedi_common_libs C Fortran CXX )
 
@@ -633,8 +635,23 @@ ELSE ( FETCH_ONLY )
 
     endif (BUILD_ESMF)
 
-include(jedi_install_grib_api)
-#include(jedi_install_cdo)
+find_package(grib_api)
+set(_prefix "deps_")
+get_cmake_property(_vars CACHE_VARIABLES)
+
+string (REGEX MATCHALL "${_prefix}[A-Za-z0-9_]*" _matchedVars "${_vars}")
+foreach (_variable ${_matchedVars})
+    set (_resultVars "")
+    foreach (_v ${${_variable}})
+       find_package(${_v} QUIET)
+       if (${_v}_FOUND)
+          list(APPEND _resultVars ${_v})
+       endif()
+    endforeach()
+    list(REMOVE_ITEM ${_variable} ${_resultVars})
+endforeach()
+jedi_install_grib_api()
+jedi_install_cdo()
 
 
 ENDIF( FETCH_ONLY )
