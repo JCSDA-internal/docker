@@ -23,10 +23,9 @@ endif()
 #-----------------------------------------------------------------------------
 # Prerequisites
 #-----------------------------------------------------------------------------
-find_package(Git)
-if(NOT GIT_FOUND)
-  message(FATAL_ERROR "error: Install Git and try to re-configure")
-endif()
+find_package(Git   REQUIRED)
+find_package(CURL  REQUIRED)
+find_package(EXPAT REQUIRED)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # require at least gcc 4.8.4
@@ -50,8 +49,6 @@ endif(NPROC GREATER 4)
 option(BUILD_ALL      "Build all libs " OFF)
 option(BUILD_OMPI     "Build open-mpi " OFF)
 option(BUILD_ZLIB     "Build zlib "     OFF)
-option(BUILD_EXPAT    "Build expat "    OFF)
-option(BUILD_CURL     "Build curl "     OFF)
 option(BUILD_SZIP     "Build szip "     OFF)
 option(BUILD_JPEG     "Build jpeg "     OFF)
 option(BUILD_PNG      "Build png "      OFF)
@@ -69,7 +66,6 @@ option(BUILD_NCO      "Build nco "      OFF)
 if (BUILD_NCO)
     message(STATUS "setting options for NCO")
     set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
-    set(BUILD_CURL "ON" CACHE STRING "Build the CURL library" FORCE )
     set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
     set(BUILD_NETCDF "ON" CACHE STRING "Build the NETCDF library" FORCE )
     set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
@@ -89,11 +85,6 @@ if (BUILD_NETCDF)
   set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
   set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
 endif(BUILD_NETCDF)
-
-if (BUILD_UDUNITS)
-  message(STATUS "setting options for UDUNITS")
-  set(BUILD_EXPAT "ON" CACHE STRING "Build the EXPAT library" FORCE )
-endif(BUILD_UDUNITS)
 
 if (BUILD_PNG)
   message(STATUS "setting options for PNG")
@@ -115,8 +106,6 @@ if(BUILD_ALL )
   message(STATUS "setting options for all libraries")
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
   set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
-  set(BUILD_EXPAT "ON" CACHE STRING "Build the EXPAT library" FORCE )
-  set(BUILD_CURL "ON" CACHE STRING "Build the CURL library" FORCE )
   set(BUILD_JPEG "ON" CACHE STRING "Build the JPEG library" FORCE )
   set(BUILD_PNG "ON" CACHE STRING "Build the PNG library" FORCE )
   set(BUILD_JASPER "ON" CACHE STRING "Build the JASPER library" FORCE )
@@ -170,6 +159,10 @@ else ()
    set(JEDI_MPI_F90_COMPILER ${JEDI_PREFIX}/bin/mpifort)
    set(MPI "ompi")
    set(ESMF_COMM "openmpi")
+endif ()
+
+if (BUILD_NCO OR BUILD_XERCES)
+   find_package(CURL QUIET REQUIRED)
 endif ()
 
 # Files to download
@@ -238,15 +231,7 @@ set( nco_URL https://github.com/nco/nco/archive/4.6.6.tar.gz )
 set( nco_MD5 "df6fa47aaf6e41adfc0631912a7a341f")
 set( _PACKAGES ${_PACKAGES} nco )
 
-set( curl_URL https://curl.haxx.se/download/curl-7.54.0.tar.gz )
-set( curl_MD5 "")
-set( _PACKAGES ${_PACKAGES} curl )
-
-set( expat_URL https://github.com/libexpat/libexpat.git )
-set( expat_MD5 "")
-set( _PACKAGES ${_PACKAGES} expat )
-
-slicer_check_cmake_https()
+jedi_check_cmake_https()
 
 # If in fetch mode, only download and set a "fetch-only" indicator
 if ( FETCH_ONLY )
@@ -287,7 +272,7 @@ ELSE ( FETCH_ONLY )
            LOG_INSTALL 1
            )
 
-       if (LINUX)
+       if (NOT APPLE)
           ExternalProject_Add_Step(
 	      szip rename
               COMMAND ${CMAKE_COMMAND} -E copy ${JEDI_PREFIX}/lib/libszip.a ${JEDI_PREFIX}/lib/libsz.a
@@ -312,7 +297,7 @@ ELSE ( FETCH_ONLY )
     endif (BUILD_ZLIB)
 
     if (BUILD_PNG)
-       ExternalProject_Add( libpng
+       ExternalProject_Add( png
            DEPENDS zlib
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libpng_URL}
@@ -324,27 +309,6 @@ ELSE ( FETCH_ONLY )
            LOG_INSTALL 1
            )
     endif (BUILD_PNG)
-
-    if (BUILD_CURL)
-       ExternalProject_Add( curl
-           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
-           URL ${curl_URL}
-           URL_MD5 ${curl_MD5}
-           CONFIGURE_COMMAND
-           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX}
-           CC=${CMAKE_C_COMPILER}
-           CXX=${CMAKE_CXX_COMPILER}
-           CFLAGS=${CFLAGS}
-           CXXFLAGS=${CXXFLAGS}
-           BUILD_COMMAND ${CMAKE_BUILD_TOOL}
-           INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
-           LOG_DOWNLOAD 1
-           LOG_CONFIGURE 1
-           LOG_BUILD 1
-           LOG_INSTALL 1
-           )
-
-    endif (BUILD_CURL)
 
     if (BUILD_OMPI)
        ExternalProject_Add( ompi
@@ -376,7 +340,7 @@ ELSE ( FETCH_ONLY )
     endif (BUILD_OMPI)
 
     if (BUILD_JPEG)
-       ExternalProject_Add( libjpeg
+       ExternalProject_Add( jpeg
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libjpeg_URL}
            URL_MD5 ${libjpeg_MD5}
@@ -431,30 +395,8 @@ ELSE ( FETCH_ONLY )
            )
     endif (BUILD_JASPER)
 
-    if (BUILD_EXPAT)
-       ExternalProject_Add( expat
-           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
-           GIT_REPOSITORY ${expat_URL}
-           UPDATE_COMMAND ""
-	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} -DBUILD_doc=OFF 
-	   BUILD_IN_SOURCE 1
-           LOG_DOWNLOAD 1
-           LOG_CONFIGURE 1
-           LOG_BUILD 1
-           LOG_INSTALL 1
-           )
-
-       ExternalProject_Add_Step(
-	   expat copyExat
-	   COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR>/expat <SOURCE_DIR>
-	   COMMENT "Copy the CMakeList.txt directory to SOURCE_DIR"
-	   DEPENDEES download
-	   )
-    endif (BUILD_EXPAT)
-
     if (BUILD_UDUNITS)
        ExternalProject_Add( udunits
-           DEPENDS expat
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${udunits_URL}
            URL_MD5 ${udunits_MD5}
@@ -472,7 +414,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${hdf5_URL}
            URL_MD5 ${hdf5_MD5}
-	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DHDF5_BUILD_FORTRAN=ON  -DHDF5_ENABLE_F2003:BOOL=ON -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} -DHDF5_BUILD_CPP_LIB:BOOL=ON -DHDF5_ENABLE_SZIP_SUPPORT=BOLL=ON -DHDF5_ENABLE_SZIP_ENCODING:BOOL=ON -DSZIP_DIR=${JEDI_PREFIX}/share/cmake -DHDF5_ENABLE_SZIP_SUPPORT=ON
+	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DHDF5_BUILD_FORTRAN=ON  -DHDF5_ENABLE_F2003:BOOL=ON -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} -DHDF5_BUILD_CPP_LIB:BOOL=ON -DHDF5_ENABLE_SZIP_SUPPORT=BOLL=ON -DHDF5_ENABLE_SZIP_ENCODING:BOOL=ON -DSZIP_DIR=${JEDI_PREFIX}/share/cmake -DCMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS}
            LOG_DOWNLOAD 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
@@ -486,7 +428,7 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${netcdf_c_URL}
            URL_MD5 ${netcdf_c_MD5}
-	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DENABLE_HDF4=OFF -DENABLE_DAP=OFF -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DENABLE_HDF4=OFF -DENABLE_DAP=ON -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
            LOG_DOWNLOAD 1
            LOG_CONFIGURE 1
            LOG_BUILD 1
@@ -498,16 +440,17 @@ ELSE ( FETCH_ONLY )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${netcdf_fortran_URL}
            URL_MD5 ${netcdf_fortran_MD5}
-	   # Comment out due due to on Apple, cmake add -fmacro_backtrace_limit to gcc, which fails the compilation.
+	   # Comment out due to on Apple, cmake add -fmacro_backtrace_limit to gcc, which fails the compilation.
 	   # To use cmake on Apple, please use Xcode clang and clang ++
-	   #CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DENABLE_DAP=OFF -DENABLE_TESTS=OFF -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
+	   #CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DENABLE_DAP=ON -DENABLE_TESTS=OFF -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} 
            CONFIGURE_COMMAND
 	   <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --libdir=${JEDI_PREFIX}/lib --includedir=${JEDI_PREFIX}/include
            CC=${CMAKE_C_COMPILER}
-           CXX=${CMAKE_CXX_COMPILER}
            CFLAGS=${CFLAGS}
-           CXXFLAGS=${CXXFLAGS}
 	   FC=${CMAKE_Fortran_COMPILER}
+	   FCFLAGS=${CMAKE_Fortran_FLAGS}
+	   F77=${CMAKE_Fortran_COMPILER}
+	   FFLAGS=${CMAKE_Fortran_FLAGS}
 	   CPPFLAGS=-I${JEDI_PREFIX}/include
            BUILD_COMMAND ${CMAKE_BUILD_TOOL}
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
@@ -520,7 +463,7 @@ ELSE ( FETCH_ONLY )
 
     if (BUILD_NCO)
        ExternalProject_Add( nco
-           DEPENDS zlib curl szip netcdf_c netcdf_fortran hdf5
+           DEPENDS zlib szip netcdf_c netcdf_fortran hdf5
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${nco_URL}
            URL_MD5 ${nco_MD5}
@@ -596,7 +539,7 @@ ELSE ( FETCH_ONLY )
            URL ${xerces_URL}
            URL_MD5 ${xerces_MD5}
            CONFIGURE_COMMAND
-	   <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --without-curl --without-icu
+	   <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --with-curl --without-icu
            CC=${CMAKE_C_COMPILER}
            CXX=${CMAKE_CXX_COMPILER}
            CFLAGS=${CFLAGS}
@@ -689,6 +632,9 @@ ELSE ( FETCH_ONLY )
            )
 
     endif (BUILD_ESMF)
+
+include(jedi_install_grib_api)
+#include(jedi_install_cdo)
 
 
 ENDIF( FETCH_ONLY )

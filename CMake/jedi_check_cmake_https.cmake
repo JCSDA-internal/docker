@@ -1,5 +1,5 @@
 #
-# slicer_check_cmake_https
+# jedi_check_cmake_https
 #
 # Check if CMake supports downloading files using the HTTPS protocol. Fail if
 # HTTPS is unsupported.
@@ -10,7 +10,7 @@
 # https://gist.github.com/jcfr/e88a2a7cbc4ddd235186
 #
 
-function(slicer_check_cmake_https)
+function(jedi_check_cmake_https)
   set(url "https://raw.githubusercontent.com/Slicer/Slicer/master/CMakeLists.txt")
   set(dest "${CMAKE_CURRENT_BINARY_DIR}/slicer_check_cmake_https_output")
 
