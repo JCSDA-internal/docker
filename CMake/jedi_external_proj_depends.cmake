@@ -1,0 +1,5 @@
+set (deps_ZLIB     CACHE STRING "" FORCE)
+set (deps_SZIP     CACHE STRING "" FORCE)
+set (deps_LAPACK   CACHE STRING "" FORCE)
+set (deps_JPEG     CACHE STRING "" FORCE)
+set (deps_Jasper JPEG CACHE STRING "" FORCE)

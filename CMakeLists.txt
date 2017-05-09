@@ -4,9 +4,10 @@ cmake_minimum_required(VERSION 3.1.0)
 #-----------------------------------------------------------------------------
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include (ExternalProject)
+include (jedi_colors)
 include (jedi_check_cmake_https)
-include (jedi_install_grib_api)
-include (jedi_install_cdo)
+include (jedi_external_proj_depends)
+include (jedi_install_package)
 
 project( jedi_common_libs C Fortran CXX )
 
@@ -50,8 +51,6 @@ endif(NPROC GREATER 4)
 #-----------------------------------------------------------------------------
 option(BUILD_ALL      "Build all libs " OFF)
 option(BUILD_OMPI     "Build open-mpi " OFF)
-option(BUILD_ZLIB     "Build zlib "     OFF)
-option(BUILD_SZIP     "Build szip "     OFF)
 option(BUILD_JPEG     "Build jpeg "     OFF)
 option(BUILD_PNG      "Build png "      OFF)
 option(BUILD_JASPER   "Build jasper "   OFF)
@@ -59,7 +58,6 @@ option(BUILD_HDF5     "Build hdf5 "     OFF)
 option(BUILD_FREETYPE "Build freetype " OFF)
 option(BUILD_NETCDF   "Build netcdf "   OFF)
 option(BUILD_PNETCDF  "Build pnetcdf "  OFF)
-option(BUILD_LAPACK   "Build lapack "   OFF)
 option(BUILD_XERCES   "Build xerces "   OFF)
 option(BUILD_ESMF     "Build esmf "     OFF)
 option(BUILD_UDUNITS  "Build udunits "  OFF)
@@ -67,7 +65,6 @@ option(BUILD_NCO      "Build nco "      OFF)
 
 if (BUILD_NCO)
     message(STATUS "setting options for NCO")
-    set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
     set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
     set(BUILD_NETCDF "ON" CACHE STRING "Build the NETCDF library" FORCE )
     set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
@@ -76,7 +73,6 @@ endif(BUILD_NCO)
 if (BUILD_ESMF)
     message(STATUS "setting options for ESMF")
     set(BUILD_PNETCDF "ON" CACHE STRING "Build the PNETCDF library" FORCE )
-    set(BUILD_LAPACK "ON" CACHE STRING "Build the LAPACK library" FORCE )
     set(BUILD_NETCDF "ON" CACHE STRING "Build the NETCDF library" FORCE )
     set(BUILD_XERCES "ON" CACHE STRING "Build the XERCES library" FORCE )
 endif(BUILD_ESMF)
@@ -84,14 +80,8 @@ endif(BUILD_ESMF)
 if (BUILD_NETCDF)
   message(STATUS "setting values for NETCDF")
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
-  set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
   set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
 endif(BUILD_NETCDF)
-
-if (BUILD_PNG)
-  message(STATUS "setting options for PNG")
-  set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
-endif(BUILD_PNG)
 
 if (BUILD_FREETYPE)
   message(STATUS "setting options for FREETYPE")
@@ -107,14 +97,12 @@ endif(BUILD_PNETCDF)
 if(BUILD_ALL )
   message(STATUS "setting options for all libraries")
   set(BUILD_ZLIB "ON" CACHE STRING "Build the ZLIB library" FORCE )
-  set(BUILD_SZIP "ON" CACHE STRING "Build the SZIP library" FORCE )
   set(BUILD_JPEG "ON" CACHE STRING "Build the JPEG library" FORCE )
   set(BUILD_PNG "ON" CACHE STRING "Build the PNG library" FORCE )
   set(BUILD_JASPER "ON" CACHE STRING "Build the JASPER library" FORCE )
   set(BUILD_HDF5 "ON" CACHE STRING "Build the HDF5 library" FORCE )
   set(BUILD_FREETYPE "ON" CACHE STRING "Build the FREETYPE library" FORCE )
   set(BUILD_NETCDF "ON" CACHE STRING "Build the NETCDF library" FORCE )
-  set(BUILD_LAPACK "ON" CACHE STRING "Build the LAPACK library" FORCE )
   set(BUILD_PNETCDF "ON" CACHE STRING "Build the PNETCDF library" FORCE )
   set(BUILD_XERCES "ON" CACHE STRING "Build the XCERCES library" FORCE )
   set(BUILD_ESMF "ON" CACHE STRING "Build the ESMF library" FORCE )
@@ -177,18 +165,6 @@ set( ompi_URL https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.
 set( ompi_MD5 "")
 set( _PACKAGES ${_PACKAGES} ompi )
 
-set( zlib_URL http://www.zlib.net/zlib-1.2.11.tar.gz )
-set( zlib_HASH SHA256=c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1)
-set( _PACKAGES ${_PACKAGES} zlib )
-
-set( szip_URL https://support.hdfgroup.org/ftp/lib-external/szip/2.1.1/src/szip-2.1.1.tar.gz )
-set( szip_MD5 "")
-set( _PACKAGES ${_PACKAGES} szip )
-
-set( libpng_URL http://sourceforge.net/projects/libpng/files/libpng14/1.4.19/libpng-1.4.19.tar.gz )
-set( libpng_MD5 89bcbc4fc8b31f4a403906cf4f662330 )
-set( _PACKAGES ${_PACKAGES} libpng )
-
 set( libjpeg_URL http://www.ijg.org/files/jpegsrc.v9b.tar.gz )
 set( libjpeg_MD5 6a9996ce116ec5c52b4870dbcd6d3ddb)
 set( _PACKAGES ${_PACKAGES} libjpeg )
@@ -246,71 +222,6 @@ if ( FETCH_ONLY )
     file( WRITE ${PROJECT_BINARY_DIR}/fetch-only "" )
 
 ELSE ( FETCH_ONLY )
-
-    if (BUILD_LAPACK)
-       ExternalProject_Add( lapack
-           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
-           URL ${lapack_URL}
-           URL_HASH ${lapack_HASH}
-           # Add CMAKE_INSTALL_LIBDIR to make sure it will be install under
-           # lib not lib64
-	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS} -DBUILD_SHARED_LIBS=ON
-           LOG_DOWNLOAD 1
-           LOG_CONFIGURE 1
-           LOG_BUILD 1
-           LOG_INSTALL 1
-           )
-    endif (BUILD_LAPACK)
-
-    if (BUILD_SZIP)
-       ExternalProject_Add( szip
-           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
-           URL ${szip_URL}
-	   URL_HASH ${szip_MD5}
-	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DSZIP_ENABLE_ENCODING=ON -DBUILD_SHARED_LIBS=ON -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-           LOG_DOWNLOAD 1
-           LOG_CONFIGURE 1
-           LOG_BUILD 1
-           LOG_INSTALL 1
-           )
-
-       if (NOT APPLE)
-          ExternalProject_Add_Step(
-	      szip rename
-              COMMAND ${CMAKE_COMMAND} -E copy ${JEDI_PREFIX}/lib/libszip.a ${JEDI_PREFIX}/lib/libsz.a
-	      COMMAND ${CMAKE_COMMAND} -E copy ${JEDI_PREFIX}/lib/libszip.so ${JEDI_PREFIX}/lib/libsz.so
-	      COMMENT "Some lib seeks sz , other than szip"
-	      DEPENDEES install
-	      )
-       endif ()
-    endif (BUILD_SZIP)
-
-    if (BUILD_ZLIB)
-       ExternalProject_Add( zlib
-           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
-           URL ${zlib_URL}
-           URL_HASH ${zlib_HASH}
-	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-           LOG_DOWNLOAD 1
-           LOG_CONFIGURE 1
-           LOG_BUILD 1
-           LOG_INSTALL 1
-           )
-    endif (BUILD_ZLIB)
-
-    if (BUILD_PNG)
-       ExternalProject_Add( png
-           DEPENDS zlib
-           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
-           URL ${libpng_URL}
-           URL_MD5 ${libpng_MD5}
-	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-           LOG_DOWNLOAD 1
-           LOG_CONFIGURE 1
-           LOG_BUILD 1
-           LOG_INSTALL 1
-           )
-    endif (BUILD_PNG)
 
     if (BUILD_OMPI)
        ExternalProject_Add( ompi
@@ -635,23 +546,30 @@ ELSE ( FETCH_ONLY )
 
     endif (BUILD_ESMF)
 
-find_package(grib_api)
 set(_prefix "deps_")
 get_cmake_property(_vars CACHE_VARIABLES)
+string (REGEX MATCHALL "${_prefix}[A-Za-z0-9_]*" _deps "${_vars}")
 
-string (REGEX MATCHALL "${_prefix}[A-Za-z0-9_]*" _matchedVars "${_vars}")
-foreach (_variable ${_matchedVars})
-    set (_resultVars "")
-    foreach (_v ${${_variable}})
-       find_package(${_v} QUIET)
-       if (${_v}_FOUND)
-          list(APPEND _resultVars ${_v})
+foreach (_dep ${_deps})
+    set (_foundPackages "")
+    foreach (_package ${${_dep}})
+       find_package(${_package} QUIET)
+       if (${_package}_FOUND)
+          list(APPEND _foundPackages ${_package})
        endif()
     endforeach()
-    list(REMOVE_ITEM ${_variable} ${_resultVars})
+    if ( _foundPackages )
+       list(REMOVE_ITEM ${_deps} ${_foundPackages})
+    endif()
+    string (REGEX REPLACE ${_prefix} ""  _package ${_dep})
+    find_package( ${_package} QUIET)
+    if (NOT ${_package}_FOUND)
+       message(STATUS "${Red}${_package} will be installed")
+       message(STATUS "${ColourReset}")
+       jedi_install_package( ${_package} )
+    endif()
 endforeach()
-jedi_install_grib_api()
-jedi_install_cdo()
+
 
 
 ENDIF( FETCH_ONLY )
