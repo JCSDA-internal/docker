@@ -6,7 +6,7 @@ function ( download_build_install )
        set( libjasper_URL http://www.ece.uvic.ca/~frodo/jasper/software/jasper-1.900.2.tar.gz )
        set( libjasper_MD5 "" )
        ExternalProject_Add( Jasper
-           EPENDS ${deps_Jasper}
+           DEPENDS ${deps_Jasper}
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${libjasper_URL}
            URL_MD5 ${libjasper_MD5}
