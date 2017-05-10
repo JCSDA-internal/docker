@@ -546,29 +546,6 @@ ELSE ( FETCH_ONLY )
 
     endif (BUILD_ESMF)
 
-set(_prefix "deps_")
-get_cmake_property(_vars CACHE_VARIABLES)
-string (REGEX MATCHALL "${_prefix}[A-Za-z0-9_]*" _deps "${_vars}")
-
-foreach (_dep ${_deps})
-    set (_foundPackages "")
-    foreach (_package ${${_dep}})
-       find_package(${_package} QUIET)
-       if (${_package}_FOUND)
-          list(APPEND _foundPackages ${_package})
-       endif()
-    endforeach()
-    if ( _foundPackages )
-       list(REMOVE_ITEM ${_deps} ${_foundPackages})
-    endif()
-    string (REGEX REPLACE ${_prefix} ""  _package ${_dep})
-    find_package( ${_package} QUIET)
-    if (NOT ${_package}_FOUND)
-       message(STATUS "${Red}${_package} will be installed${ColourReset}")
-       jedi_install_package( ${_package} )
-    endif()
-endforeach()
-
-
+include(jedi_check_depends_and_install_packages)
 
 ENDIF( FETCH_ONLY )
