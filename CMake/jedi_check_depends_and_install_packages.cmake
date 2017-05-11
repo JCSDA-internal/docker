@@ -1,5 +1,9 @@
 #
 #
+# Since CMake does not take care of the depends of external proejcts
+# We have to make sure the externalproject_add being called in the 
+# correct orders
+#
 # This module will check the depends of each packages and 
 # install the packages according their dependeces.
 #
@@ -37,8 +41,16 @@ foreach (_dep ${_deps})
    endforeach()
 endforeach()
 
-# This is  working variable
-set(_deps2 ${_deps} CACHE STRING "" FORCE)
+# We don't want the _deps being overwite, so make a working list
+set(_deps2 "")
+set(_tmp "tmp_")
+foreach ( _dep ${_deps} )
+     list(APPEND _deps2 ${_tmp}${_dep})
+     set (${_tmp}${_dep} "")
+     foreach (_p ${${_dep}} )
+         list(APPEND ${_tmp}${_dep} ${_p})
+     endforeach()
+endforeach()
 
 # Install the packages based on the dependent relationship
 while ( 1 )
@@ -51,7 +63,7 @@ while ( 1 )
     foreach (_dep ${_deps3})
         # install if no dependence
         if ( NOT ${_dep} )
-           string (REGEX REPLACE ${_prefix} ""  _package ${_dep})
+           string (REGEX REPLACE ${_tmp}${_prefix} ""  _package ${_dep})
            jedi_install_package( ${_package} )
            message(STATUS  "${Red}${_package} will be installed${ColourReset}")
            #remove from the deps2
@@ -66,4 +78,3 @@ while ( 1 )
     endforeach()
 
 endwhile()
-
