@@ -30,7 +30,7 @@ endforeach()
 # Remove the installed packages from the dependent list
 foreach (_dep ${_deps})
    foreach (_p ${${_dep}})
-      list (FIND _foundPackages _p _index)
+      list (FIND _foundPackages ${_p} _index)
       if (${_index} GREATER -1)
          list(REMOVE_ITEM ${_dep} ${_p})
       endif()
@@ -49,7 +49,7 @@ while ( 1 )
 
     set (_deps3 ${_deps2} CACHE STRING "" FORCE)
     foreach (_dep ${_deps3})
-        # install if not dependence
+        # install if no dependence
         if ( NOT ${_dep} )
            string (REGEX REPLACE ${_prefix} ""  _package ${_dep})
            jedi_install_package( ${_package} )
@@ -64,5 +64,6 @@ while ( 1 )
            endforeach()
         endif()
     endforeach()
+
 endwhile()
 
