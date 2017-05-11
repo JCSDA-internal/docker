@@ -2,6 +2,8 @@
 # jedi_install_NCO
 #
 function ( download_build_install )
+       set( nco_URL https://github.com/nco/nco/archive/4.6.6.tar.gz )
+       set( nco_MD5 "df6fa47aaf6e41adfc0631912a7a341f")
        ExternalProject_Add( NCO
            DEPENDS ${deps_NCO}
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
