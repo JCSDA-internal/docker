@@ -1,14 +1,12 @@
 #
-# jedi_install_cdo
+# jedi_install_CDO
 #
 
-set(deps_cdo GRIB UDUNITS2 HDF5 NetCDF Jasper CACHE STRING "" FORCE)
-
-function ( jedi_install_cdo )
+function ( download_build_install )
    set(cdo_url "https://code.zmaw.de/attachments/download/14387/cdo-current.tar.gz")
    set(cdo_md5 "")
-   ExternalProject_Add( cdo
-       DEPENDS ${deps_cdo}
+   ExternalProject_Add( CDO
+       DEPENDS ${deps_CDO}
        DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
        URL ${cdo_url}
        URL_MD5 ${cdo_md5}
