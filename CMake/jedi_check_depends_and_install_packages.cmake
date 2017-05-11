@@ -8,30 +8,40 @@
 set(_prefix "deps_")
 get_cmake_property(_vars CACHE_VARIABLES)
 string (REGEX MATCHALL "${_prefix}[A-Za-z0-9_]*" _deps "${_vars}")
+# This is  working variable
+string (REGEX MATCHALL "${_prefix}[A-Za-z0-9_]*" _deps1 "${_vars}")
 
-# remove the installed packages from the depends
-foreach (_dep ${_deps})
-    set (_foundPackages "")
-    foreach (_package ${${_dep}})
-       find_package(${_package} QUIET)
-       if (${_package}_FOUND)
-          list(APPEND _foundPackages ${_package})
-       endif()
-    endforeach()
+# Remove the installed packages from the installation list
+set (_foundPackages "")
+foreach (_dep ${_deps1})
+    string (REGEX REPLACE ${_prefix} "" _package ${_dep})
+    find_package(${_package} QUIET)
+    if (${_package}_FOUND)
+       message(STATUS "${Green}${_package} is found${ColourReset}")
+       list(APPEND _foundPackages ${_package})
+       list(REMOVE_ITEM _deps ${_prefix}${_package})
+    endif()
+    message(STATUS ${_foundPackages})
     if ( _foundPackages )
        list(REMOVE_ITEM ${_deps} ${_foundPackages})
+       list(REMOVE_ITEM _deps ${_prefix}${_foundPackages})
     endif()
-    # save the deps into a temporaray variable as we will edit the deps in the floowing loops
-    string (REGEX REPLACE ${_prefix} ""  _package ${_dep})
-    set ( deps2_${_package} ${${_dep}} CACHE STRING "" FORCE )
-    # message (STATUS "${Red} deps2_${_package} : ${deps2_${_package}} ${ColourReset}")
 endforeach()
 
-# search all the cache variable start with "deps2"
-set(_prefix "deps2_")
-get_cmake_property(_vars CACHE_VARIABLES)
-string (REGEX MATCHALL "${_prefix}[A-Za-z0-9_]*" _deps2 "${_vars}")
+# Remove the installed packages from the dependent list
+foreach (_dep ${_deps})
+   foreach (_p ${${_dep}})
+      list (FIND _foundPackages _p _index)
+      if (${_index} GREATER -1)
+         list(REMOVE_ITEM ${_dep} ${_p})
+      endif()
+   endforeach()
+endforeach()
 
+# This is  working variable
+set(_deps2 ${_deps} CACHE STRING "" FORCE)
+
+# Install the packages based on the dependent relationship
 while ( 1 )
     if ( NOT _deps2 )
        # exit when all package are installed
