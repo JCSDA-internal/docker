@@ -24,6 +24,8 @@ Download, build, and install the following libraries :
 * esmf v7.0.0
 * udunites-2 v2.2.24
 * nco v4.6.6
+* grib_api v1.21.0
+* cdo latest version (as of May 12, 2017)
 
 ### How do I get set up? ###
 
@@ -67,11 +69,7 @@ mkdir build; cd build
 ```
 #!bash
 
-# Build all libs
-cmake -DBUILD_ALL=ON ..
-
-# Build specific libraries e.g. netCDF and its dependencies
-cmake -DBUILD_NETCDF=ON ..
+cmake ..
 ```
 
 * Build in parallel e.g. use 4 threads
