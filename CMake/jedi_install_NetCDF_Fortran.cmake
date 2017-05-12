@@ -1,25 +1,11 @@
 #
-# jedi_install_NetCDF
+# jedi_install_NetCDF_Fortran
 #
 function ( download_build_install )
-       set( netcdf_c_URL ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.4.1.1.tar.gz )
-       set( netcdf_c_MD5 "" )
-       ExternalProject_Add( NetCDF
-	   DEPENDS ${deps_NetCDF}
-           DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
-           URL ${netcdf_c_URL}
-           URL_MD5 ${netcdf_c_MD5}
-	   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_INSTALL_LIBDIR:PATH=${JEDI_PREFIX}/lib -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DENABLE_HDF4=OFF -DENABLE_DAP=ON -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-           LOG_DOWNLOAD 1
-           LOG_CONFIGURE 1
-           LOG_BUILD 1
-           LOG_INSTALL 1
-           )
-
        set( netcdf_fortran_URL ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-4.4.4.tar.gz )
        set( netcdf_fortran_MD5 "" )
-       ExternalProject_Add( netcdf_fortran
-	   DEPENDS NetCDF
+       ExternalProject_Add( NetCDF_Fortran
+	   DEPENDS ${deps_NetCDF_Fortran}
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${netcdf_fortran_URL}
            URL_MD5 ${netcdf_fortran_MD5}
