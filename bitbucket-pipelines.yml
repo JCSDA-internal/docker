@@ -22,6 +22,6 @@ pipelines:
             - mkdir build
             - cd build
             # Call the CMake.
-            - cmake -DBUILD_ESMF=ON ..
+            - cmake ..
             # Build the porject.
             - make -j`nproc`
