@@ -22,7 +22,7 @@ RUN mkdir build \
     && cd build \
     && cmake .. \
     && make -j`nproc` \
-    && cd /opt
+    && cd /opt \
     && rm -fr .git* CMake* README.md bitbucket-pipelines.yml build downloads
 ENV PATH=.:/opt/bin:/app:${PATH}
 ENV LD_LIBRARY_PATH=/opt/lib:${LD_LIBRARY_PATH}
