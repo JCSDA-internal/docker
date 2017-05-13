@@ -16,7 +16,7 @@ RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran 
 ENV PATH=/opt/bin:/usr/bin:/usr/local/bin:/bin:/app:${PATH}
 ENV LD_LIBRARY_PATH=/opt/usr/local/lib
 WORKDIR /opt
-COPY CMake /opt
+COPY CMake /opt/CMake
 COPY CMakeLists.txt /opt
 RUN mkdir build \
     && cd build \
