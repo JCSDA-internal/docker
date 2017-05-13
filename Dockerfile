@@ -13,8 +13,8 @@ RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran 
     && make -j 4 all && make install \
     && cd /usr/local/src \
     && rm -rf openmpi-2.1.0
-ENV PATH=/opt/bin:/usr/bin:/usr/local/bin:/bin:/app:${PATH}
-ENV LD_LIBRARY_PATH=/opt/usr/local/lib
+ENV PATH=/usr/bin:/usr/local/bin:/bin:/app:${PATH}
+ENV LD_LIBRARY_PATH=/usr/local/lib
 WORKDIR /opt
 COPY CMake /opt/CMake
 COPY CMakeLists.txt /opt
