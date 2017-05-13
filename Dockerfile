@@ -17,12 +17,12 @@ ENV PATH=/opt/bin:/usr/bin:/usr/local/bin:/bin:/app:${PATH}
 ENV LD_LIBRARY_PATH=/opt/usr/local/lib
 WORKDIR /opt
 COPY CMake /opt
-COPY CMakeList.txt /opt
-RUN cd /opt \
-    && mkdir build \
+COPY CMakeLists.txt /opt
+RUN mkdir build \
     && cd build
 #    && cmake .. \
 #    && make -j`nproc` \
+#    && cd /opt
 #    && rm -fr .git* CMake* README.md bitbucket-pipelines.yml build downloads
 ENV PATH=.:/opt/bin:/app:${PATH}
 ENV LD_LIBRARY_PATH=/opt/lib:${LD_LIBRARY_PATH}
