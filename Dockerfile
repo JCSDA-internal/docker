@@ -13,7 +13,7 @@ RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran 
     && make -j 4 all && make install \
     && cd /usr/local/src \
     && rm -rf openmpi-2.1.0
-ENV PATH=/usr/bin:/usr/local/bin:/bin:/app:${PATH}
+ENV PATH=/usr/bin:/usr/local/bin:/bin:${PATH}
 ENV LD_LIBRARY_PATH=/usr/local/lib
 WORKDIR /opt
 COPY CMake /opt/CMake
@@ -24,6 +24,11 @@ RUN mkdir build \
     && make -j`nproc` \
     && cd /opt \
     && rm -fr .git* CMake* README.md bitbucket-pipelines.yml build downloads
-ENV PATH=.:/opt/bin:/app:${PATH}
+ENV PATH=.:/opt/bin:${PATH}
 ENV LD_LIBRARY_PATH=/opt/lib:${LD_LIBRARY_PATH}
+RUN addgroup --gid 1000 jedi \
+    && adduser --quiet -uid 1000 -gid 1000 jedi \
+    && adduser jedi jedi
+USER jedi
+WORKDIR /home/jedi
 ENTRYPOINT ["/bin/bash" , "-l"]
