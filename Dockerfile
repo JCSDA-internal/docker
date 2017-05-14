@@ -1,9 +1,10 @@
 FROM ubuntu:16.04
 MAINTAINER Xin Zhang "xin.l.zhang@noaa.gov"
-RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran libexpat1-dev wget vim file texinfo cmake' \ 
+RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran libexpat1-dev wget vim file texinfo cmake csh ksh mlocate' \ 
     && echo 'deb http://ppa.launchpad.net/george-edison55/cmake-3.x/ubuntu trusty main' | tee -a /etc/apt/sources.list.d/cmake.list \
     && apt-get update \
     && apt-get install -y $buildDeps \
+    && updatedb \
     && cd /usr/local/src/ \
     && wget https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.0.tar.gz \
     && tar xf openmpi-2.1.0.tar.gz \
