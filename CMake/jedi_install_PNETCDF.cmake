@@ -5,7 +5,7 @@ function ( download_build_install )
        set( pnetcdf_URL http://cucis.ece.northwestern.edu/projects/PnetCDF/Release/parallel-netcdf-1.8.1.tar.gz )
        set( pnetcdf_MD5 "" )
        ExternalProject_Add( PNETCDF
-	   DEPENDS ${deps_Pnetcdf}
+	   DEPENDS ${deps_PNETCDF}
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${pnetcdf_URL}
            URL_MD5 ${pnetcdf_MD5}
