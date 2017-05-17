@@ -19,7 +19,8 @@ RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran 
     && rm -rf openmpi-2.1.0
     
 # set up ssh configuration
-RUN echo "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config \
+RUN mkdir -p /root/.ssh \
+    && echo "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config \
     && mkdir -p /var/run/sshd \
     && ssh-keygen -A \
     && sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/g' /etc/ssh/sshd_config \
