@@ -11,7 +11,7 @@ RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran 
     && tar xf openmpi-2.1.0.tar.gz \
     && rm openmpi-2.1.0.tar.gz \
     && cd openmpi-2.1.0 \
-    && ./configure --enable-mpi-cxx \
+    && ./configure --enable-mpi-cxx --without-cma \
     && make -j `nproc` all && make install \
     && cd /usr/local/src \
     && rm -rf openmpi-2.1.0
