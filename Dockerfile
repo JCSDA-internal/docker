@@ -47,3 +47,4 @@ RUN mkdir build \
     
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
+ENTRYPOINT ["/bin/bash" , "-l"]
