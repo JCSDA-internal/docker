@@ -45,6 +45,7 @@ RUN mkdir build \
     && cd /usr/local \
     && rm -fr CMake* build downloads
     
-EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
+#EXPOSE 22
+#CMD ["/usr/sbin/sshd", "-D"]
+WORKDIR /home
 ENTRYPOINT ["/bin/bash" , "-l"]
