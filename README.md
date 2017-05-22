@@ -53,6 +53,9 @@ cd your_desired_path_name
 export CC=gcc
 export CXX=g++
 export FC=gfortran
+export PATH=your_desired_path_name/bin${PATH:+:}${PATH}
+export LD_LIBRARY_PATH=your_desired_path_name/lib${LD_LIBRARY_PATH:+:}${LD_LIBRARY_PATH}
+```
 ```
   
 * Create and cd into a build directory
@@ -77,14 +80,6 @@ cmake ..
 make -j4
 ```
 
-* If built successfully, add the **bin** to **PATH**, add **lib** to **LD\_LIBRARY\_PATH** to your environment. For example: in $HOME/.bashrc, add following lines:
-
-```
-#!bash
-
-export PATH=your_desired_path_name/bin${PATH:+:}${PATH}
-export LD_LIBRARY_PATH=your_desired_path_name/lib${LD_LIBRARY_PATH:+:}${LD_LIBRARY_PATH}
-```
 * On MacOS system you might need to set: 
 ```
 export DYLD_FALLBACK_LIBRARY_PATH=your_desired_path_name/lib${DYLD_FALLBACK_LIBRARY_PATH:+:}${DYLD_FALLBACK_LIBRARY_PATH}
