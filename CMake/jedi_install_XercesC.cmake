@@ -2,7 +2,7 @@
 # jedi_install_XercesC
 #
 function ( download_build_install )
-       set( xerces_URL http://apache.mirrors.lucidnetworks.net//xerces/c/3/sources/xerces-c-3.1.4.tar.gz )
+       set( xerces_URL http://mirror.nexcess.net/apache//xerces/c/3/sources/xerces-c-3.1.4.tar.gz )
        set( xerces_MD5 "21bb097b711a513275379b59757cba4c" )
        ExternalProject_Add( XercesC
            DEPENDS ${deps_XercesC}
