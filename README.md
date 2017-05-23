@@ -23,7 +23,7 @@ Download, build, and install the following libraries :
 * udunites-2 v2.2.24
 * nco v4.6.6
 * grib_api v1.21.0
-* cdo latest version (as of May 12, 2017)
+* cdo v1.8.2
 
 ### How do I get set up? ###
 
