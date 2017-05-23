@@ -3,7 +3,7 @@
 #
 
 function ( download_build_install )
-   set(cdo_url "https://code.zmaw.de/attachments/download/14387/cdo-current.tar.gz")
+   set(cdo_url "https://code.zmaw.de/attachments/download/14686/cdo-1.8.2.tar.gz")
    set(cdo_md5 "")
    ExternalProject_Add( CDO
        DEPENDS ${deps_CDO}

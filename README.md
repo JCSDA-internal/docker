@@ -8,9 +8,7 @@ Download, build, and install the following libraries :
 
 * open-mpi v2.1.0
 * zlib v1.2.11
-* curl v7.54.0
 * szip v2.1.1
-* expat latest
 * jpeg v9b
 * png v1.4.19
 * jasper v1.900.2 
@@ -25,7 +23,7 @@ Download, build, and install the following libraries :
 * udunites-2 v2.2.24
 * nco v4.6.6
 * grib_api v1.21.0
-* cdo latest version (as of May 12, 2017)
+* cdo v1.8.2
 
 ### How do I get set up? ###
 
@@ -55,6 +53,9 @@ cd your_desired_path_name
 export CC=gcc
 export CXX=g++
 export FC=gfortran
+export PATH=your_desired_path_name/bin${PATH:+:}${PATH}
+export LD_LIBRARY_PATH=your_desired_path_name/lib${LD_LIBRARY_PATH:+:}${LD_LIBRARY_PATH}
+```
 ```
   
 * Create and cd into a build directory
@@ -79,14 +80,6 @@ cmake ..
 make -j4
 ```
 
-* If built successfully, add the **bin** to **PATH**, add **lib** to **LD\_LIBRARY\_PATH** to your environment. For example: in $HOME/.bashrc, add following lines:
-
-```
-#!bash
-
-export PATH=your_desired_path_name/bin${PATH:+:}${PATH}
-export LD_LIBRARY_PATH=your_desired_path_name/lib${LD_LIBRARY_PATH:+:}${LD_LIBRARY_PATH}
-```
 * On MacOS system you might need to set: 
 ```
 export DYLD_FALLBACK_LIBRARY_PATH=your_desired_path_name/lib${DYLD_FALLBACK_LIBRARY_PATH:+:}${DYLD_FALLBACK_LIBRARY_PATH}
