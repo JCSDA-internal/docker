@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-MAINTAINER Xin Zhang <xin.l.zhang@noaa.gov>
+LABEL MAINTAINER "Xin Zhang <xin.l.zhang@noaa.gov>"
 
 # install basic tools and openmpi
 RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran libexpat1-dev wget vim file texinfo cmake csh ksh mlocate openssh-server net-tools' \ 
@@ -45,7 +45,4 @@ RUN mkdir build \
     && cd /usr/local \
     && rm -fr CMake* build downloads
     
-#EXPOSE 22
-#CMD ["/usr/sbin/sshd", "-D"]
-WORKDIR /home
 ENTRYPOINT ["/bin/bash" , "-l"]
