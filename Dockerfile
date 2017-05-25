@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-LABEL MAINTAINER "Xin Zhang <xin.l.zhang@noaa.gov>"
+LABEL maintainer "Xin Zhang <xin.l.zhang@noaa.gov>"
 
 # install basic tools and openmpi
 RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran libexpat1-dev wget vim file texinfo cmake csh ksh mlocate openssh-server net-tools' \ 
