@@ -9,7 +9,7 @@ RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran 
     && rm -rf /var/lib/apt/lists/* \
     && updatedb \
     && cd /usr/local/src/ \
-    && wget https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.0.tar.gz \
+    && wget --no-check-certificate https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.0.tar.gz \
     && tar xf openmpi-2.1.0.tar.gz \
     && rm openmpi-2.1.0.tar.gz \
     && cd openmpi-2.1.0 \
