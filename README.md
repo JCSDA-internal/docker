@@ -12,7 +12,7 @@ Download, build, and install the following libraries :
 * jpeg v9b
 * png v1.4.19
 * jasper v1.900.2 
-* hdf5 v1.8.18
+* hdf5 v1.8.17
 * freetype v2.5.5
 * netcdf-c v4.4.11
 * netcdf-fortran v4.4.4
