@@ -3,7 +3,7 @@
 #
 
 function ( download_build_install )
-       set( hdf5_URL https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.tar.gz )
+       set( hdf5_URL https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/hdf5-1.8.17/src/hdf5-1.8.17.tar.gz )
        set( hdf5_MD5 7d572f8f3b798a628b8245af0391a0ca )
        ExternalProject_Add( HDF5
            DEPENDS ${deps_HDF5}
