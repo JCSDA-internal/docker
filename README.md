@@ -47,7 +47,6 @@ cd your_desired_path_name
 * set your desired compilers in environmental variables, e.g. for GNU compilers:
 
 ```
-#!bash
 
 export CC=gcc
 export CXX=g++
