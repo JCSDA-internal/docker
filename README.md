@@ -32,7 +32,6 @@ Download, build, and install the following libraries :
 * clone the codes
 
 ```
-#!bash
 
 git clone https://${USERID}@bitbucket.org/jcsda/common_libs.git your_desired_path_name
 ```
