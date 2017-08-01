@@ -60,7 +60,6 @@ export LD_LIBRARY_PATH=your_desired_path_name/lib${LD_LIBRARY_PATH:+:}${LD_LIBRA
   
 * Create and cd into a build directory
 ```
-#!bash
 
 mkdir build; cd build
 ```
