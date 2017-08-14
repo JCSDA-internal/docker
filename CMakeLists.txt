@@ -8,6 +8,7 @@ include (jedi_check_cmake_https)
 include (jedi_external_proj_depends)
 include (jedi_install_package)
 
+set(BUILD_OMPI "ON" CACHE STRING "Build the OMPI library")
 project( jedi_common_libs C Fortran CXX )
 
 #-----------------------------------------------------------------------------
@@ -64,7 +65,9 @@ set(JEDI_MODULE_PATH ${JEDI_BATDIR}/cmake/Modules)
 
 #-----------------------------------------------------------------------------
 # Determine if we have MPI package
-find_package(MPI QUIET)
+if (NOT BUILD_OMPI)
+   find_package(MPI QUIET)
+endif()
 if (MPI_FOUND)
    set(BUILD_OMPI "OFF" CACHE STRING "Build the OMPI library" FORCE )
    message(STATUS "MPI IMPLEMENTATION is ${MPI_IMPLEMENTATION}")
@@ -85,6 +88,7 @@ else ()
    set(MPI "ompi")
    set(ESMF_COMM "openmpi")
    set(MPI_IMPLEMENTATION "openmpi")
+   message(STATUS "BUILD_OMPI is ${BUILD_OMPI}")
 endif ()
 
 jedi_check_cmake_https()
