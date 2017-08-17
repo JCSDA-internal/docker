@@ -12,7 +12,7 @@ Download, build, and install the following libraries :
 * jpeg v9b
 * png v1.4.19
 * jasper v1.900.2 
-* hdf5 v1.8.18
+* hdf5 v1.8.17
 * freetype v2.5.5
 * netcdf-c v4.4.11
 * netcdf-fortran v4.4.4
@@ -32,7 +32,6 @@ Download, build, and install the following libraries :
 * clone the codes
 
 ```
-#!bash
 
 git clone https://${USERID}@bitbucket.org/jcsda/common_libs.git your_desired_path_name
 ```
@@ -48,7 +47,6 @@ cd your_desired_path_name
 * set your desired compilers in environmental variables, e.g. for GNU compilers:
 
 ```
-#!bash
 
 export CC=gcc
 export CXX=g++
@@ -60,7 +58,6 @@ export LD_LIBRARY_PATH=your_desired_path_name/lib${LD_LIBRARY_PATH:+:}${LD_LIBRA
   
 * Create and cd into a build directory
 ```
-#!bash
 
 mkdir build; cd build
 ```
