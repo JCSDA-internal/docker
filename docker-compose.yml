@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  jedi:
+    image:
+      common_libs
+    build: .
+    hostname:
+      jedi
+    stdin_open: 
+      true
+    tty: 
+      true
+    volumes: 
+      - ./workdir:/workdir
+    working_dir: 
+      /workdir

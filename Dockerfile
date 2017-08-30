@@ -45,4 +45,4 @@ RUN mkdir build \
     && cd /usr/local \
     && rm -fr CMake* build downloads
     
-ENTRYPOINT ["/bin/bash" , "-l"]
+CMD ["/bin/bash" , "-l"]
