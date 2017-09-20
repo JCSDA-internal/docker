@@ -1,6 +1,10 @@
 FROM ubuntu:16.04
 LABEL maintainer "Xin Zhang <xin.l.zhang@noaa.gov>"
 
+ARG FC=gfortran
+ARG CC=gcc
+ARG CXX=g++
+
 # install basic tools and openmpi
 RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran libexpat1-dev wget vim file texinfo cmake csh ksh mlocate openssh-server net-tools' \ 
     && echo 'deb http://ppa.launchpad.net/george-edison55/cmake-3.x/ubuntu trusty main' | tee -a /etc/apt/sources.list.d/cmake.list \

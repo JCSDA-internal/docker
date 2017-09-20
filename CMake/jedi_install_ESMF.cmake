@@ -4,6 +4,12 @@
 function ( download_build_install )
        set( esmf_URL http://www.earthsystemmodeling.org/esmf_releases/non_public/ESMF_7_0_0/esmf_7_0_0_src.tar.gz )
        set( esmf_MD5 "")
+       set( esmf_git "")
+       if ( (CMAKE_CXX_COMPILER_ID STREQUAL "GNU") AND (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5.4.0) )
+          set( esmf_URL "")
+          set( esmf_MD5 "")
+          set( esmf_git https://git.code.sf.net/p/esmf/esmf )
+       endif()
 
        # ESMF Compiler depend on the cmake compiler
        get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
@@ -14,6 +20,9 @@ function ( download_build_install )
        elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
          # ifort (untested)
 	 set (ESMF_COMPILER "intel" CACHE STRING "" FORCE )
+       elseif (Fortran_COMPILER_NAME MATCHES "pgf90.*")
+         # pgi (untested)
+	 set (ESMF_COMPILER "pgi" CACHE STRING "" FORCE )
        elseif (Fortran_COMPILER_NAME MATCHES "g95")
          # g95
 	 set (ESMF_COMPILER "g95" CACHE STRING "" FORCE )
@@ -26,6 +35,7 @@ function ( download_build_install )
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
 	   URL ${esmf_URL}
 	   URL_MD5 ${esmf_MD5}
+           GIT_REPOSITORY ${esmf_git}
 	   CONFIGURE_COMMAND ""
 	   BUILD_COMMAND ${CMAKE_COMMAND} -E env "ESMF_DIR=<SOURCE_DIR>"
 	   ${CMAKE_COMMAND} -E env "ESMF_INSTALL_PREFIX=${JEDI_PREFIX}"  
