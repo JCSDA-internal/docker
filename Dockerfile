@@ -38,6 +38,7 @@ RUN mkdir -p /root/.ssh \
 ENV PATH=/usr/bin:/usr/local/bin:/bin:${PATH}
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV NETCDF=/usr/local
+ENV PS1="\u@jedi:\w>"
 
 # build the common libraries for numerical weather prediction models
 WORKDIR /usr/local
