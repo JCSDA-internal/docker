@@ -3,7 +3,7 @@
 #
 
 function ( download_build_install )
-       set( libpng_URL http://sourceforge.net/projects/libpng/files/libpng14/1.4.19/libpng-1.4.19.tar.gz )
+       set( libpng_URL ftp://ftp-osl.osuosl.org/pub/libpng/src/archive/gz/libpng14/libpng-1.4.19.tar.gz )
        set( libpng_MD5 89bcbc4fc8b31f4a403906cf4f662330 )
        ExternalProject_Add( PNG
            DEPENDS ${deps_PNG}
