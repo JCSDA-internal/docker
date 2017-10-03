@@ -16,18 +16,18 @@ function ( download_build_install )
 
        if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
          # gfortran
-	 set (ESMF_COMPILER "gfortran" CACHE STRING "" FORCE )
+	     set (ESMF_COMPILER "gfortran" CACHE STRING "" FORCE )
        elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
          # ifort (untested)
-	 set (ESMF_COMPILER "intel" CACHE STRING "" FORCE )
+	     set (ESMF_COMPILER "intel" CACHE STRING "" FORCE )
        elseif (Fortran_COMPILER_NAME MATCHES "pgf90.*")
          # pgi (untested)
-	 set (ESMF_COMPILER "pgi" CACHE STRING "" FORCE )
+	     set (ESMF_COMPILER "pgi" CACHE STRING "" FORCE )
        elseif (Fortran_COMPILER_NAME MATCHES "g95")
          # g95
-	 set (ESMF_COMPILER "g95" CACHE STRING "" FORCE )
+	     set (ESMF_COMPILER "g95" CACHE STRING "" FORCE )
        else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
-	 message (FATAL_ERROR "Please make correspongding changes in CMakeLists to accomodate the new compiler ")
+	     message (FATAL_ERROR "Please make correspongding changes in CMakeLists to accomodate the new compiler ")
        endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 
        ExternalProject_Add( ESMF

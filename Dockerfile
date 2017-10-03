@@ -6,38 +6,31 @@ ARG CC=gcc
 ARG CXX=g++
 
 # install basic tools and openmpi
-RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran libexpat1-dev wget vim file texinfo cmake csh ksh mlocate openssh-server net-tools' \ 
+RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran libexpat1-dev wget vim file texinfo cmake csh ksh mlocate openssh-server net-tools libmpc-dev gcc-multilib zip ca-certificates libncurses-dev python-dev libssl-dev libxml2-dev flex bison pkg-config' \ 
     && echo 'deb http://ppa.launchpad.net/george-edison55/cmake-3.x/ubuntu trusty main' | tee -a /etc/apt/sources.list.d/cmake.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends $buildDeps \
     && rm -rf /var/lib/apt/lists/* \
     && updatedb \
     && cd /usr/local/src/ \
-    && wget --no-check-certificate https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.0.tar.gz \
-    && tar xf openmpi-2.1.0.tar.gz \
-    && rm openmpi-2.1.0.tar.gz \
-    && cd openmpi-2.1.0 \
-    && opal_check_cma_happy=0 ./configure --enable-mpi-cxx  \
-    && make -j `nproc` all && make install \
+    && wget --no-check-certificate http://www.netgull.com/gcc/releases/gcc-6.3.0/gcc-6.3.0.tar.gz \
+    && tar xf gcc-6.3.0.tar.gz \
+    && rm gcc-6.3.0.tar.gz \
+    && cd gcc-6.3.0 \
+    && ./configure --prefix=/usr \
+    && make -j `nproc` \
+    && make install \
     && cd /usr/local/src \
-    && rm -rf openmpi-2.1.0
+    && rm -rf gcc-6.3.0
     
-# set up ssh configuration
-RUN mkdir -p /root/.ssh \
-    && echo "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config \
-    && mkdir -p /var/run/sshd \
-    && ssh-keygen -A \
-    && sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/g' /etc/ssh/sshd_config \
-    && sed -i 's/#RSAAuthentication yes/RSAAuthentication yes/g' /etc/ssh/sshd_config \
-    && sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config \
-    && ssh-keygen -f /root/.ssh/id_rsa -t rsa -N '' \
-    && chmod 600 /root/.ssh/config \
-    && chmod 700 /root/.ssh \
-    && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys 
-
 ENV PATH=/usr/bin:/usr/local/bin:/bin:${PATH}
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV NETCDF=/usr/local
+ENV BOOST_ROOT=/usr/local
+ENV EIGEN3_INCLUDE_DIR=/usr/local
+ENV LAPACK_PATH=/usr/local
+ENV LAPACK_DIR=$LAPACK_PATH
+ENV LAPACK_LIBRARIES="$LAPACK_PATH/lib/liblapack.a;$LAPACK_PATH/lib/libblas.a"
 
 # build the common libraries for numerical weather prediction models
 WORKDIR /usr/local

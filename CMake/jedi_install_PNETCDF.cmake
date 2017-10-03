@@ -10,18 +10,18 @@ function ( download_build_install )
            URL ${pnetcdf_URL}
            URL_MD5 ${pnetcdf_MD5}
            CONFIGURE_COMMAND
-	   <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX}
+	       <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX}
            CFLAGS=${CFLAGS}
            CXXFLAGS=${CXXFLAGS}
            FFLAGS=${CMAKE_Fortran_FLAGS}
            FCFLAGS=${CMAKE_Fortran_FLAGS}
-	   MPICC=${JEDI_MPI_C_COMPILER}
-	   MPICXX=${JEDI_MPI_CXX_COMPILER}
-	   MPIF77=${JEDI_MPI_F77_COMPILER}
-	   MPIF90=${JEDI_MPI_F90_COMPILER}
+	       MPICC=${JEDI_MPI_C_COMPILER}
+	       MPICXX=${JEDI_MPI_CXX_COMPILER}
+	       MPIF77=${JEDI_MPI_F77_COMPILER}
+	       MPIF90=${JEDI_MPI_F90_COMPILER}
            BUILD_COMMAND ${CMAKE_BUILD_TOOL} -j${NPROC}
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
-	   BUILD_IN_SOURCE 1
+	       BUILD_IN_SOURCE 1
            LOG_DOWNLOAD 1
            LOG_CONFIGURE 1
            LOG_BUILD 1

@@ -16,7 +16,7 @@ function ( download_build_install )
            CXX=${CMAKE_CXX_COMPILER}
            CFLAGS=${CFLAGS}
            CXXFLAGS=${CXXFLAGS}
-	   FC=${CMAKE_Fortran_COMPILER}
+	       FC=${CMAKE_Fortran_COMPILER}
            BUILD_COMMAND ${CMAKE_BUILD_TOOL}
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
            LOG_DOWNLOAD 1
