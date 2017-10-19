@@ -1,6 +1,6 @@
 # README #
 
-The repository includes the building system for common libraries used by NWP models, such as WRF, GSI etc.
+The repository includes the building system for common libraries used by NWP models, such as WRF, GSI, MPAS, FV3 etc.
 
 ### What is this repository for? ###
 
