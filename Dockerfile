@@ -26,6 +26,8 @@ RUN buildDeps='git libcurl4-openssl-dev autoconf automake gcc g++ make gfortran 
 ENV PATH=/usr/bin:/usr/local/bin:/bin:${PATH}
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV NETCDF=/usr/local
+ENV PNETCDF=/usr/local
+ENV PIO=/usr/local
 ENV BOOST_ROOT=/usr/local
 ENV EIGEN3_INCLUDE_DIR=/usr/local
 ENV LAPACK_PATH=/usr/local
@@ -36,11 +38,17 @@ ENV LAPACK_LIBRARIES="$LAPACK_PATH/lib/liblapack.a;$LAPACK_PATH/lib/libblas.a"
 WORKDIR /usr/local
 COPY CMake /usr/local/CMake
 COPY CMakeLists.txt /usr/local
-RUN mkdir build \
+COPY nceplibs /usr/local/nceplibs
+RUN mkdir -p build \
     && cd build \
+    && rm -fr * \
     && cmake .. \
     && make -j`nproc` \
     && cd /usr/local \
-    && rm -fr CMake* build downloads
+    && rm -fr CMake* build downloads \
+    && cd /usr/local/nceplibs \
+    && ./nceplibs.bash \
+    && cd /usr/local \
+    && rm -fr nceplibs
     
 CMD ["/bin/bash" , "-l"]
