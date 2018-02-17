@@ -27,5 +27,53 @@ RUN mkdir -p build \
     && ./nceplibs.bash \
     && cd /usr/local \
     && rm -fr nceplibs
+
+RUN git clone -b pio1_7_1  https://github.com/NCAR/ParallelIO.git \
+    && cd ParallelIO \
+    && git clone https://github.com/PARALLELIO/genf90 bin \
+    && export MPIFC=mpif90 \
+    && export PNETCDF_PATH=${PNETCDF} \
+    && cd pio \
+    && ./configure --prefix=/usr/local --disable-netcdf \
+    && make \
+    && make install \
+    && rm -fr ParallelIO
+
+# Copy over private key, and set permissions
+ADD id_rsa /root/.ssh/id_rsa
+# Make ssh dir
+RUN mkdir -p /root/.ssh/ \
+    # Create known_hosts
+    && touch /root/.ssh/known_hosts \
+    # Add github key
+    && ssh-keyscan github.com >> /root/.ssh/known_hosts \
+    # enter /usr/local/src
+    && cd /usr/local/src \
+    && git clone git@github.com:UCAR/ecbuild.git \
+    && cd ecbuild \
+    && mkdir build \
+    && cd  build \
+    && cmake .. \
+    && make install \
+    && cd ../../ \
+    && rm -fr ecbuild \
+    && git clone git@github.com:UCAR/eckit.git \
+    && cd eckit \
+    && mkdir build \
+    && cd  build \
+    && ecbuild .. \
+    && make -j`nproc` \
+    && make install \
+    && cd ../../ \
+    && rm -fr eckit \
+    && git clone git@github.com:UCAR/fckit.git \
+    && cd fckit \
+    && mkdir build \
+    && cd  build \
+    && ecbuild .. \
+    && make -j`nproc` \
+    && make install \
+    && cd ../../ \
+    && rm -fr fckit
     
 CMD ["/bin/bash" , "-l"]

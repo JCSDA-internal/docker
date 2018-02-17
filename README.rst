@@ -1,10 +1,14 @@
-# README #
+JEDI Dokcer image
+=================
 
-The repository includes the building system for common libraries used by NWP models, such as WRF, GSI, MPAS, FV3 etc.
+What is this repository for?
+----------------------------
 
-### What is this repository for? ###
+The repository builds the Docker image with common libraries used by NWP models, such as WRF, GSI, MPAS, FV3 etc.
+
 
 Download, build, and install the following libraries :
+------------------------------------------------------
 
 * open-mpi v2.1.0
 * zlib v1.2.11
@@ -24,7 +28,9 @@ Download, build, and install the following libraries :
 * nco v4.6.6
 * grib_api v1.21.0
 * cdo v1.8.2
-* pio
+* pio v1.7.1
+
+-----------------------------------------------
 
 The major NCEP libraries are also installed at :
 
@@ -46,6 +52,18 @@ The major NCEP libraries are also installed at :
 * /nwprod/lib/w3nco/v2.0.6/libw3nco_v2.0.6_d.a
 
    
-### Highly recommend compile all libraries with the same compiler family ###
+How to build the image
+----------------------
 
-*Please contact `xin.l.zhang@noaa.gov`, if you need more libraries being included*
+*The id_rsa has to be replaced with your $HOME/.ssh/id_rsa to let you access the private github repositories.*
+
+.. code:: bash
+
+ > docker image build -t jcsda/docker .
+ > docker image push jcsda/docker
+
+**Highly recommend compile all libraries with the same compiler family**
+
+*Please* `write to me`_, *if you need more libraries being included.*
+
+.. _write to me: xin.l.zhang@noaa.gov

@@ -3,7 +3,7 @@
 #
 
 function ( download_build_install )
-       set( libboost_URL https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz )
+       set( libboost_URL https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.gz )
        set( libboost_MD5  )
        ExternalProject_Add( BOOST
            DEPENDS ${deps_BOOST}
