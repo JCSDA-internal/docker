@@ -29,6 +29,8 @@ Download, build, and install the following libraries :
 * grib_api v1.21.0
 * cdo v1.8.2
 * pio v1.7.1
+* boost v1.66.0
+* Eigen3 v3.3.4
 
 -----------------------------------------------
 

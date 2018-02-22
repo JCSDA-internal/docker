@@ -11,7 +11,7 @@ function ( download_build_install )
            URL ${libboost_URL}
            CONFIGURE_COMMAND
            <SOURCE_DIR>/bootstrap.sh --prefix=${JEDI_PREFIX}
-           BUILD_COMMAND <SOURCE_DIR>/b2 install
+           BUILD_COMMAND <SOURCE_DIR>/b2 variant=debug install
            INSTALL_COMMAND ""
            BUILD_IN_SOURCE 1
            LOG_DOWNLOAD 1

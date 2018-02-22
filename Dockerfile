@@ -16,10 +16,11 @@ WORKDIR /usr/local
 COPY CMake /usr/local/CMake
 COPY CMakeLists.txt /usr/local
 COPY nceplibs /usr/local/nceplibs
-RUN mkdir -p build \
+RUN git config --global http.postBuffer 1048576000 \
+    && mkdir -p build \
     && cd build \
     && rm -fr * \
-    && cmake -DBUILD_OMPI=OFF .. \
+    && cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_OMPI=OFF .. \
     && make -j`nproc` \
     && cd /usr/local \
     && rm -fr CMake* build downloads \
@@ -61,7 +62,7 @@ RUN mkdir -p /root/.ssh/ \
     && cd eckit \
     && mkdir build \
     && cd  build \
-    && ecbuild .. \
+    && ecbuild --build=debug .. \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
@@ -70,7 +71,7 @@ RUN mkdir -p /root/.ssh/ \
     && cd fckit \
     && mkdir build \
     && cd  build \
-    && ecbuild .. \
+    && ecbuild --build=debug .. \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
