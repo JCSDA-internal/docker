@@ -11,12 +11,12 @@ function ( download_build_install )
            URL_MD5 ${netcdf_c_MD5}
 	   #CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DENABLE_HDF4=OFF -DENABLE_DAP=ON -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
            CONFIGURE_COMMAND
-           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX}
-           CC=${CMAKE_C_COMPILER}
+           <SOURCE_DIR>/configure --enable-pnetcdf --prefix=${JEDI_PREFIX}
+           CC=${JEDI_MPI_C_COMPILER}
            CFLAGS=${CFLAGS}
-           FC=${CMAKE_Fortran_COMPILER}
+           FC=${JEDI_MPI_F90_COMPILER}
            FCFLAGS=${CMAKE_Fortran_FLAGS}
-           F77=${CMAKE_Fortran_COMPILER}
+           F77=${JEDI_MPI_F77_COMPILER}
            FFLAGS=${CMAKE_Fortran_FLAGS}
            CPPFLAGS=-I${JEDI_PREFIX}/include
            LDFLAGS=-L${JEDI_PREFIX}/lib

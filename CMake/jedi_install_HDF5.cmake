@@ -13,12 +13,12 @@ function ( download_build_install )
            #Cmake has problem to generate h5fc etc. unsolved
            #CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${JEDI_PREFIX} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DHDF5_BUILD_FORTRAN=ON  -DHDF5_ENABLE_F2003:BOOL=ON -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} -DHDF5_BUILD_CPP_LIB:BOOL=ON -DHDF5_ENABLE_SZIP_SUPPORT=BOLL=ON -DHDF5_ENABLE_SZIP_ENCODING:BOOL=ON -DSZIP_DIR=${JEDI_PREFIX}/share/cmake -DCMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS}
            CONFIGURE_COMMAND
-           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --enable-fortran --enable-fortran2003 --enable-cxx --with-zlib=${JEDI_PREFIX} --with-szlib=${JEDI_PREFIX}
-           CC=${CMAKE_C_COMPILER}
-           CXX=${CMAKE_CXX_COMPILER}
+           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --enable-parallel --enable-fortran --enable-fortran2003 --enable-shared --with-zlib=${JEDI_PREFIX} --with-szlib=${JEDI_PREFIX}
+           CC=${JEDI_MPI_C_COMPILER}
+           CXX=${JEDI_MPI_CXX_COMPILER}
            CFLAGS=${CFLAGS}
            CXXFLAGS=${CXXFLAGS}
-           FC=${CMAKE_Fortran_COMPILER}
+           FC=${JEDI_MPI_F90_COMPILER}
            FCFLAGS=${CMAKE_Fortran_FLAGS}
            BUILD_COMMAND ${CMAKE_BUILD_TOOL}
            INSTALL_COMMAND ${CMAKE_BUILD_TOOL} install
