@@ -17,7 +17,7 @@ COPY CMake /usr/local/CMake
 COPY CMakeLists.txt /usr/local
 COPY nceplibs /usr/local/nceplibs
 RUN apt-get update \
-    && apt-get remove libhdf5-dev \
+    && apt-get remove -y libhdf5-dev \
     && git config --global http.postBuffer 1048576000 \
     && mkdir -p build \
     && cd build \
