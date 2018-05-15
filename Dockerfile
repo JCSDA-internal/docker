@@ -40,7 +40,12 @@ RUN git clone -b pio1_7_1  https://github.com/NCAR/ParallelIO.git \
     && ./configure --prefix=/usr/local --disable-netcdf \
     && make \
     && make install \
-    && rm -fr ParallelIO
+    && rm -fr ParallelIO \
+    && ln -fs /usr/bin/gcc /usr/bin/x86_64-linux-gnu-gcc \
+    && pip install setuptools \
+    && pip install wheel \
+    && pip install netCDF4 matplotlib
+
 
 # Copy over private key, and set permissions
 ADD id_rsa /root/.ssh/id_rsa
