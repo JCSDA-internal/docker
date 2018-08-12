@@ -1,4 +1,4 @@
-FROM  jcsda/docker_base:latest
+FROM  jcsda/docker_base_lfric:latest
 LABEL maintainer "Xin Zhang <xin.l.zhang@noaa.gov>"
 
 # install basic tools and openmpi
