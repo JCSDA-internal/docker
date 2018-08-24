@@ -71,7 +71,7 @@ RUN mkdir -p /root/.ssh/ \
     && git checkout 0.18.5 \
     && mkdir build \
     && cd  build \
-    && ecbuild --build=debug .. \
+    && ecbuild -DENABLE_CXX11=ON --build=debug .. \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
