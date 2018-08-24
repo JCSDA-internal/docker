@@ -2,15 +2,15 @@
 # jedi_install_NCO
 #
 function ( download_build_install )
-       set( nco_URL https://github.com/nco/nco/archive/4.6.6.tar.gz )
-       set( nco_MD5 "df6fa47aaf6e41adfc0631912a7a341f")
+       set( nco_URL https://github.com/nco/nco/archive/4.7.6.tar.gz )
+       set( nco_MD5 "84296a0ec44b9a58dab198fda9fac7f0")
        ExternalProject_Add( NCO
            DEPENDS ${deps_NCO}
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
            URL ${nco_URL}
            URL_MD5 ${nco_MD5}
            CONFIGURE_COMMAND
-           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --enable-netcdf4 
+           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --enable-netcdf4 --includedir=${JEDI_PREFIX}/include --libdir=${JEDI_PREFIX}/lib 
            CC=${CMAKE_C_COMPILER}
            CXX=${CMAKE_CXX_COMPILER}
            CFLAGS=${CFLAGS}

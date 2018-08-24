@@ -58,16 +58,18 @@ RUN mkdir -p /root/.ssh/ \
     && ssh-keyscan github.com >> /root/.ssh/known_hosts \
     # enter /usr/local/src
     && cd /usr/local/src \
-    && git clone git@github.com:UCAR/ecbuild.git \
+    && git clone https://github.com/ecmwf/ecbuild.git \
     && cd ecbuild \
+    && git checkout 2.7.3 \
     && mkdir build \
     && cd  build \
     && cmake .. \
     && make install \
     && cd ../../ \
     && rm -fr ecbuild \
-    && git clone git@github.com:UCAR/eckit.git \
+    && git clone https://github.com/ecmwf/eckit.git \
     && cd eckit \
+    && git checkout 0.18.5 \
     && mkdir build \
     && cd  build \
     && ecbuild --build=debug .. \
@@ -75,8 +77,9 @@ RUN mkdir -p /root/.ssh/ \
     && make install \
     && cd ../../ \
     && rm -fr eckit \
-    && git clone git@github.com:UCAR/fckit.git \
+    && git clone https://github.com/ecmwf/fckit.git \
     && cd fckit \
+    && git checkout 0.5.0 \
     && mkdir build \
     && cd  build \
     && ecbuild --build=debug .. \
