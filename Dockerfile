@@ -66,7 +66,6 @@ RUN mkdir -p /root/.ssh/ \
     && cmake .. \
     && make install \
     && cd ../../ \
-    && rm -fr ecbuild \
     && git clone https://github.com/ecmwf/eckit.git \
     && cd eckit \
     && git checkout 0.18.5 \
@@ -86,6 +85,7 @@ RUN mkdir -p /root/.ssh/ \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
+    && rm -fr ecbuild \
     && rm -fr fckit
     
 CMD ["/bin/bash" , "-l"]

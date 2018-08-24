@@ -7,3 +7,5 @@ include
 share
 licenses
 mod
+build
+sbin
