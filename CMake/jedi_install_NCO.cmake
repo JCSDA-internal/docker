@@ -10,7 +10,8 @@ function ( download_build_install )
            URL ${nco_URL}
            URL_MD5 ${nco_MD5}
            CONFIGURE_COMMAND
-           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --enable-netcdf4 --includedir=${JEDI_PREFIX}/include --libdir=${JEDI_PREFIX}/lib 
+           <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --enable-netcdf4 --disable-ncap2
+           NETCDF_ROOT=${JEDI_PREFIX}
            CC=${CMAKE_C_COMPILER}
            CXX=${CMAKE_CXX_COMPILER}
            CFLAGS=${CFLAGS}

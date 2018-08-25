@@ -9,3 +9,5 @@ licenses
 mod
 build
 sbin
+doc
+libexec
