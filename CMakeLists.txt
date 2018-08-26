@@ -40,6 +40,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Intel
     SET(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fPIC")
     SET(CFLAGS "${CMAKE_C_FLAGS}")
     SET(CXXFLAGS "${CMAKE_CXX_FLAGS}")
+    message("Compiler ID: " ${CMAKE_CXX_COMPILER_ID} " add -fPIC flags")
 endif()
 
 include(ProcessorCount)

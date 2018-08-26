@@ -41,6 +41,7 @@ RUN git clone -b pio1_7_1  https://github.com/NCAR/ParallelIO.git \
     && ./configure --prefix=/usr/local --disable-netcdf \
     && make \
     && make install \
+    && cd ../.. \
     && rm -fr ParallelIO \
     && ln -fs /usr/bin/gcc /usr/bin/x86_64-linux-gnu-gcc \
     && pip install setuptools \
