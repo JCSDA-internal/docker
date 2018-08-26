@@ -30,7 +30,7 @@ find_package(Git   REQUIRED)
 find_package(CURL  REQUIRED)
 find_package(EXPAT REQUIRED)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
     # require at least gcc 4.8.4
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.4)
         message(FATAL_ERROR "GCC version must be at least 4.8.4!")
