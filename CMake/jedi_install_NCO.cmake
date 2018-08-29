@@ -12,6 +12,7 @@ function ( download_build_install )
            CONFIGURE_COMMAND
            <SOURCE_DIR>/configure --prefix=${JEDI_PREFIX} --enable-netcdf4 --disable-ncap2
            NETCDF_ROOT=${JEDI_PREFIX}
+           ANTLR_ROOT=${JEDI_PREFIX}
            CC=${CMAKE_C_COMPILER}
            CXX=${CMAKE_CXX_COMPILER}
            CFLAGS=${CFLAGS}
