@@ -2,7 +2,7 @@
 # jedi_install_NetCDF_CXX
 #
 function ( download_build_install )
-       set( netcdf_cxx_URL  ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-cxx4-4.3.0.tar.gz )
+       set( netcdf_cxx_URL ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-cxx-4.2.tar.gz )
        set( netcdf_cxx_MD5 "b4a9783b2b0b98d4e6f36cc19c8d08ef" )
        ExternalProject_Add( NetCDF_CXX
 	   DEPENDS ${deps_NetCDF_CXX}

@@ -72,7 +72,7 @@ RUN mkdir -p /root/.ssh/ \
     && git checkout 0.18.5 \
     && mkdir build \
     && cd  build \
-    && ecbuild -DENABLE_CXX11=ON --build=debug .. \
+    && ecbuild -DBUILD_SHARED_LIBS=OFF -DENABLE_CXX11=ON --build=debug .. \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
@@ -82,11 +82,11 @@ RUN mkdir -p /root/.ssh/ \
     && git checkout 0.5.0 \
     && mkdir build \
     && cd  build \
-    && ecbuild --build=debug .. \
+    && ecbuild -DBUILD_SHARED_LIBS=OFF --build=debug .. \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
     && rm -fr ecbuild \
     && rm -fr fckit
-    
+
 CMD ["/bin/bash" , "-l"]
