@@ -3,7 +3,7 @@
 #
 function ( download_build_install )
        set( netcdf_cxx_URL ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-cxx-4.2.tar.gz )
-       set( netcdf_cxx_MD5 "b4a9783b2b0b98d4e6f36cc19c8d08ef" )
+       set( netcdf_cxx_MD5 "d32b20c00f144ae6565d9e98d9f6204c" )
        ExternalProject_Add( NetCDF_CXX
 	   DEPENDS ${deps_NetCDF_CXX}
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
