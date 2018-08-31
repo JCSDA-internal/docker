@@ -1,4 +1,4 @@
-FROM  jcsda/docker_base_lfric:latest
+FROM  jcsda/docker_base:latest
 LABEL maintainer "Xin Zhang <xin.l.zhang@noaa.gov>"
 
 # install basic tools and openmpi
@@ -18,7 +18,6 @@ COPY CMakeLists.txt /usr/local
 COPY nceplibs /usr/local/nceplibs
 RUN apt-get update \
     && apt-get install -y python-tk \
-    && apt-get remove -y libhdf5-dev \
     && git config --global http.postBuffer 1048576000 \
     && mkdir -p build \
     && cd build \
@@ -49,16 +48,8 @@ RUN git clone -b pio1_7_1  https://github.com/NCAR/ParallelIO.git \
     && pip install netCDF4 matplotlib
 
 
-# Copy over private key, and set permissions
-ADD id_rsa /root/.ssh/id_rsa
-# Make ssh dir
-RUN mkdir -p /root/.ssh/ \
-    # Create known_hosts
-    && touch /root/.ssh/known_hosts \
-    # Add github key
-    && ssh-keyscan github.com >> /root/.ssh/known_hosts \
-    # enter /usr/local/src
-    && cd /usr/local/src \
+# Compile ECMWF tools
+RUN cd /usr/local/src \
     && git clone https://github.com/ecmwf/ecbuild.git \
     && cd ecbuild \
     && git checkout 2.7.3 \
