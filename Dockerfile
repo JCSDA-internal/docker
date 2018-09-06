@@ -60,7 +60,7 @@ RUN cd /usr/local/src \
     && cd ../../ \
     && git clone https://github.com/ecmwf/eckit.git \
     && cd eckit \
-    && git checkout 0.22.0 \
+    && git checkout 0.23.0 \
     && mkdir build \
     && cd  build \
     && ecbuild -DENABLE_EXPERIMENTAL=ON -DENABLE_CXX11=ON --build=debug .. \
