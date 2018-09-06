@@ -63,7 +63,7 @@ RUN cd /usr/local/src \
     && git checkout 0.22.0 \
     && mkdir build \
     && cd  build \
-    && ecbuild -DBUILD_SHARED_LIBS=OFF -DENABLE_EXPERIMENTAL=ON -DENABLE_CXX11=ON --build=debug .. \
+    && ecbuild -DENABLE_EXPERIMENTAL=ON -DENABLE_CXX11=ON --build=debug .. \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
@@ -73,7 +73,7 @@ RUN cd /usr/local/src \
     && git checkout 0.5.2 \
     && mkdir build \
     && cd  build \
-    && ecbuild -DBUILD_SHARED_LIBS=OFF --build=debug .. \
+    && ecbuild --build=debug .. \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
