@@ -52,7 +52,7 @@ RUN git clone -b pio1_7_1  https://github.com/NCAR/ParallelIO.git \
 RUN cd /usr/local/src \
     && git clone https://github.com/ecmwf/ecbuild.git \
     && cd ecbuild \
-    && git checkout 2.7.3 \
+    && git checkout 2.9.0 \
     && mkdir build \
     && cd  build \
     && cmake .. \
@@ -60,7 +60,7 @@ RUN cd /usr/local/src \
     && cd ../../ \
     && git clone https://github.com/ecmwf/eckit.git \
     && cd eckit \
-    && git checkout 0.18.5 \
+    && git checkout 0.22.0 \
     && mkdir build \
     && cd  build \
     && ecbuild -DBUILD_SHARED_LIBS=OFF -DENABLE_EXPERIMENTAL=ON -DENABLE_CXX11=ON --build=debug .. \
@@ -70,7 +70,7 @@ RUN cd /usr/local/src \
     && rm -fr eckit \
     && git clone https://github.com/ecmwf/fckit.git \
     && cd fckit \
-    && git checkout 0.5.0 \
+    && git checkout 0.5.2 \
     && mkdir build \
     && cd  build \
     && ecbuild -DBUILD_SHARED_LIBS=OFF --build=debug .. \
