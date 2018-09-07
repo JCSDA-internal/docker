@@ -61,9 +61,10 @@ RUN cd /usr/local/src \
     && git clone https://github.com/ecmwf/eckit.git \
     && cd eckit \
     && git checkout 0.23.0 \
+    && sed -i -e 's/project( eckit CXX/project( eckit CXX Fortran/' CMakeLists.txt \
     && mkdir build \
     && cd  build \
-    && ecbuild -DENABLE_EXPERIMENTAL=ON -DENABLE_CXX11=ON --build=debug .. \
+    && ecbuild --build=debug .. \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
