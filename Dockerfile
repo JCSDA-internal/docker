@@ -46,7 +46,8 @@ RUN git clone -b pio1_7_1  https://github.com/NCAR/ParallelIO.git \
     && pip install setuptools \
     && pip install wheel \
     && pip install netCDF4
-
+    && python -m pip install -U pip setuptools \
+    && python -m pip install matplotlib
 
 # Compile ECMWF tools
 RUN cd /usr/local/src \
