@@ -67,9 +67,9 @@ RUN cd /usr/local/src \
     && make install \
     && cd ../../ \
     && rm -fr eckit \
-    && git clone https://github.com/ecmwf/fckit.git \
+    && git clone https://github.com/JCSDA/fckit.git \
     && cd fckit \
-    && git checkout 0.5.2 \
+    && git checkout develop \
     && mkdir build \
     && cd  build \
     && ecbuild --build=debug .. \
