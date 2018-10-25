@@ -2,8 +2,8 @@
 # jedi_install_ANTLR
 #
 function ( download_build_install )
-       set( antlr_URL http://dust.ess.uci.edu/nco/antlr-2.7.7.tar.gz )
-       set( antlr_MD5 "914865e853fe8e1e61a9f23d045cb4ab")
+       set( antlr_URL http://www.antlr2.org/download/antlr-2.7.7.tar.gz )
+       set( antlr_MD5 "01cc9a2a454dd33dcd8c856ec89af090")
        ExternalProject_Add( ANTLR
            DEPENDS ${deps_ANTLR}
            DOWNLOAD_DIR ${JEDI_DOWNLOADS_DIR}
