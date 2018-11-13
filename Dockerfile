@@ -78,24 +78,15 @@ RUN apt-get update \
     && cd ../../ \
     && rm -fr ecbuild \
     && rm -fr fckit \
-# Compile eccodes
-    && cd /usr/local/src \
-    && rm -fr * \
-    && curl -s https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.9.2-Source.tar.gz  | tar xvz -C /usr/local/src \
-    && cd eccodes-2.9.2-Source \
-    && mkdir -p build \
-    && cd build \
-    && ecbuild --build=Production .. \
-    && make -j4 \
-    && make install \ 
 # Compile odb api
     && cd /usr/local/src \
     && curl -s https://confluence-test.ecmwf.int/download/attachments/61117379/odb_api_bundle-0.18.0-Source.tar.gz | tar xvz -C /usr/local/src \
     && cd odb_api_bundle-0.18.0-Source \
-    && sed -i -e '/^ecbuild_bundle.* ecbuild /s/^/#/' -e '/^ecbuild_bundle.* eckit /s/^/#/' CMakeLists.txt \
+    && sed -i -e '/^ecbuild_bundle.* ecbuild /s/^/#/' CMakeLists.txt \
+    && sed -i -e '/^ecbuild_bundle.* eckit /s/^/#/' CMakeLists.txt \
     && mkdir -p build \
     && cd build \
-    && ecbuild --build=Production -DENABLE_ODB=1 -DENABLE_PYTHON=1 -DENABLE_FORTRAN=1 -DENABLE_MIGRATOR=1 .. \
+    && ecbuild --build=Production -DENABLE_ODB=1 -DENABLE_FORTRAN=1 -DENABLE_MIGRATOR=1 .. \
     && make -j4 \
     && make install \
     && cd /usr/local/src \
