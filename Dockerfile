@@ -80,13 +80,13 @@ RUN apt-get update \
     && rm -fr fckit \
 # Compile odb api
     && cd /usr/local/src \
-    && curl -s https://confluence-test.ecmwf.int/download/attachments/61117379/odb_api_bundle-0.18.0-Source.tar.gz | tar xvz -C /usr/local/src \
-    && cd odb_api_bundle-0.18.0-Source \
+    && curl -s https://confluence-test.ecmwf.int/download/attachments/61117379/odb_api_bundle-0.17.6-Source.tar.gz | tar xvz -C /usr/local/src \
+    && cd odb_api_bundle-0.17.6-Source \
     && sed -i -e '/^ecbuild_bundle.* ecbuild /s/^/#/' CMakeLists.txt \
     && sed -i -e '/^ecbuild_bundle.* eckit /s/^/#/' CMakeLists.txt \
     && mkdir -p build \
     && cd build \
-    && ecbuild --build=Production -DENABLE_ODB=1 -DENABLE_FORTRAN=1 -DENABLE_MIGRATOR=1 .. \
+    && ecbuild --build=Production -DENABLE_FORTRAN=1 -DHAVE_CXX11=1 .. \
     && make -j4 \
     && make install \
     && cd /usr/local/src \
