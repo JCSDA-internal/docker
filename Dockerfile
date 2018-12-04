@@ -84,8 +84,13 @@ RUN apt-get update \
     && cd odb_api_bundle-0.17.6-Source \
     && sed -i -e '/^ecbuild_bundle.* ecbuild /s/^/#/' CMakeLists.txt \
     && sed -i -e '/^ecbuild_bundle.* eckit /s/^/#/' CMakeLists.txt \
-    && mkdir -p build \
-    && cd build \
+    && sed -i -e '/^ecbuild_bundle.* metkit /s/^/#/' CMakeLists.txt \
+    && mkdir -p build_metkit build_odb \
+    && cd build_metkit \
+    && ecbuild --build=Production -DENABLE_GRIB=OFF ../metkit \
+    && make -j4 \
+    && make install \
+    && cd ../build_odb \
     && ecbuild --build=Production -DENABLE_FORTRAN=1 -DHAVE_CXX11=1 .. \
     && make -j4 \
     && make install \
