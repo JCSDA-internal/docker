@@ -91,7 +91,7 @@ RUN apt-get update \
     && make -j4 \
     && make install \
     && cd ../build_odb \
-    && ecbuild --build=Production -DENABLE_FORTRAN=1 -DHAVE_CXX11=1 .. \
+    && ecbuild --build=Production -DENABLE_FORTRAN=1 -DENABLE_PYTHON=1 -DHAVE_CXX11=1 .. \
     && make -j4 \
     && make install \
     && cd /usr/local/src \
