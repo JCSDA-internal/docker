@@ -95,6 +95,17 @@ RUN apt-get update \
     && make -j4 \
     && make install \
     && cd /usr/local/src \
-    && rm -fr *
+    && rm -fr * \
+# Compiile ncepbufr for python
+    && cd /usr/local/src \
+    && git clone https://github.com/JCSDA/py-ncepbufr.git \
+    && cd py-ncepbufr \
+    && CC=gcc python setup.py build \
+    && python setup.py install \
+    && CC=gcc python3 setup.py build \
+    && python3 setup.py install \
+    && cp src/libbufr.a /usr/local/lib \
+    && cd /usr/local/src \
+    && rm -rf *
 
 CMD ["/bin/bash" , "-l"]
