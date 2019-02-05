@@ -3,7 +3,7 @@
 #
 
 function ( download_build_install )
-       set( Eigen3_URL https://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz )
+       set( Eigen3_URL https://bitbucket.org/eigen/eigen/get/3.3.7.tar.gz )
        set( Eigen3_MD5 )
        ExternalProject_Add( Eigen3
            DEPENDS ${deps_Eigen3}
