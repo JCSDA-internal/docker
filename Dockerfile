@@ -17,6 +17,9 @@ WORKDIR /usr/local
 COPY CMake /usr/local/CMake
 COPY CMakeLists.txt /usr/local
 COPY nceplibs /usr/local/nceplibs
+
+# update repo key
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157
 RUN apt-get update \
     && apt-get install -y python-tk \
     && git config --global http.postBuffer 1048576000 \
@@ -31,18 +34,6 @@ RUN apt-get update \
     && ./nceplibs.bash \
     && cd /usr/local \
     && rm -fr nceplibs \
-# Compile Parallel IO
-    && git clone -b pio1_7_1  https://github.com/NCAR/ParallelIO.git \
-    && cd ParallelIO \
-    && git clone https://github.com/PARALLELIO/genf90 bin \
-    && export MPIFC=mpif90 \
-    && export PNETCDF_PATH=${PNETCDF} \
-    && cd pio \
-    && ./configure --prefix=/usr/local --disable-netcdf \
-    && make \
-    && make install \
-    && cd ../.. \
-    && rm -fr ParallelIO \
     && ln -fs /usr/bin/gcc /usr/bin/x86_64-linux-gnu-gcc \
     && python -m pip install -U pip setuptools \
     && python -m pip install wheel netCDF4 matplotlib \
@@ -106,6 +97,8 @@ RUN apt-get update \
     && python3 setup.py install \
     && cp src/libbufr.a /usr/local/lib \
     && cd /usr/local/src \
-    && rm -rf *
+    && rm -rf * \
+# Add mount point for work directory
+    && mkdir /worktmp
 
 CMD ["/bin/bash" , "-l"]
