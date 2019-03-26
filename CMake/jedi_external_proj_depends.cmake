@@ -22,4 +22,4 @@ set (deps_CDO GRIBAPI UDUNITS2 HDF5 NetCDF_C NetCDF_Fortran Jasper CACHE STRING 
 set (deps_MPI     CACHE STRING "" FORCE)
 set (deps_BOOST   CACHE STRING "" FORCE)
 set (deps_Eigen3  BOOST CACHE STRING "" FORCE)
-#set (deps_PIO NetCDF_C NetCDF_Fortran PNETCDF CACHE STRING "" FORCE)
+set (deps_PIO NetCDF_C NetCDF_Fortran PNETCDF CACHE STRING "" FORCE)

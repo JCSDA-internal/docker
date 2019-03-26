@@ -1,4 +1,4 @@
-JEDI Dokcer image
+JEDI Docker image
 =================
 
 
@@ -11,7 +11,6 @@ The repository builds the Docker image with common libraries used by NWP models,
 Download, build, and install the following libraries :
 ------------------------------------------------------
 
-* open-mpi v2.1.0
 * zlib v1.2.11
 * szip v2.1.1
 * jpeg v9b
@@ -29,9 +28,11 @@ Download, build, and install the following libraries :
 * nco v4.6.6
 * grib_api v1.21.0
 * cdo v1.8.2
-* pio v1.7.1
+* pio v2.4.1
 * boost v1.66.0
-* Eigen3 v3.3.4
+* Eigen3 v3.3.7
+* ODB-API v0.17.6
+* py-ncepbufr
 
 -----------------------------------------------
 
