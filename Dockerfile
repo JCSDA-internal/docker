@@ -53,7 +53,7 @@ RUN apt-get update \
     && sed -i -e 's/project( eckit CXX/project( eckit CXX Fortran/' CMakeLists.txt \
     && mkdir build \
     && cd  build \
-    && ecbuild --build=debug .. \
+    && ecbuild --build=Debug .. \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
@@ -63,7 +63,7 @@ RUN apt-get update \
     && git checkout develop \
     && mkdir build \
     && cd  build \
-    && ecbuild --build=debug .. \
+    && ecbuild -build=Debug .. \
     && make -j`nproc` \
     && make install \
     && cd ../../ \
@@ -71,7 +71,8 @@ RUN apt-get update \
     && rm -fr fckit \
 # Compile odb api
     && cd /usr/local/src \
-    && curl -s https://confluence-test.ecmwf.int/download/attachments/61117379/odb_api_bundle-0.17.6-Source.tar.gz | tar xvz -C /usr/local/src \
+    && wget https://confluence.ecmwf.int/download/attachments/61117379/odb_api_bundle-0.17.6-Source.tar.gz?api=v2 \
+    && tar xvfz odb_api_bundle-0.17.6-Source.tar.gz?api=v2 \
     && cd odb_api_bundle-0.17.6-Source \
     && sed -i -e '/^ecbuild_bundle.* ecbuild /s/^/#/' CMakeLists.txt \
     && sed -i -e '/^ecbuild_bundle.* eckit /s/^/#/' CMakeLists.txt \
