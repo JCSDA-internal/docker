@@ -13,10 +13,12 @@ ENV LAPACK_LIBRARIES="$LAPACK_PATH/lib/liblapack.a;$LAPACK_PATH/lib/libblas.a"
 ENV PYTHONPATH=/usr/local/lib/python2.7/site-packages
 
 # build the jedi stack
-RUN git clone https://github.com/jcsda/jedi-stack.git \
+RUN cd /root \
+    && git clone https://github.com/jcsda/jedi-stack.git \
     && cd jedi-stack/buildscripts \
     && git checkout feature/container \
     && ./build_stack.sh "container" \
+    && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
 
