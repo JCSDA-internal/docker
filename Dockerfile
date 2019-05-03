@@ -4,6 +4,7 @@ LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 # set environment variables manually
 ENV NETCDF=/usr/local
 ENV PNETCDF=/usr/local
+ENV HDF5_ROOT=/usr/local
 ENV PIO=/usr/local
 ENV BOOST_ROOT=/usr/local
 ENV EIGEN3_INCLUDE_DIR=/usr/local
