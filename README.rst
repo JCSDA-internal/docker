@@ -5,39 +5,18 @@ JEDI Docker image
 What is this repository for?
 ----------------------------
 
-The repository builds the Docker image with common libraries used by NWP models, such as WRF, GSI, MPAS, FV3 etc.
+The repository builds the Docker image from two building blocks:
 
+* The jcsda/docker_base image, which contains the compilers and mpi library
+* The jedi-stack build scripts
 
-Download, build, and install the following libraries :
-------------------------------------------------------
+For a list of the software that is installed in the image, see the `jedi-stack <https://github.com/jcsda/jedi-stack.git>`_ repo.  
 
-* zlib v1.2.11
-* szip v2.1.1
-* jpeg v9b
-* png v1.4.19
-* jasper v1.900.2 
-* hdf5 v1.8.17
-* freetype v2.5.5
-* netcdf-c v4.4.11
-* netcdf-fortran v4.4.4
-* lapack v3.7.0
-* parallel-netcdf v1.8.1
-* xerces-c v3.1.4
-* esmf v7.0.0
-* udunites-2 v2.2.24
-* nco v4.6.6
-* grib_api v1.21.0
-* cdo v1.8.2
-* pio v2.4.1
-* boost v1.66.0
-* Eigen3 v3.3.7
-* ODB-API v0.17.6
-* py-ncepbufr
+Our current workflow is to have a different container for each compiler/mpi combination we support.  So, all libraries are installed in /usr/local, as opposed to the module-based setup otherwise produced by the jedi-stack build system.
 
 -----------------------------------------------
 
 The major NCEP libraries are also installed at :
-
 * /nwprod/lib/bacio/v2.0.1/libbacio_v2.0.1_4.a
 * /nwprod/lib/bacio/v2.0.1/libbacio_v2.0.1_8.a
 * /nwprod/lib/ip/v2.0.0/libip_v2.0.0_4.a
@@ -66,8 +45,7 @@ How to build the image
  > docker image build -t jcsda/docker .
  > docker image push jcsda/docker
 
-**Highly recommend compile all libraries with the same compiler family**
 
-*Please* `write to me`_, *if you need more libraries being included.*
+*Please* `contact Mark Miesch`_, *if you need more libraries being included.*
 
-.. _write to me: xin.l.zhang@noaa.gov
+.. _contact Mark Miesch: miesch@ucar.edu

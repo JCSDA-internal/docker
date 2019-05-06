@@ -13,6 +13,14 @@ ENV LAPACK_DIR=$LAPACK_PATH
 ENV LAPACK_LIBRARIES="$LAPACK_PATH/lib/liblapack.a;$LAPACK_PATH/lib/libblas.a"
 ENV PYTHONPATH=/usr/local/lib/python2.7/site-packages
 
+# These are normally set in modules but the container does not use modules
+ENV SERIAL_CC=gcc
+ENV SERIAL_CXX=g++
+ENV SERIAL_FC=gfortran
+ENV MPI_CC=mpicc
+ENV MPI_CXX=mpicxx
+ENV MPI_FC=mpifort
+
 # build the jedi stack
 RUN cd /root \
     && git clone https://github.com/jcsda/jedi-stack.git \
