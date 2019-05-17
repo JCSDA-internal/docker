@@ -1,4 +1,4 @@
-FROM  jcsda/docker_base:hpccm
+FROM  jcsda/docker_base:latest
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
 # set environment variables manually
