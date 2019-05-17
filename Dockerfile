@@ -25,7 +25,6 @@ ENV MPI_FC=mpifort
 RUN cd /root \
     && git clone https://github.com/jcsda/jedi-stack.git \
     && cd jedi-stack/buildscripts \
-    && git checkout feature/container \
     && ./build_stack.sh "container" \
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
