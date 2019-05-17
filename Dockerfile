@@ -25,9 +25,13 @@ ENV MPI_FC=mpifort
 RUN cd /root \
     && git clone https://github.com/jcsda/jedi-stack.git \
     && cd jedi-stack/buildscripts \
+    && git checkout feature/pytools \
     && ./build_stack.sh "container" \
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
 
+ENV FC=mpifort
+ENV CC=mpicc
+ENV CXX=mpicxx
 CMD ["/bin/bash" , "-l"]
