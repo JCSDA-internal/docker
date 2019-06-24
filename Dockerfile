@@ -29,6 +29,17 @@ RUN cd /root \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
 
+#Make a non-root user:jedi / group:jedi for running MPI
+RUN useradd -U -k /etc/skel -d /home/jedi -m jedi && \
+    echo "export FC=mpifort" >> ~jedi/.bashrc && \
+    echo "export CC=mpicc" >> ~jedi/.bashrc && \
+    echo "export CXX=mpicxx" >> ~jedi/.bashrc && \
+    echo "[credential]\n    helper = cache --timeout=7200" >> ~jedi/.gitconfig && \
+    mkdir ~jedi/.openmpi && \
+    echo "rmaps_base_oversubscribe = 1" >> ~jedi/.openmpi/mca-params.conf && \
+    chown -R jedi:jedi ~jedi/.gitconfig ~jedi/.openmpi
+
+#Setup the root users environment
 ENV FC=mpifort \
    CC=mpicc \
    CXX=mpicxx
