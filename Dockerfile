@@ -30,7 +30,7 @@ RUN cd /root \
     && mkdir /worktmp
 
 #Make a non-root user:jedi / group:jedi for running MPI
-RUN useradd -U -k /etc/skel -d /home/jedi -m jedi && \
+RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi && \
     echo "export FC=mpifort" >> ~jedi/.bashrc && \
     echo "export CC=mpicc" >> ~jedi/.bashrc && \
     echo "export CXX=mpicxx" >> ~jedi/.bashrc && \
