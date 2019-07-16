@@ -1,105 +1,47 @@
 FROM  jcsda/docker_base:latest
-LABEL maintainer "Xin Zhang <xin.l.zhang@noaa.gov>"
+LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
-# install basic tools and openmpi
-ENV NETCDF=/usr/local
-ENV PNETCDF=/usr/local
-ENV PIO=/usr/local
-ENV BOOST_ROOT=/usr/local
-ENV EIGEN3_INCLUDE_DIR=/usr/local
-ENV LAPACK_PATH=/usr/local
-ENV LAPACK_DIR=$LAPACK_PATH
-ENV LAPACK_LIBRARIES="$LAPACK_PATH/lib/liblapack.a;$LAPACK_PATH/lib/libblas.a"
-ENV PYTHONPATH=/usr/local/lib/python2.7/site-packages
+# set environment variables manually
+ENV NETCDF=/usr/local \
+   PNETCDF=/usr/local \
+   HDF5_ROOT=/usr/local \
+   PIO=/usr/local \
+   BOOST_ROOT=/usr/local \
+   EIGEN3_INCLUDE_DIR=/usr/local \
+   LAPACK_PATH=/usr/local \
+   LAPACK_DIR=$LAPACK_PATH \
+   LAPACK_LIBRARIES="$LAPACK_PATH/lib/liblapack.a;$LAPACK_PATH/lib/libblas.a" \
+   PYTHONPATH=/usr/local/lib/python2.7/site-packages \
+   SERIAL_CC=gcc \
+   SERIAL_CXX=g++ \
+   SERIAL_FC=gfortran \
+   MPI_CC=mpicc \
+   MPI_CXX=mpicxx \
+   MPI_FC=mpifort
 
-# build the common libraries for numerical weather prediction models
-WORKDIR /usr/local
-COPY CMake /usr/local/CMake
-COPY CMakeLists.txt /usr/local
-COPY nceplibs /usr/local/nceplibs
-
-# update repo key
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157
-RUN apt-get update \
-    && apt-get install -y python-tk \
-    && git config --global http.postBuffer 1048576000 \
-    && mkdir -p build \
-    && cd build \
-    && rm -fr * \
-    && cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_OMPI=OFF .. \
-    && make -j`nproc` \
-    && cd /usr/local \
-    && rm -fr CMake* build downloads \
-    && cd /usr/local/nceplibs \
-    && ./nceplibs.bash \
-    && cd /usr/local \
-    && rm -fr nceplibs \
-    && ln -fs /usr/bin/gcc /usr/bin/x86_64-linux-gnu-gcc \
-    && python -m pip install -U pip setuptools \
-    && python -m pip install wheel netCDF4 matplotlib \
-# Compile ECMWF tools
-    && cd /usr/local/src \
-    && git clone https://github.com/ecmwf/ecbuild.git \
-    && cd ecbuild \
-    && git checkout 2.9.0 \
-    && mkdir build \
-    && cd  build \
-    && cmake .. \
-    && make install \
-    && cd ../../ \
-    && git clone https://github.com/ecmwf/eckit.git \
-    && cd eckit \
-    && git checkout 0.23.0 \
-    && sed -i -e 's/project( eckit CXX/project( eckit CXX Fortran/' CMakeLists.txt \
-    && mkdir build \
-    && cd  build \
-    && ecbuild --build=Debug .. \
-    && make -j`nproc` \
-    && make install \
-    && cd ../../ \
-    && rm -fr eckit \
-    && git clone https://github.com/JCSDA/fckit.git \
-    && cd fckit \
+# build the jedi stack
+RUN cd /root \
+    && git clone https://github.com/jcsda/jedi-stack.git \
+    && cd jedi-stack/buildscripts \
     && git checkout develop \
-    && mkdir build \
-    && cd  build \
-    && ecbuild -build=Debug .. \
-    && make -j`nproc` \
-    && make install \
-    && cd ../../ \
-    && rm -fr ecbuild \
-    && rm -fr fckit \
-# Compile odb api
-    && cd /usr/local/src \
-    && wget https://confluence.ecmwf.int/download/attachments/61117379/odb_api_bundle-0.17.6-Source.tar.gz?api=v2 \
-    && tar xvfz odb_api_bundle-0.17.6-Source.tar.gz?api=v2 \
-    && cd odb_api_bundle-0.17.6-Source \
-    && sed -i -e '/^ecbuild_bundle.* ecbuild /s/^/#/' CMakeLists.txt \
-    && sed -i -e '/^ecbuild_bundle.* eckit /s/^/#/' CMakeLists.txt \
-    && sed -i -e '/^ecbuild_bundle.* metkit /s/^/#/' CMakeLists.txt \
-    && mkdir -p build_metkit build_odb \
-    && cd build_metkit \
-    && ecbuild --build=Production -DENABLE_GRIB=OFF ../metkit \
-    && make -j4 \
-    && make install \
-    && cd ../build_odb \
-    && ecbuild --build=Production -DENABLE_FORTRAN=1 -DENABLE_PYTHON=1 -DHAVE_CXX11=1 .. \
-    && make -j4 \
-    && make install \
-    && cd /usr/local/src \
-    && rm -fr * \
-# Compiile ncepbufr for python
-    && cd /usr/local/src \
-    && git clone https://github.com/JCSDA/py-ncepbufr.git \
-    && cd py-ncepbufr \
-    && CC=gcc python setup.py build \
-    && python setup.py install \
-    && CC=gcc python3 setup.py build \
-    && python3 setup.py install \
-    && cp src/libbufr.a /usr/local/lib \
-    && cd /usr/local/src \
-    && rm -rf * \
-# Add mount point for work directory
+    && ./build_stack.sh "container" \
+    && rm -rf /root/jedi-stack \
+    && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
+
+#Make a non-root user:jedi / group:jedi for running MPI
+RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi && \
+    echo "export FC=mpifort" >> ~jedi/.bashrc && \
+    echo "export CC=mpicc" >> ~jedi/.bashrc && \
+    echo "export CXX=mpicxx" >> ~jedi/.bashrc && \
+    echo "[credential]\n    helper = cache --timeout=7200" >> ~jedi/.gitconfig && \
+    mkdir ~jedi/.openmpi && \
+    echo "rmaps_base_oversubscribe = 1" >> ~jedi/.openmpi/mca-params.conf && \
+    chown -R jedi:jedi ~jedi/.gitconfig ~jedi/.openmpi
+
+#Setup the root users environment
+ENV FC=mpifort \
+   CC=mpicc \
+   CXX=mpicxx
 
 CMD ["/bin/bash" , "-l"]
