@@ -1,4 +1,4 @@
-FROM  jcsda/docker_base:latest
+FROM  jcsda/docker_base:beta
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
 # set environment variables manually
@@ -11,7 +11,6 @@ ENV NETCDF=/usr/local \
    LAPACK_PATH=/usr/local \
    LAPACK_DIR=$LAPACK_PATH \
    LAPACK_LIBRARIES="$LAPACK_PATH/lib/liblapack.a;$LAPACK_PATH/lib/libblas.a" \
-   PYTHONPATH=/usr/local/lib/python2.7/site-packages \
    SERIAL_CC=gcc \
    SERIAL_CXX=g++ \
    SERIAL_FC=gfortran \
@@ -23,7 +22,7 @@ ENV NETCDF=/usr/local \
 RUN cd /root \
     && git clone https://github.com/jcsda/jedi-stack.git \
     && cd jedi-stack/buildscripts \
-    && git checkout develop \
+    && git checkout feature/python \
     && ./build_stack.sh "container" \
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
