@@ -22,7 +22,7 @@ ENV NETCDF=/usr/local \
 RUN cd /root \
     && git clone https://github.com/jcsda/jedi-stack.git \
     && cd jedi-stack/buildscripts \
-    && git checkout develop
+    && git checkout develop \
     && ./build_stack.sh "container" \
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
