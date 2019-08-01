@@ -1,4 +1,4 @@
-FROM  jcsda/docker_base:beta
+FROM  jcsda/docker_base:latest
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
 # set environment variables manually
@@ -22,7 +22,7 @@ ENV NETCDF=/usr/local \
 RUN cd /root \
     && git clone https://github.com/jcsda/jedi-stack.git \
     && cd jedi-stack/buildscripts \
-    && git checkout feature/python \
+    && git checkout develop
     && ./build_stack.sh "container" \
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
