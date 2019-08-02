@@ -11,7 +11,6 @@ ENV NETCDF=/usr/local \
    LAPACK_PATH=/usr/local \
    LAPACK_DIR=$LAPACK_PATH \
    LAPACK_LIBRARIES="$LAPACK_PATH/lib/liblapack.a;$LAPACK_PATH/lib/libblas.a" \
-   PYTHONPATH=/usr/local/lib/python2.7/site-packages \
    SERIAL_CC=gcc \
    SERIAL_CXX=g++ \
    SERIAL_FC=gfortran \
