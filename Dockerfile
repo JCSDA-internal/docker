@@ -43,4 +43,12 @@ ENV FC=mpifort \
    CC=mpicc \
    CXX=mpicxx
 
+# build lcov for Travis-CI
+RUN cd /usr/local/src \
+    && curl -L -O http://downloads.sourceforge.net/ltp/lcov-1.14.tar.gz \
+    && tar -xvf lcov-1.14.tar.gz \
+    && cd lcov-1.14 \
+    && make install \
+    && rm -rf /usr/local/src/*
+
 CMD ["/bin/bash" , "-l"]
