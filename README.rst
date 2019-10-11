@@ -42,8 +42,9 @@ How to build the image
 
 .. code:: bash
 
- > docker image build -t jcsda/docker .
- > docker image push jcsda/docker
+  name="gnu-openmpi-dev"
+  docker image build --no-cache -f Dockerfile.$name -t jcsda/docker-$name . 2>&1 | tee build.log
+  docker push jcsda/docker-$name
 
 
 *Please* `contact Mark Miesch`_, *if you need more libraries being included.*

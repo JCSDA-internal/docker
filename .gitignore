@@ -11,3 +11,4 @@ build
 sbin
 doc
 libexec
+build.log
