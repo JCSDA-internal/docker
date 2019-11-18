@@ -22,8 +22,10 @@ ENV NETCDF=/usr/local \
 RUN cd /root \
     && git clone https://github.com/jcsda/jedi-stack.git \
     && cd jedi-stack/buildscripts \
-    && git checkout develop \
-    && ./build_stack.sh "container" \
+    && git checkout feature/intel19-container \
+    && ./build_stack.sh "container-gnu-openmpi-dev" \
+    && mv ../jedi-stack-contents.log /etc && \
+    && chmod a+r /etc/jedi-stack-contents.log && \
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
