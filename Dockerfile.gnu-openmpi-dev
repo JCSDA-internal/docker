@@ -1,4 +1,4 @@
-FROM  jcsda/docker_base:latest
+FROM  jcsda/docker_base-gnu-openmpi-dev:latest
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
 # set environment variables manually
