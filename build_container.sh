@@ -23,8 +23,7 @@ export CNAME=${1:-"gnu-openmpi-dev"}
 # Build image
 # tag it as beta for testing purposes - this will be retagged as latest
 
-docker image build -f Dockerfile.$CNAME -t jcsda/docker-$name:beta . 2>&1 | tee build.log
-#docker image build --no-cache -f Dockerfile.$CNAME -t jcsda/docker-$name:beta . 2>&1 | tee build.log
+docker image build --no-cache -f Dockerfile.${CNAME} -t jcsda/docker-${CNAME}:beta . 2>&1 | tee build.log
 
 #------------------------------------------------------------------------
 get_ans "Push to Docker Hub?"
