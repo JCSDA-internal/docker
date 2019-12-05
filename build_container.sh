@@ -6,13 +6,18 @@ function get_ans {
     while [[ $ans != y ]] && [[ $ans != n ]]; do
       echo $1
       read ans < /dev/stdin
-      if [[ -z $ans ]]; then ans=$defans; fi
       if [[ $ans != y ]] && [[ $ans != n ]]; then echo "You must enter y or n"; fi
     done
 }
 
 
 #------------------------------------------------------------------------
+if [ $# -ne 1 ]; then
+   echo "Usage: "
+   echo "./build_container.sh <container-name>"
+   exit 1
+fi
+
 # Stop if anything goes wrong
 set -e
 
@@ -31,7 +36,6 @@ get_ans "Push to Docker Hub?"
 if [[ $ans == y ]] ; then
 
     # save previous image in case something goes wrong
-    docker rmi jcsda/docker-$CNAME:revert
     docker pull jcsda/docker-$CNAME:latest
     docker tag jcsda/docker-$CNAME:latest jcsda/docker-$CNAME:revert
     docker push jcsda/docker-$CNAME:revert
