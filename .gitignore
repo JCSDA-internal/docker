@@ -13,3 +13,5 @@ doc
 libexec
 build.log
 ssh-key
+jedi-overlay.img
+*.sif
