@@ -1,0 +1,37 @@
+BootStrap: docker
+From: jcsda/docker-gnu-openmpi-dev:latest
+
+%labels
+MAINTAINER Mark Miesch
+SPECIES JEDI
+
+%help
+  This is a Singularity container provisioned to run the JEDI tutorials.  
+
+%files
+    ssh-key/github_academy_rsa /root/github_academy_rsa
+
+%environment
+    DISPLAY=:0.0
+    export DISPLAY
+    TERM=xterm
+    export TERM
+    GIT_MERGE_AUTOEDIT=no
+    export GIT_MERGE_AUTOEDIT
+
+%post
+    echo "Hello from inside the container"
+    cd $HOME
+    mkdir -p /root/.ssh
+    mv /root/github_academy_rsa /root/.ssh/github_academy_rsa
+    eval "$(ssh-agent -s)"
+    ssh-add $HOME/.ssh/github_academy_rsa
+    bash -c "ssh -T -o "StrictHostKeyChecking=no" git@github.com; exit 0"
+    mkdir -p /jedi
+    cd /jedi
+    git clone git@github.com:jcsda/fv3-bundle.git
+    chmod -R 777 /jedi
+
+%runscript
+    bash -l
+
