@@ -18,6 +18,10 @@ SPECIES JEDI
     export TERM
     GIT_MERGE_AUTOEDIT=no
     export GIT_MERGE_AUTOEDIT
+    SABER_TEST_TIER=1
+    SABER_MPI_TEST=0
+    SABER_OMP_TEST=0
+
 
 %post
     echo "Hello from inside the container"
@@ -42,6 +46,10 @@ SPECIES JEDI
     git clone git@github.com:jcsda/femps.git -b develop
     git clone git@github.com:jcsda/fv3-jedi-linearmodel.git -b develop fv3-jedi-lm
     git clone git@github.com:jcsda/fv3-jedi.git -b develop
+    mkdir /jedi/build
+    cd /jedi/build
+    ecbuild --build=Release -DBUILD_TESTING=OFF ../fv3-bundle
+    make -j4
     rm $HOME/.ssh/github_academy_rsa
     chmod -R 777 /jedi
 
