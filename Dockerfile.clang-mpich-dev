@@ -20,13 +20,14 @@ ENV NETCDF=/usr/local \
    PATH=/usr/local/bin:$PATH \
    LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH \
    LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH \
-   CPATH=/usr/local/include:$CPATH
+   CPATH=/usr/local/include:$CPATH \
+   PYTHONPATH=/usr/local/bin:$PYTHONPATH
 
 # build the jedi stack
 RUN cd /root \
     && git clone https://github.com/jcsda/jedi-stack.git \
     && cd jedi-stack/buildscripts \
-    && git checkout develop \
+    && git checkout feature/odc \
     && ./build_stack.sh "container-clang-mpich-dev" \
     && mv ../jedi-stack-contents.log /etc \
     && chmod a+r /etc/jedi-stack-contents.log \

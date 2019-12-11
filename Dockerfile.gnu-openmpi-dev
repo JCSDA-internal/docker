@@ -16,13 +16,14 @@ ENV NETCDF=/usr/local \
    SERIAL_FC=gfortran \
    MPI_CC=mpicc \
    MPI_CXX=mpicxx \
-   MPI_FC=mpifort
+   MPI_FC=mpifort \
+   PYTHONPATH=/usr/local/bin:$PYTHONPATH
 
 # build the jedi stack
 RUN cd /root \
     && git clone https://github.com/jcsda/jedi-stack.git \
     && cd jedi-stack/buildscripts \
-    && git checkout develop \
+    && git checkout feature/odc \
     && ./build_stack.sh "container-gnu-openmpi-dev" \
     && mv ../jedi-stack-contents.log /etc \
     && chmod a+r /etc/jedi-stack-contents.log \
