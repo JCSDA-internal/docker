@@ -34,6 +34,34 @@ RUN cd /root \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
 
+#Setup the root users environment
+ENV FC=mpifort \
+   CC=mpicc \
+   CXX=mpicxx
+
+# install private repos
+COPY ssh-key/github_academy_rsa /root/github_academy_rsa
+RUN mkdir -p /root/.ssh && \
+    mv /root/github_academy_rsa /root/.ssh/github_academy_rsa && \
+    eval "$(ssh-agent -s)" && \
+    ssh-add /root/.ssh/github_academy_rsa && \
+    ssh -T -o "StrictHostKeyChecking=no" git@github.com; \
+    mkdir -p /root/jedi && cd /root/jedi && \
+    git clone git@github.com:jcsda/odc.git && \
+    cd odc && git checkout develop && \
+    mkdir -p build && cd build && \
+    ecbuild --build=Release -DCMAKE_INSTALL_PREFIX="/usr/local" .. && \
+    make -j4 && make install && \
+    cd /root/jedi && \
+    git clone git@github.com:jcsda/odyssey.git && \
+    cd odyssey && git checkout develop && \
+    mkdir -p build && cd build && \
+    ecbuild --build=Release -DCMAKE_INSTALL_PREFIX="/usr/local" .. && \
+    make -j4 && make install && \
+    rm -rf /root/jedi/odc && \
+    rm -rf /root/jedi/odyssey && \
+    rm /root/.ssh/github_academy_rsa
+
 #Make a non-root user:jedi / group:jedi for running MPI
 RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi && \
     echo "export FC=mpifort" >> ~jedi/.bashrc && \
@@ -43,11 +71,6 @@ RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi && \
     mkdir ~jedi/.openmpi && \
     echo "rmaps_base_oversubscribe = 1" >> ~jedi/.openmpi/mca-params.conf && \
     chown -R jedi:jedi ~jedi/.gitconfig ~jedi/.openmpi
-
-#Setup the root users environment
-ENV FC=mpifort \
-   CC=mpicc \
-   CXX=mpicxx
 
 # build lcov for Travis-CI
 RUN cd /usr/local/src \

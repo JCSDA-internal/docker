@@ -12,3 +12,4 @@ sbin
 doc
 libexec
 build.log
+ssh-key
