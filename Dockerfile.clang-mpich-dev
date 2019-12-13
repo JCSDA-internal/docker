@@ -21,7 +21,7 @@ ENV NETCDF=/usr/local \
    LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH \
    LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH \
    CPATH=/usr/local/include:$CPATH \
-   PYTHONPATH=/usr/local/bin:$PYTHONPATH
+   PYTHONPATH=/usr/local/lib
 
 # build the jedi stack
 RUN cd /root \

@@ -17,7 +17,7 @@ ENV NETCDF=/usr/local \
    MPI_CC=mpicc \
    MPI_CXX=mpicxx \
    MPI_FC=mpifort \
-   PYTHONPATH=/usr/local/bin:$PYTHONPATH
+   PYTHONPATH=/usr/local/gnu
 
 # build the jedi stack
 RUN cd /root \
