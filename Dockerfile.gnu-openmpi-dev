@@ -17,7 +17,7 @@ ENV NETCDF=/usr/local \
    MPI_CC=mpicc \
    MPI_CXX=mpicxx \
    MPI_FC=mpifort \
-   PYTHONPATH=/usr/local/gnu
+   PYTHONPATH=/usr/local/lib
 
 # build the jedi stack
 RUN cd /root \
@@ -64,6 +64,7 @@ RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi && \
     echo "export FC=mpifort" >> ~jedi/.bashrc && \
     echo "export CC=mpicc" >> ~jedi/.bashrc && \
     echo "export CXX=mpicxx" >> ~jedi/.bashrc && \
+    echo "export PYTHONPATH=/usr/local/lib:$PYTHONPATH" >> ~jedi/.bashrc && \
     echo "[credential]\n    helper = cache --timeout=7200" >> ~jedi/.gitconfig && \
     mkdir ~jedi/.openmpi && \
     echo "rmaps_base_oversubscribe = 1" >> ~jedi/.openmpi/mca-params.conf && \
