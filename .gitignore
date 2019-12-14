@@ -19,4 +19,6 @@ jedi-overlay.img
 *.nc4
 *.res
 *.bin
-tutorial/tut1/Data
+*.gz
+*.tgz
+tutorials/run-jedi/Data
