@@ -1,7 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 #----------------------------------------------------------------------
 # This script pulls the data files needed for the tutorials from S3
 #----------------------------------------------------------------------
+
+set -e
 
 # when we have more than one tutorial, make this a list and loop over it
 name=run-jedi
@@ -10,6 +12,8 @@ name=run-jedi
 branch=`git rev-parse --abbrev-ref HEAD`
 
 # Download from s3
+mkdir -p ${name}
+cd ${name}
 aws s3 cp s3://jedi-test-files/docker/${branch}/tutorials/${name}_Data.tar.gz ${name}_Data.tar.gz
 aws s3 cp s3://jedi-test-files/docker/${branch}/tutorials/${name}_Data.tar.gz.md5 ${name}_Data.tar.gz.md5
 
@@ -26,6 +30,7 @@ if [[ pull-checksum.md5 -ne ${name}_Data.tar.gz.md5 ]]; then
 fi
 
 # Unpack
-mkdir -p ${name}
-cd ${name}
 tar -xvzf ${name}_Data.tar.gz Data
+rm ${name}_Data.tar.gz
+rm ${name}_Data.tar.gz.md5
+rm pull-checksum.md5
