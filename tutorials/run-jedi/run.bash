@@ -26,7 +26,7 @@ export jedibin=/jedi/build/bin
 
 # Define Environment variables
 # ---------------------------------------------------------
-OMP_NUM_THREADS=1
+export OMP_NUM_THREADS=1
 
 # Run the BUMP parameter scripts to produce the B matrix
 # ------------------------------------------------------

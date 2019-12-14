@@ -4,18 +4,19 @@ resolution:
   trc_file: Data/fv3files/field_table
   pathfile_akbk: Data/inputs/gfs_c12/akbk.nc
 variables: ["ua","va","T","ps","sphum","ice_wat","liq_wat","o3mr"]
-date: '2018-04-15T00:00:00Z'
+date: '2018-04-14T21:00:00Z'
 background:
   filetype: gfs
   datapath_tile: Data/inputs/gfs_c12/bkg/
-  filename_core: 20180415.000000.fv_core.res.nc
-  filename_trcr: 20180415.000000.fv_tracer.res.nc
-  filename_sfcd: 20180415.000000.sfc_data.nc
-  filename_sfcw: 20180415.000000.fv_srf_wnd.res.nc
-  filename_cplr: 20180415.000000.coupler.res
+  filename_core: 20180414.210000.fv_core.res.nc
+  filename_trcr: 20180414.210000.fv_tracer.res.nc
+  filename_sfcd: 20180414.210000.sfc_data.nc
+  filename_sfcw: 20180414.210000.fv_srf_wnd.res.nc
+  filename_cplr: 20180414.210000.coupler.res
   variables: ["ua","va","T","ps","sphum","ice_wat","liq_wat","o3mr"]
 bump:
-  prefix: run-hyb-3dvar/bump/bumppar_loc
+  prefix: run-hyb-3dvar/bump/fv3jedi_bumpparameters_loc_gfs
+  verbosity: main
   method: loc
 #  nonunit_diag: 1
   strategy: common
@@ -27,7 +28,6 @@ bump:
   network: 0
   mpicom: 2
   default_seed: 1
-  verbosity: main
 # Forced localization length-scales
 # ---------------------------------
   forced_radii: 1
@@ -51,9 +51,9 @@ bump:
   load_nicas: 0
   check_dirac: 0
   ndir: 1
-  londir: [0.0]
-  latdir: [0.0]
-  levdir: [50]
+#  londir: [0.0]
+#  latdir: [0.0]
+#  levdir: [50]
   ivdir: [1]
   itsdir: [1]
   grid_output: 1
@@ -67,7 +67,7 @@ output:
   filename_sfcd: bumpparameters_loc_gfs.loc_coef.sfc_data.nc
   filename_sfcw: bumpparameters_loc_gfs.loc_coef.fv_srf_wnd.res.nc
   filename_cplr: bumpparameters_loc_gfs.loc_coef.coupler.res
-  date: '2018-04-15T00:00:00Z'
+  date: '2018-04-14T21:00:00Z'
 - parameter: loc_rh
   filetype: gfs
   datapath_tile: run-hyb-3dvar/bump/
@@ -76,7 +76,7 @@ output:
   filename_sfcd: bumpparameters_loc_gfs.loc_rh.sfc_data.nc
   filename_sfcw: bumpparameters_loc_gfs.loc_rh.fv_srf_wnd.res.nc
   filename_cplr: bumpparameters_loc_gfs.loc_rh.coupler.res
-  date: '2018-04-15T00:00:00Z'
+  date: '2018-04-14T21:00:00Z'
 - parameter: loc_rv
   filetype: gfs
   datapath_tile: run-hyb-3dvar/bump/
@@ -85,7 +85,7 @@ output:
   filename_sfcd: bumpparameters_loc_gfs.loc_rv.sfc_data.nc
   filename_sfcw: bumpparameters_loc_gfs.loc_rv.fv_srf_wnd.res.nc
   filename_cplr: bumpparameters_loc_gfs.loc_rv.coupler.res
-  date: '2018-04-15T00:00:00Z'
+  date: '2018-04-14T21:00:00Z'
 - parameter: hyb_coef
   filetype: gfs
   datapath_tile: run-hyb-3dvar/bump/
@@ -94,4 +94,4 @@ output:
   filename_sfcd: bumpparameters_loc_gfs.hyb_coef.sfc_data.nc
   filename_sfcw: bumpparameters_loc_gfs.hyb_coef.fv_srf_wnd.res.nc
   filename_cplr: bumpparameters_loc_gfs.hyb_coef.coupler.res
-  date: '2018-04-15T00:00:00Z'
+  date: '2018-04-14T21:00:00Z'
