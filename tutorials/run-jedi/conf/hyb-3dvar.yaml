@@ -3,7 +3,7 @@ cost_function:
     Background:
       state:
       - filetype: gfs
-        datapath_tile: Data/inputs/gfs_c12/bkg/
+        datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/bkg/
         filename_core: 20180415.000000.fv_core.res.nc
         filename_trcr: 20180415.000000.fv_tracer.res.nc
         filename_sfcd: 20180415.000000.sfc_data.nc
@@ -29,70 +29,70 @@ cost_function:
         variables: *3dvars
         members:
         - filetype: gfs
-          datapath_tile: Data/inputs/gfs_c12/mem001/
+          datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/mem001/
           filename_core: 20180415.000000.fv_core.res.nc
           filename_trcr: 20180415.000000.fv_tracer.res.nc
           filename_sfcd: 20180415.000000.sfc_data.nc
           filename_sfcw: 20180415.000000.fv_srf_wnd.res.nc
           filename_cplr: 20180415.000000.coupler.res
         - filetype: gfs
-          datapath_tile: Data/inputs/gfs_c12/mem002/
+          datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/mem002/
           filename_core: 20180415.000000.fv_core.res.nc
           filename_trcr: 20180415.000000.fv_tracer.res.nc
           filename_sfcd: 20180415.000000.sfc_data.nc
           filename_sfcw: 20180415.000000.fv_srf_wnd.res.nc
           filename_cplr: 20180415.000000.coupler.res
         - filetype: gfs
-          datapath_tile: Data/inputs/gfs_c12/mem003/
+          datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/mem003/
           filename_core: 20180415.000000.fv_core.res.nc
           filename_trcr: 20180415.000000.fv_tracer.res.nc
           filename_sfcd: 20180415.000000.sfc_data.nc
           filename_sfcw: 20180415.000000.fv_srf_wnd.res.nc
           filename_cplr: 20180415.000000.coupler.res
         - filetype: gfs
-          datapath_tile: Data/inputs/gfs_c12/mem004/
+          datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/mem004/
           filename_core: 20180415.000000.fv_core.res.nc
           filename_trcr: 20180415.000000.fv_tracer.res.nc
           filename_sfcd: 20180415.000000.sfc_data.nc
           filename_sfcw: 20180415.000000.fv_srf_wnd.res.nc
           filename_cplr: 20180415.000000.coupler.res
         - filetype: gfs
-          datapath_tile: Data/inputs/gfs_c12/mem005/
+          datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/mem005/
           filename_core: 20180415.000000.fv_core.res.nc
           filename_trcr: 20180415.000000.fv_tracer.res.nc
           filename_sfcd: 20180415.000000.sfc_data.nc
           filename_sfcw: 20180415.000000.fv_srf_wnd.res.nc
           filename_cplr: 20180415.000000.coupler.res
         - filetype: gfs
-          datapath_tile: Data/inputs/gfs_c12/mem006/
+          datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/mem006/
           filename_core: 20180415.000000.fv_core.res.nc
           filename_trcr: 20180415.000000.fv_tracer.res.nc
           filename_sfcd: 20180415.000000.sfc_data.nc
           filename_sfcw: 20180415.000000.fv_srf_wnd.res.nc
           filename_cplr: 20180415.000000.coupler.res
         - filetype: gfs
-          datapath_tile: Data/inputs/gfs_c12/mem007/
+          datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/mem007/
           filename_core: 20180415.000000.fv_core.res.nc
           filename_trcr: 20180415.000000.fv_tracer.res.nc
           filename_sfcd: 20180415.000000.sfc_data.nc
           filename_sfcw: 20180415.000000.fv_srf_wnd.res.nc
           filename_cplr: 20180415.000000.coupler.res
         - filetype: gfs
-          datapath_tile: Data/inputs/gfs_c12/mem008/
+          datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/mem008/
           filename_core: 20180415.000000.fv_core.res.nc
           filename_trcr: 20180415.000000.fv_tracer.res.nc
           filename_sfcd: 20180415.000000.sfc_data.nc
           filename_sfcw: 20180415.000000.fv_srf_wnd.res.nc
           filename_cplr: 20180415.000000.coupler.res
         - filetype: gfs
-          datapath_tile: Data/inputs/gfs_c12/mem009/
+          datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/mem009/
           filename_core: 20180415.000000.fv_core.res.nc
           filename_trcr: 20180415.000000.fv_tracer.res.nc
           filename_sfcd: 20180415.000000.sfc_data.nc
           filename_sfcw: 20180415.000000.fv_srf_wnd.res.nc
           filename_cplr: 20180415.000000.coupler.res
         - filetype: gfs
-          datapath_tile: Data/inputs/gfs_c12/mem010/
+          datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/mem010/
           filename_core: 20180415.000000.fv_core.res.nc
           filename_trcr: 20180415.000000.fv_tracer.res.nc
           filename_sfcd: 20180415.000000.sfc_data.nc
@@ -114,7 +114,7 @@ cost_function:
     - ObsSpace:
         name: Aircraft
         ObsDataIn:
-          obsfile: Data/obs/aircraft_obs_2018041500_m.nc4
+          obsfile: /jedi/fv3-bundle/fv3-jedi/test/Data/obs/aircraft_obs_2018041500_m.nc4
         ObsDataOut:
           obsfile: run-hyb-3dvar/hofx/aircraft_hyb-3dvar-gfs_2018041500_m.nc4
         simulate:
@@ -136,7 +136,7 @@ cost_function:
     - ObsSpace:
         name: Radiosonde
         ObsDataIn:
-          obsfile: Data/obs/sondes_obs_2018041500_m.nc4
+          obsfile: /jedi/fv3-bundle/fv3-jedi/test/Data/obs/sondes_obs_2018041500_m.nc4
         ObsDataOut:
           obsfile: run-hyb-3dvar/hofx/sondes_hyb-3dvar-gfs_2018041500_m.nc4
         simulate:
@@ -158,7 +158,7 @@ cost_function:
     - ObsSpace:
         name: GnssroRef
         ObsDataIn:
-         obsfile: Data/obs/gnssro_obs_2018041500_s.nc4
+         obsfile: /jedi/fv3-bundle/fv3-jedi/test/Data/obs/gnssro_obs_2018041500_s.nc4
         ObsDataOut:
          obsfile: run-hyb-3dvar/hofx/gnssro_hyb-3dvar-gfs_2018041500_s.nc4
         simulate:
@@ -204,7 +204,7 @@ cost_function:
     - ObsSpace:
         name: AMSUA-NOAA19
         ObsDataIn:
-          obsfile: Data/obs/amsua_n19_obs_2018041500_m.nc4
+          obsfile: /jedi/fv3-bundle/fv3-jedi/test/Data/obs/amsua_n19_obs_2018041500_m.nc4
         ObsDataOut:
           obsfile: run-hyb-3dvar/hofx/amsua_n19_hyb-3dvar-gfs_2018041500_m.nc4
         simulate:
@@ -216,7 +216,7 @@ cost_function:
         ObsOptions:
           Sensor_ID: amsua_n19
           EndianType: little_endian
-          CoefficientPath: Data/crtm/
+          CoefficientPath: /jedi/fv3-bundle/fv3-jedi/test/Data/crtm/
       Covariance:
         covariance: diagonal
       ObsFilters:
@@ -237,7 +237,7 @@ cost_function:
   window_length: PT6H
   varchange: Analysis2Model
   filetype: gfs
-  datapath_tile: Data/inputs/gfs_c12/bkg/
+  datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/bkg/
   filename_core: 20180415.000000.fv_core.res.nc
   filename_trcr: 20180415.000000.fv_tracer.res.nc
   filename_sfcd: 20180415.000000.sfc_data.nc
@@ -250,8 +250,8 @@ minimizer:
   algorithm: DRIPCG
 model:
   name: 'FV3'
-  nml_file: Data/fv3files/input_gfs_c12.nml
-  nml_file_pert: Data/fv3files/inputpert_4dvar.nml
+  nml_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/input_gfs_c12.nml
+  nml_file_pert: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/inputpert_4dvar.nml
   tstep: PT3H
   lm_do_dyn: 1
   lm_do_trb: 0
@@ -270,19 +270,19 @@ output:
   first: PT0H
   frequency: PT1H
 resolution:
-  nml_file_mpp: Data/fv3files/fmsmpp.nml
-  nml_file: Data/fv3files/input_gfs_c12.nml
-  trc_file: Data/fv3files/field_table
-  pathfile_akbk: Data/inputs/gfs_c12/akbk.nc
+  nml_file_mpp: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/fmsmpp.nml
+  nml_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/input_gfs_c12.nml
+  trc_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/field_table
+  pathfile_akbk: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/akbk.nc
 variational:
   iteration:
   - ninner: '10'
     gradient_norm_reduction: 1e-10
     test: 'on'
     resolution:
-      nml_file: Data/fv3files/input_gfs_c12.nml
-      trc_file: Data/fv3files/field_table
-      pathfile_akbk: Data/inputs/gfs_c12/akbk.nc
+      nml_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/input_gfs_c12.nml
+      trc_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/field_table
+      pathfile_akbk: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/akbk.nc
     diagnostics:
       departures: ombg
     linearmodel:
@@ -295,9 +295,9 @@ variational:
     gradient_norm_reduction: 1e-10
     test: 'on'
     resolution:
-      nml_file: Data/fv3files/input_gfs_c12.nml
-      trc_file: Data/fv3files/field_table
-      pathfile_akbk: Data/inputs/gfs_c12/akbk.nc
+      nml_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/input_gfs_c12.nml
+      trc_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/field_table
+      pathfile_akbk: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/akbk.nc
     diagnostics:
       departures: ombg
     linearmodel:

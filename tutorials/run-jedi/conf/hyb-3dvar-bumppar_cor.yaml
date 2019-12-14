@@ -1,13 +1,13 @@
 resolution:
-  nml_file_mpp: Data/fv3files/fmsmpp.nml
-  nml_file: Data/fv3files/input_gfs_c12.nml
-  trc_file: Data/fv3files/field_table
-  pathfile_akbk: Data/inputs/gfs_c12/akbk.nc
+  nml_file_mpp: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/fmsmpp.nml
+  nml_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/input_gfs_c12.nml
+  trc_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/field_table
+  pathfile_akbk: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/akbk.nc
 variables: ["ua","va","T","ps","sphum","ice_wat","liq_wat","o3mr"]
 date: '2018-04-14T21:00:00Z'
 background:
   filetype: gfs
-  datapath_tile: Data/inputs/gfs_c12/bkg/
+  datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/bkg/
   filename_core: 20180414.210000.fv_core.res.nc
   filename_trcr: 20180414.210000.fv_tracer.res.nc
   filename_sfcd: 20180414.210000.sfc_data.nc

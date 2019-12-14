@@ -1,19 +1,19 @@
 stateResol:
-  nml_file_mpp: Data/fv3files/fmsmpp.nml
-  nml_file: Data/fv3files/input_gfs_c12.nml
-  trc_file: Data/fv3files/field_table
-  pathfile_akbk: Data/inputs/gfs_c12/akbk.nc
+  nml_file_mpp: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/fmsmpp.nml
+  nml_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/input_gfs_c12.nml
+  trc_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/field_table
+  pathfile_akbk: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/akbk.nc
 incrementResol:
-  nml_file: Data/fv3files/input_gfs_c12.nml
-  trc_file: Data/fv3files/field_table
-  pathfile_akbk: Data/inputs/gfs_c12/akbk.nc
+  nml_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/input_gfs_c12.nml
+  trc_file: /jedi/fv3-bundle/fv3-jedi/test/Data/fv3files/field_table
+  pathfile_akbk: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/akbk.nc
 state1: #Analysis
   filetype: geos
   filename: run-hyb-3dvar/analysis/hyb-3dvar-ana.20180415_000000z.nc4
   variables: ["ua","va","T","sphum"]
 state2: #Background
   filetype: gfs
-  datapath_tile: Data/inputs/gfs_c12/bkg/
+  datapath_tile: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/bkg/
   filename_core: 20180415.000000.fv_core.res.nc
   filename_trcr: 20180415.000000.fv_tracer.res.nc
   filename_sfcd: 20180415.000000.sfc_data.nc
