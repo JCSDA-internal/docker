@@ -114,7 +114,7 @@ cost_function:
     - ObsSpace:
         name: Aircraft
         ObsDataIn:
-          obsfile: /jedi/fv3-bundle/fv3-jedi/test/Data/obs/aircraft_obs_2018041500_m.nc4
+          obsfile: /jedi/build/fv3-jedi/test/Data/obs/aircraft_obs_2018041500_m.nc4
         ObsDataOut:
           obsfile: run-hyb-3dvar/hofx/aircraft_hyb-3dvar-gfs_2018041500_m.nc4
         simulate:
@@ -136,7 +136,7 @@ cost_function:
     - ObsSpace:
         name: Radiosonde
         ObsDataIn:
-          obsfile: /jedi/fv3-bundle/fv3-jedi/test/Data/obs/sondes_obs_2018041500_m.nc4
+          obsfile: /jedi/build/fv3-jedi/test/Data/obs/sondes_obs_2018041500_m.nc4
         ObsDataOut:
           obsfile: run-hyb-3dvar/hofx/sondes_hyb-3dvar-gfs_2018041500_m.nc4
         simulate:
@@ -158,7 +158,7 @@ cost_function:
     - ObsSpace:
         name: GnssroRef
         ObsDataIn:
-         obsfile: /jedi/fv3-bundle/fv3-jedi/test/Data/obs/gnssro_obs_2018041500_s.nc4
+         obsfile: /jedi/build/fv3-jedi/test/Data/obs/gnssro_obs_2018041500_s.nc4
         ObsDataOut:
          obsfile: run-hyb-3dvar/hofx/gnssro_hyb-3dvar-gfs_2018041500_s.nc4
         simulate:
@@ -204,7 +204,7 @@ cost_function:
     - ObsSpace:
         name: AMSUA-NOAA19
         ObsDataIn:
-          obsfile: /jedi/fv3-bundle/fv3-jedi/test/Data/obs/amsua_n19_obs_2018041500_m.nc4
+          obsfile: /jedi/build/fv3-jedi/test/Data/obs/amsua_n19_obs_2018041500_m.nc4
         ObsDataOut:
           obsfile: run-hyb-3dvar/hofx/amsua_n19_hyb-3dvar-gfs_2018041500_m.nc4
         simulate:
@@ -216,7 +216,7 @@ cost_function:
         ObsOptions:
           Sensor_ID: amsua_n19
           EndianType: little_endian
-          CoefficientPath: /jedi/fv3-bundle/fv3-jedi/test/Data/crtm/
+          CoefficientPath: /jedi/build/fv3-jedi/test/Data/crtm/
       Covariance:
         covariance: diagonal
       ObsFilters:
