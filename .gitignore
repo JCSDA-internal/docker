@@ -15,3 +15,8 @@ build.log
 ssh-key
 jedi-overlay.img
 *.sif
+*.nc
+*.nc4
+*.res
+*.bin
+tutorial/tut1/Data
