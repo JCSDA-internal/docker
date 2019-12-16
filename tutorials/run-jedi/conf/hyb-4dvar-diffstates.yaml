@@ -10,12 +10,12 @@ incrementResol:
   pathfile_akbk: /jedi/fv3-bundle/fv3-jedi/test/Data/inputs/gfs_c12/akbk.nc
 state1: #Analysis
   filetype: gfs
-  datapath_tile: run-hyb-3dvar/analysis
-  filename_core: 20180415.000000.hyb-3dvar-gfs.fv_core.res.nc
-  filename_trcr: 20180415.000000.hyb-3dvar-gfs.fv_tracer.res.nc
-  filename_sfcd: 20180415.000000.hyb-3dvar-gfs.sfc_data.nc
-  filename_sfcw: 20180415.000000.hyb-3dvar-gfs.fv_srf_wnd.res.nc
-  filename_cplr: 20180415.000000.hyb-3dvar-gfs.coupler.res
+  datapath_tile: run-hyb-4dvar/analysis
+  filename_core: 20180415.000000.hyb-4dvar-gfs.fv_core.res.nc
+  filename_trcr: 20180415.000000.hyb-4dvar-gfs.fv_tracer.res.nc
+  filename_sfcd: 20180415.000000.hyb-4dvar-gfs.sfc_data.nc
+  filename_sfcw: 20180415.000000.hyb-4dvar-gfs.fv_srf_wnd.res.nc
+  filename_cplr: 20180415.000000.hyb-4dvar-gfs.coupler.res
   variables: ["ua","va","T","DELP","sphum","ice_wat","liq_wat","o3mr"]
 state2: #Background
   filetype: gfs
@@ -28,5 +28,5 @@ state2: #Background
   variables: ["ua","va","T","DELP","sphum","ice_wat","liq_wat","o3mr"]
 output:
   filetype: geos
-  datapath: run-hyb-3dvar/increment/
-  filename: hyb-3dvar-gfs.%yyyy%mm%dd_%hh%MM%ssz.nc4
+  datapath: run-hyb-4dvar/increment/
+  filename: hyb-4dvar-gfs.%yyyy%mm%dd_%hh%MM%ssz.nc4
