@@ -10,6 +10,8 @@ SPECIES JEDI
 
 %files
     ssh-key/github_academy_rsa /root/github_academy_rsa
+    tutorials/run-jedi/run.bash /jedi/tutorials/run-jedi/run.bash
+    tutorials/run-jedi/conf /jedi/tutorials/run-jedi/conf
 
 %environment
     DISPLAY=:0.0
@@ -21,7 +23,6 @@ SPECIES JEDI
     SABER_TEST_TIER=1
     SABER_MPI_TEST=0
     SABER_OMP_TEST=0
-
 
 %post
     echo "Hello from inside the container"
@@ -51,6 +52,13 @@ SPECIES JEDI
     ecbuild --build=Release -DBUILD_TESTING=OFF ../fv3-bundle
     make -j4
     rm $HOME/.ssh/github_academy_rsa
+    apt-get update
+    apt-get install -y default-jdk
+    cd /jedi
+    wget https://www.giss.nasa.gov/tools/panoply/download/PanoplyJ-4.10.12.tgz
+    tar xvf PanoplyJ-4.10.12.tgz
+    rm PanoplyJ-4.10.12.tgz
+    rm -rf /var/lib/apt/lists/*
     chmod -R 777 /jedi
 
 %runscript
