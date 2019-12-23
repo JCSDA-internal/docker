@@ -1,5 +1,17 @@
 #!/bin/bash
 
+#------------------------------------------------------------------------
+function get_ans {
+    ans=''
+    while [[ $ans != y ]] && [[ $ans != n ]]; do
+      echo $1
+      read ans < /dev/stdin
+      if [[ $ans != y ]] && [[ $ans != n ]]; then echo "You must enter y or n"; fi
+    done
+}
+
+#------------------------------------------------------------------------
+
 # This script creates a tutorial container.
 # Currently it only creates a Singularity container from
 # a singularity recipe file but in the future we may
@@ -17,3 +29,21 @@ dd if=/dev/zero of=jedi-overlay.img bs=1M count=1000 && mkfs.ext3 jedi-overlay.i
 # build the container and add the overlay
 sudo singularity build jedi-tutorial.sif Singularity.gnu-openmpi-tut
 singularity siftool add --datatype 4 --partfs 2 --parttype 4 --partarch 2 --groupid 1 jedi-tutorial.sif jedi-overlay.img
+
+# push to AWS S3 and sylabs cloud (private image)
+get_ans "Push to S3 and sylabs cloud?"
+
+if [[ $ans == y ]] ; then
+
+    #first create backup image
+    singularity pull --force library://jcsda/private/jedi-tutorial:latest
+    singularity push jedi-tutorial_latest.sif library://jcsda/private/jedi-tutorial:revert
+    rm jedi-tutorial_latest.sif
+
+    singularity sign jedi-tutorial.sif
+    singularity push jedi-tutorial.sif library://jcsda/private/jedi-tutorial:latest
+    aws s3 cp jedi-tutorial.sif s3://privatecontainers/jedi-tutorial.sif
+
+else
+   echo "Not pushing to S3 and sylabs cloud"
+fi
