@@ -11,5 +11,6 @@ build
 sbin
 doc
 libexec
-build.log
+*.log
 ssh-key
+tutorials
