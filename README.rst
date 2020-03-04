@@ -17,6 +17,7 @@ Our current workflow is to have a different container for each compiler/mpi comb
 -----------------------------------------------
 
 The major NCEP libraries are also installed at :
+
 * /nwprod/lib/bacio/v2.0.1/libbacio_v2.0.1_4.a
 * /nwprod/lib/bacio/v2.0.1/libbacio_v2.0.1_8.a
 * /nwprod/lib/ip/v2.0.0/libip_v2.0.0_4.a
