@@ -23,7 +23,7 @@ ENV NETCDF=/usr/local \
 RUN cd /root \
     && git clone https://github.com/jcsda/jedi-stack.git \
     && cd jedi-stack/buildscripts \
-    && git checkout develop \
+    && git checkout feature/odc-release \
     && ./build_stack.sh "container-gnu-openmpi-dev" \
     && mv ../jedi-stack-contents.log /etc \
     && chmod a+r /etc/jedi-stack-contents.log \
@@ -35,31 +35,6 @@ RUN cd /root \
 ENV FC=mpifort \
    CC=mpicc \
    CXX=mpicxx
-
-# install private repos
-COPY ssh-key/github_academy_rsa /root/github_academy_rsa
-RUN mkdir -p /root/.ssh && \
-    mv /root/github_academy_rsa /root/.ssh/github_academy_rsa && \
-    eval "$(ssh-agent -s)" && \
-    ssh-add /root/.ssh/github_academy_rsa && \
-    ssh -T -o "StrictHostKeyChecking=no" git@github.com; \
-    mkdir -p /root/jedi && cd /root/jedi && \
-    git clone git@github.com:jcsda/odc.git && \
-    cd odc && git checkout develop && \
-    mkdir -p build && cd build && \
-    ecbuild --build=Release -DCMAKE_INSTALL_PREFIX="/usr/local" .. && \
-    make -j4 && make install && \
-    echo "odc develop" >> /etc/jedi-stack-contents.log && \
-    cd /root/jedi && \
-    git clone git@github.com:jcsda/odyssey.git && \
-    cd odyssey && git checkout develop && \
-    mkdir -p build && cd build && \
-    ecbuild --build=Release -DCMAKE_INSTALL_PREFIX="/usr/local" .. && \
-    make -j4 && make install && \
-    echo "odyssey develop" >> /etc/jedi-stack-contents.log && \
-    rm -rf /root/jedi/odc && \
-    rm -rf /root/jedi/odyssey && \
-    rm /root/.ssh/github_academy_rsa
 
 #Make a non-root user:jedi / group:jedi for running MPI
 RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi && \
