@@ -1,0 +1,66 @@
+BootStrap: docker
+From: jcsda/docker-gnu-openmpi-dev:latest
+
+%labels
+MAINTAINER Mark Miesch
+SPECIES JEDI
+
+%help
+  This is a Singularity container provisioned to run the JEDI tutorials.  
+
+%files
+    ssh-key/github_academy_rsa /root/github_academy_rsa
+    tutorials/run-jedi/run.bash /jedi/tutorials/run-jedi/run.bash
+    tutorials/run-jedi/conf /jedi/tutorials/run-jedi/conf
+
+%environment
+    DISPLAY=:0.0
+    export DISPLAY
+    TERM=xterm
+    export TERM
+    GIT_MERGE_AUTOEDIT=no
+    export GIT_MERGE_AUTOEDIT
+    SABER_TEST_TIER=1
+    SABER_MPI_TEST=0
+    SABER_OMP_TEST=0
+
+%post
+    echo "Hello from inside the container"
+    cd $HOME
+    mkdir -p /root/.ssh
+    mv /root/github_academy_rsa /root/.ssh/github_academy_rsa
+    eval "$(ssh-agent -s)"
+    ssh-add $HOME/.ssh/github_academy_rsa
+    bash -c "ssh -T -o "StrictHostKeyChecking=no" git@github.com; exit 0"
+    mkdir -p /jedi
+    cd /jedi
+    git clone git@github.com:jcsda/fv3-bundle.git
+    cd fv3-bundle
+    sed -e '/PROJECT eckit/s/^/#/g' -i CMakeLists.txt
+    git clone git@github.com:jcsda/fckit.git -b develop
+    git clone git@github.com:jcsda/crtm.git -b develop
+    git clone git@github.com:jcsda/saber.git -b develop
+    git clone git@github.com:jcsda/oops.git -b develop
+    git clone git@github.com:jcsda/ioda.git -b develop
+    git clone git@github.com:jcsda/ufo.git -b develop
+    git clone git@github.com:jcsda/fms.git -b dev/master-ecbuild
+    git clone git@github.com:jcsda/femps.git -b develop
+    git clone git@github.com:jcsda/fv3-jedi-linearmodel.git -b develop fv3-jedi-lm
+    git clone git@github.com:jcsda/fv3-jedi.git -b develop
+    mkdir /jedi/build
+    cd /jedi/build
+    ecbuild --build=Release -DBUILD_TESTING=OFF ../fv3-bundle
+    make -j4
+    rm $HOME/.ssh/github_academy_rsa
+    apt-get update
+    apt-get install -y default-jdk
+    cd /jedi
+    wget https://www.giss.nasa.gov/tools/panoply/download/PanoplyJ-4.10.12.tgz
+    tar xvf PanoplyJ-4.10.12.tgz
+    rm PanoplyJ-4.10.12.tgz
+    rm -rf /var/lib/apt/lists/*
+    chmod -R 777 /jedi
+
+%runscript
+    bash -l
+

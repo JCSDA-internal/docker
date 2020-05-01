@@ -13,4 +13,12 @@ doc
 libexec
 *.log
 ssh-key
-tutorials
+jedi-overlay.img
+*.sif
+*.nc
+*.nc4
+*.res
+*.bin
+*.gz
+*.tgz
+tutorials/run-jedi/Data
