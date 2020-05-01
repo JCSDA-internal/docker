@@ -11,7 +11,7 @@ build
 sbin
 doc
 libexec
-build.log
+*.log
 ssh-key
 jedi-overlay.img
 *.sif
