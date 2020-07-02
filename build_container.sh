@@ -39,21 +39,16 @@ get_ans "Push to Docker Hub?"
 
 if [[ $ans == y ]] ; then
 
-#    # save previous image in case something goes wrong
-#    docker pull jcsda/docker-$CNAME:latest
-#    docker tag jcsda/docker-$CNAME:latest jcsda/docker-$CNAME:revert
-#    docker push jcsda/docker-$CNAME:revert
-#    docker rmi jcsda/docker-$CNAME:latest
-#
-#    # push new image and re-tag it with latest
-#    docker tag jcsda/docker-$CNAME:beta jcsda/docker-$CNAME:latest
-#    docker rmi jcsda/docker-$CNAME:beta
-#    docker push jcsda/docker-$CNAME:latest
+    # save previous image in case something goes wrong
+    docker pull jcsda/docker-$CNAME:latest
+    docker tag jcsda/docker-$CNAME:latest jcsda/docker-$CNAME:revert
+    docker push jcsda/docker-$CNAME:revert
+    docker rmi jcsda/docker-$CNAME:latest
 
-    docker tag jcsda/docker-$CNAME:beta jcsda/docker-$CNAME:ecsync
+    # push new image and re-tag it with latest
+    docker tag jcsda/docker-$CNAME:beta jcsda/docker-$CNAME:latest
     docker rmi jcsda/docker-$CNAME:beta
-    docker push jcsda/docker-$CNAME:ecsync
+    docker push jcsda/docker-$CNAME:latest
     
 fi
-
 #------------------------------------------------------------------------
