@@ -1,4 +1,4 @@
-FROM  jcsda/docker_base-clang-mpich-dev:latest
+FROM  jcsda/docker_base-clang-mpich-dev:beta
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
 # set environment variables manually
@@ -46,17 +46,11 @@ RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi && \
     echo "export CC=mpicc" >> ~jedi/.bashrc && \
     echo "export CXX=mpicxx" >> ~jedi/.bashrc && \
     echo "export PYTHONPATH=/usr/local/lib:$PYTHONPATH" >> ~jedi/.bashrc && \
+    echo "ulimit -s unlimited" >> ~jedi/.bashrc && \
+    echo "ulimit -v unlimited" >> ~jedi/.bashrc && \
     echo "[credential]\n    helper = cache --timeout=7200" >> ~jedi/.gitconfig && \
     mkdir ~jedi/.openmpi && \
     echo "rmaps_base_oversubscribe = 1" >> ~jedi/.openmpi/mca-params.conf && \
     chown -R jedi:jedi ~jedi/.gitconfig ~jedi/.openmpi
-
-# build lcov for Travis-CI
-RUN cd /usr/local/src \
-    && curl -L -O http://downloads.sourceforge.net/ltp/lcov-1.14.tar.gz \
-    && tar -xvf lcov-1.14.tar.gz \
-    && cd lcov-1.14 \
-    && make install \
-    && rm -rf /usr/local/src/*
 
 CMD ["/bin/bash" , "-l"]
