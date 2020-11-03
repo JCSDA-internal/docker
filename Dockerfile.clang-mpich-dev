@@ -1,4 +1,4 @@
-FROM  jcsda/docker_base-clang-mpich-dev:betq
+FROM  jcsda/docker_base-clang-mpich-dev:beta
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
 # set environment variables manually
