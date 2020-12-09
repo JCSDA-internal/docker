@@ -7,7 +7,7 @@
 #------------------------------------------------------------------------
 if [ $# -ne 1 ]; then
    echo "Usage: "
-   echo "./build_container.sh <container-name>"
+   echo "./build_container.sh <container-name> <tag>"
    exit 1
 fi
 
@@ -15,11 +15,12 @@ fi
 set -e
 
 export CNAME=${1:-"gnu-openmpi-dev"}
+export TAG=${2:-"beta"}
 
 #------------------------------------------------------------------------
 # Build image
 # tag it as beta for testing purposes - this will be retagged as latest
 
-docker image build --no-cache -f Dockerfile.${CNAME} -t jcsda/docker-${CNAME}:beta . 2>&1 | tee build.log
+docker image build --no-cache -f Dockerfile.${CNAME} -t jcsda/docker-${CNAME}:${TAG} . 2>&1 | tee build.log
 
 #------------------------------------------------------------------------
