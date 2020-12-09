@@ -5,7 +5,7 @@
 
 
 #------------------------------------------------------------------------
-if [ $# -ne 1 ]; then
+if [ $# -lt 1 ]; then
    echo "Usage: "
    echo "./build_container.sh <container-name> <tag>"
    exit 1
