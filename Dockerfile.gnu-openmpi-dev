@@ -19,8 +19,16 @@ ENV NETCDF=/usr/local \
    MPI_FC=mpifort \
    PYTHONPATH=/usr/local/lib
 
+COPY ssh-key/github_academy_rsa /root/github_academy_rsa
+
+RUN DOCKERSHELL BASH
+
 # build the jedi stack
-RUN cd /root \
+RUN mkdir -p /root/.ssh \
+    && mv /root/github_academy_rsa /root/.ssh/github_academy_rsa \
+    && eval "$(ssh-agent -s)" \
+    && ssh-add /root/.ssh/github_academy_rsa \
+    && ssh -T -o "StrictHostKeyChecking=no" git@github.com; cd /root && \
     && git clone https://github.com/jcsda-internal/jedi-stack.git \
     && cd jedi-stack/buildscripts \
     && git checkout develop \
@@ -29,7 +37,8 @@ RUN cd /root \
     && chmod a+r /etc/jedi-stack-contents.log \
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
-    && mkdir /worktmp
+    && mkdir /worktmp \
+    && rm /root/.ssh/github_academy_rsa
 
 #Setup the root users environment
 ENV FC=mpifort \
