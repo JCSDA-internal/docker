@@ -25,7 +25,7 @@ ENV NETCDF=/usr/local \
 
 COPY ssh-key/github_academy_rsa /root/github_academy_rsa
 
-RUN DOCKERSHELL BASH
+SHELL ["/bin/bash", "-c"]
 
 # build the jedi stack
 RUN mkdir -p /root/.ssh \
