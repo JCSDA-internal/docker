@@ -32,8 +32,8 @@ RUN mkdir -p /root/.ssh \
     && mv /root/github_academy_rsa /root/.ssh/github_academy_rsa \
     && eval "$(ssh-agent -s)" \
     && ssh-add /root/.ssh/github_academy_rsa \
-    && ssh -T -o "StrictHostKeyChecking=no" git@github.com; cd /root && \
-    && git clone https://github.com/jcsda-internal/jedi-stack.git \
+    && ssh -T -o "StrictHostKeyChecking=no" git@github.com; cd /root \
+    && git clone git@github.com/jcsda-internal/jedi-stack.git \
     && cd jedi-stack/buildscripts \
     && git checkout feature/bufr \
     && ./build_stack.sh "container-clang-mpich-dev" \
