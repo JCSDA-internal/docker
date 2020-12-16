@@ -16,11 +16,13 @@ set -e
 
 export CNAME=${1:-"gnu-openmpi-dev"}
 export TAG=${2:-"beta"}
+KEY=$HOME/.ssh/github_academy_rsa
 
 #------------------------------------------------------------------------
 # Build image
-# tag it as beta for testing purposes - this will be retagged as latest
+# tag it as beta for testing purposes - this will be retagged as # # latest
 
-docker image build --no-cache -f Dockerfile.${CNAME} -t jcsda/docker-${CNAME}:${TAG} . 2>&1 | tee build.log
+export DOCKER_BUILDKIT=1
+docker build --no-cache --ssh github_ssh_key=${KEY} --progress=plain -f Dockerfile.${CNAME} -t jcsda/docker-${CNAME}:${TAG} . 2>&1 | tee build.log
 
 #------------------------------------------------------------------------
