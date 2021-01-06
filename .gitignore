@@ -12,7 +12,7 @@ sbin
 doc
 libexec
 *.log
-ssh-key
+ssh-key/
 jedi-overlay.img
 *.sif
 *.nc
