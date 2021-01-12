@@ -34,7 +34,7 @@ RUN --mount=type=ssh,id=github_ssh_key cd /root \
     && source /etc/profile \
     && git clone git@github.com:JCSDA-internal/jedi-stack.git \
     && cd jedi-stack/buildscripts \
-    && git checkout develop \
+    && git checkout bugfix/update-udunits \
     && ./build_stack.sh "container-gnu-openmpi-dev" \
     && mv ../jedi-stack-contents.log /etc \
     && chmod a+r /etc/jedi-stack-contents.log \
@@ -55,7 +55,7 @@ RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi && \
     echo "export PYTHONPATH=/usr/local/lib:$PYTHONPATH" >> ~jedi/.bashrc && \
     echo "ulimit -s unlimited" >> ~jedi/.bashrc && \
     echo "ulimit -v unlimited" >> ~jedi/.bashrc && \
-    echo "[credential]\n    helper = cache --timeout=7200" >> ~jedi/.gitconfig && \
+    printf "[credential]\n    helper = cache --timeout=7200" >> ~jedi/.gitconfig && \
     mkdir ~jedi/.openmpi && \
     echo "rmaps_base_oversubscribe = 1" >> ~jedi/.openmpi/mca-params.conf && \
     chown -R jedi:jedi ~jedi/.gitconfig ~jedi/.openmpi
