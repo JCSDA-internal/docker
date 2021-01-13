@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM  jcsda/docker_base-clang-mpich-dev-mlnx:mlnx
+FROM  jcsda/docker_base-clang-mpich-dev:beta
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
 # set environment variables manually
@@ -59,7 +59,7 @@ RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi && \
     echo "export PYTHONPATH=/usr/local/lib:$PYTHONPATH" >> ~jedi/.bashrc && \
     echo "ulimit -s unlimited" >> ~jedi/.bashrc && \
     echo "ulimit -v unlimited" >> ~jedi/.bashrc && \
-    echo "[credential]\n    helper = cache --timeout=7200" >> ~jedi/.gitconfig && \
+    printf "[credential]\n    helper = cache --timeout=7200\n" >> ~jedi/.gitconfig && \
     mkdir ~jedi/.openmpi && \
     echo "rmaps_base_oversubscribe = 1" >> ~jedi/.openmpi/mca-params.conf && \
     chown -R jedi:jedi ~jedi/.gitconfig ~jedi/.openmpi
