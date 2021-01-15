@@ -42,6 +42,10 @@ RUN --mount=type=ssh,id=github_ssh_key cd /root \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
 
+# clean up
+RUN git config --global --unset url.ssh://git@github.com/.insteadOf \
+    && rm -rf /root/.ssh
+
 #Setup the root users environment
 ENV FC=mpifort \
    CC=mpicc \
