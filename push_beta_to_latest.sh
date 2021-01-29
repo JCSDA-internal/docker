@@ -47,8 +47,8 @@ if [[ $ans == y ]] ; then
     docker rmi jcsda/docker-$CNAME:latest
 
     # push new image and re-tag it with latest
-    docker tag jcsda/docker-$CNAME:beta jcsda/docker-$CNAME:latest
-    docker rmi jcsda/docker-$CNAME:beta
+    docker tag jcsda/docker-$CNAME:${TAG} jcsda/docker-$CNAME:latest
+    docker rmi jcsda/docker-$CNAME:${TAG}
     docker push jcsda/docker-$CNAME:latest
 
 fi

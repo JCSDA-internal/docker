@@ -10,7 +10,7 @@ The repository builds the Docker image from two building blocks:
 * The jcsda/docker_base image, which contains the compilers and mpi library
 * The jedi-stack build scripts
 
-For a list of the software that is installed in the image, see the `jedi-stack <https://github.com/jcsda/jedi-stack.git>`_ repo.  
+For a list of the software that is installed in the image, see the `jedi-stack <https://github.com/jcsda/jedi-stack.git>`_ repo.
 
 Our current workflow is to have a different container for each compiler/mpi combination we support.  So, all libraries are installed in /usr/local, as opposed to the module-based setup otherwise produced by the jedi-stack build system.
 
@@ -35,18 +35,27 @@ The major NCEP libraries are also installed at :
 * /nwprod/lib/w3nco/v2.0.6/libw3nco_v2.0.6_8.a
 * /nwprod/lib/w3nco/v2.0.6/libw3nco_v2.0.6_d.a
 
-   
-How to build the image
-----------------------
 
-*The id_rsa has to be replaced with your $HOME/.ssh/id_rsa to let you access the private github repositories.*
+Container workflow
+------------------
+
+To build one of the docker containers, enter, e.g.:
 
 .. code:: bash
 
-  name="gnu-openmpi-dev"
-  docker image build --no-cache -f Dockerfile.$name -t jcsda/docker-$name . 2>&1 | tee build.log
-  docker push jcsda/docker-$name
+  ./build_container.sh gnu-openmpi-dev beta
 
+The first argument (required) is the name of the container, which must match one of the Dockerfiles in the repo.  The second argument (optional) is the tag.  If omitted, it defaults to `beta`
+
+After building the container, the next step is typically to test it by building, e.g. `fv3-bundle`.  After verifying that the container works, then you can push it to Docker Hub with
+
+.. code:: bash
+
+  ./push_beta_to_latest.sh gnu-openmpi-dev beta
+
+The first and second arguments are the name of the container (required) and the tag (optional, defaults to `beta`), as above.
+
+This will save the previous `latest` image on Docker Hub with the `revert` tag, retag the new container as `latest` and push the new, latest container to Docker Hub.
 
 *Please* `contact Mark Miesch`_, *if you need more libraries being included.*
 
