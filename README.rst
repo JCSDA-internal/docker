@@ -10,7 +10,7 @@ The repository builds the Docker image from two building blocks:
 * The jcsda/docker_base image, which contains the compilers and mpi library
 * The jedi-stack build scripts
 
-For a list of the software that is installed in the image, see the `jedi-stack <https://github.com/jcsda/jedi-stack.git>`_ repo.
+For a list of the software that is installed in the image, see the `jedi-stack <https://github.com/jcsda/jedi-stack.git>`_ repo (select the ``develop`` branch for the most up to date information).
 
 Our current workflow is to have a different container for each compiler/mpi combination we support.  So, all libraries are installed in /usr/local, as opposed to the module-based setup otherwise produced by the jedi-stack build system.
 

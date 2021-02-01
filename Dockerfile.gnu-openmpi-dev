@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM  jcsda/docker_base-gnu-openmpi-dev:beta
+FROM  jcsda/docker_base-gnu-openmpi-dev:__TAG__
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
 # set environment variables manually
