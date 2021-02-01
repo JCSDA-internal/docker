@@ -19,10 +19,16 @@ export TAG=${2:-"beta"}
 KEY=$HOME/.ssh/github_academy_rsa
 
 #------------------------------------------------------------------------
+# Specify proper tag
+
+rm -f Dockerfile.build
+sed -e 's/__TAG__/'"${TAG}"'/g' Dockerfile.${CNAME} >> Dockerfile.build
+
+#------------------------------------------------------------------------
 # Build image
 # tag it as beta for testing purposes - this will be retagged as # # latest
 
 export DOCKER_BUILDKIT=1
-docker build --no-cache --ssh github_ssh_key=${KEY} --progress=plain -f Dockerfile.${CNAME} -t jcsda/docker-${CNAME}:${TAG} . 2>&1 | tee build.log
+docker build --no-cache --ssh github_ssh_key=${KEY} --progress=plain -f Dockerfile.build -t jcsda/docker-${CNAME}:${TAG} . 2>&1 | tee build.log
 
 #------------------------------------------------------------------------

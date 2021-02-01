@@ -22,3 +22,4 @@ jedi-overlay.img
 *.gz
 *.tgz
 tutorials/run-jedi/Data
+Dockerfile.build
