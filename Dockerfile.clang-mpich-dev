@@ -56,7 +56,7 @@ ENV FC=mpifort \
    CXX=mpicxx
 
 #Make a non-root user:jedi / group:jedi for running MPI
-RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi && \
+RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi --uid 43891 && \
     echo "export FC=mpifort" >> ~jedi/.bashrc && \
     echo "export CC=mpicc" >> ~jedi/.bashrc && \
     echo "export CXX=mpicxx" >> ~jedi/.bashrc && \
