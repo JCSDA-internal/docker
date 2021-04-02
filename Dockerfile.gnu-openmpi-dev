@@ -38,6 +38,9 @@ RUN --mount=type=ssh,id=github_ssh_key cd /root \
     && ./build_stack.sh "container-gnu-openmpi-dev" \
     && mv ../jedi-stack-contents.log /etc \
     && chmod a+r /etc/jedi-stack-contents.log \
+    && cd /root/jedi-stack/pkg/NCEPLIBS-bufr/build/python \
+    && python setup.py build \
+    && python setup.py install --prefix=/usr/local --install-lib=/usr/local/lib/python3.8/site-packages \
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
