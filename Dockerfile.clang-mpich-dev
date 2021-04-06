@@ -2,6 +2,12 @@
 FROM  jcsda/docker_base-clang-mpich-dev:__TAG__
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
+# additional system packages
+RUN apt-get update -y && \
+   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+       libgmp-dev libmpfr-dev libboost-thread-dev && \
+   rm -rf /var/lib/apt/lists/*
+
 # set environment variables manually
 ENV NETCDF=/usr/local \
    PNETCDF=/usr/local \
@@ -42,6 +48,9 @@ RUN --mount=type=ssh,id=github_ssh_key cd /root \
     && ./build_stack.sh "container-clang-mpich-dev" \
     && mv ../jedi-stack-contents.log /etc \
     && chmod a+r /etc/jedi-stack-contents.log \
+    && cd /root/jedi-stack/pkg/NCEPLIBS-bufr/build/python \
+    && python setup.py build \
+    && python setup.py install --prefix=/usr/local \
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
