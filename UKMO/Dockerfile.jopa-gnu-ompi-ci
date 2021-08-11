@@ -1,0 +1,8 @@
+# syntax=docker/dockerfile:experimental
+FROM jcsda/jopa-gnu-ompi-dev:latest
+LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
+
+RUN yum install -y subversion
+
+RUN cd / && \
+    rm -rf {/usr/local/src/*,/var/tmp/*}
