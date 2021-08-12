@@ -4,5 +4,9 @@ LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
 RUN yum install -y subversion
 
+# build shumlib
+RUN --mount=type=secret,id=pwd cd /root && \
+    svn checkout --non-interactive --username=markmiesch --password=$(cat /run/secrets/pwd) https://code.metoffice.gov.uk/svn/utils/shumlib/branches/dev/stevensandbach/r4621_387_jedi_test_branch
+
 RUN cd / && \
     rm -rf {/usr/local/src/*,/var/tmp/*}
