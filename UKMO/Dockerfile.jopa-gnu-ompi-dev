@@ -328,20 +328,20 @@ RUN cd / && \
     make -j$(nproc) && make install && \
     cd && rm -rf /usr/local/src/{build,eckit*}
 
-RUN cd / && \
-    cd /usr/local/src && \
-    git clone https://github.com/ecmwf/fckit.git -b 0.9.2 && \
-    mkdir -p build && cd build && \
-    ecbuild --build=Release ../fckit && \
-    make -j$(nproc) && make install && \
-    cd && rm -rf /usr/local/src/{build,fckit*}
+#RUN cd / && \
+#    cd /usr/local/src && \
+#    git clone https://github.com/ecmwf/fckit.git -b 0.9.2 && \
+#    mkdir -p build && cd build && \
+#    ecbuild --build=Release ../fckit && \
+#    make -j$(nproc) && make install && \
+#    cd && rm -rf /usr/local/src/{build,fckit*}
 
 ENV CC=gcc \
     CXX=g++
 
 RUN cd / && \
     cd /usr/local/src && \
-    git clone https://github.com/ecmwf/odc.git -b 1.1.0 && \
+    git clone https://github.com/ecmwf/odc.git -b 2021.03.0 && \
     mkdir -p build && cd build && \
     ecbuild ../odc && \
     make -j$(nproc) && make install && \

@@ -2,25 +2,27 @@
 FROM jcsda/jopa-gnu-ompi-dev:latest
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
-# clone and build fckit
-#RUN mkdir -p /usr/local/src && \
-#    cd /usr/local/src && \
-#    git clone https://github.com/ecmwf/fckit.git -b 0.9.2 && \
-#    mkdir -p build && cd build && \
-#    ecbuild --build=Release ../fckit && \
-#    make -j$(nproc) && make install && \
-#    cd && rm -rf /usr/local/src/{build,fckit*}
+#clone and build fckit
+RUN mkdir -p /usr/local/src && \
+   cd /usr/local/src && \
+   git clone https://github.com/ecmwf/fckit.git -b 0.9.2 && \
+   mkdir -p build && cd build && \
+   ecbuild --build=Release ../fckit && \
+   make -j$(nproc) && make install && \
+   cd && rm -rf /usr/local/src/{build,fckit*}
 
+# clone and build shumlib
 RUN yum install -y subversion
 
 ENV SHUM_ROOT=/root/r4621_387_jedi_test_branch/build/ssec-ifort-icc
 
-# build shumlib
-RUN --mount=type=secret,id=pwd mkdir -p /root/src && \
-    cd /root/src && \
+RUN --mount=type=secret,id=pwd mkdir -p /opt && \
+    cd /opt && \
     svn checkout --non-interactive --username=markmiesch --password=$(cat /run/secrets/pwd) https://code.metoffice.gov.uk/svn/utils/shumlib/branches/dev/stevensandbach/r4621_387_jedi_test_branch && \
     cd r4621_387_jedi_test_branch && \
     make -f make/vm-x86-gfortran-gcc.mk && \
+    mkdir -p /opt/build/shumlib && \
+    mv build /opt/build/shumlib && \
     rm -rf /root/src
 
 SHELL ["/bin/bash", "-c"]
@@ -41,23 +43,23 @@ RUN --mount=type=ssh,id=github_ssh_key mkdir -p /root/src && \
     git clone git@github.com:JCSDA-internal/atlas.git -b feature/um
 
 # build faux
-RUN mkdir -p /root/build/faux && \
-    cd /root/build/faux && \
+RUN mkdir -p /opt/build/faux && \
+    cd /opt/build/faux && \
     ecbuild --build=Release /root/src/faux && \
     make -j4
 
 # build trans
-RUN mkdir -p /root/build/trans && \
-    cd /root/build/trans && \
-    ecbuild --build=Release -Dfaux_ROOT=/root/build/faux /root/src/trans && \
+RUN mkdir -p /opt/build/trans && \
+    cd /opt/build/trans && \
+    ecbuild --build=Release -Dfaux_ROOT=/opt/build/faux /root/src/trans && \
     make -j4
 
 # Build atlas branch feature/um
-ENV CMAKE_PREFIX_PATH=/usr/local/lib64/cmake/eckit:$CMAKE_PREFIX_PATH
-#RUN mkdir -p /root/build/atlas && \
-#    cd /root/build/atlas && \
-#    ecbuild --build=Release -Dtrans_DIR=/root/build/trans \
-#            --eckit_ROOT=/usr/local /root/src/atlas
+#ENV CMAKE_PREFIX_PATH=/usr/local/lib64/cmake/eckit:$CMAKE_PREFIX_PATH
+RUN mkdir -p /opt/build/atlas && \
+    cd /opt/build/atlas && \
+    ecbuild --build=Release -Dtrans_DIR=/opt/build/trans \
+            --eckit_ROOT=/usr/local /root/src/atlas
 
 RUN cd / && \
-    rm -rf {/usr/local/src/*,/var/tmp/*}
+    rm -rf {/usr/local/src/*,/var/tmp/*,/root/src/*}
