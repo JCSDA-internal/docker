@@ -2,6 +2,9 @@
 FROM jcsda/jopa-gnu-ompi-dev:latest
 LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
 
+# Mount external volume for AWS CodeBuild
+VOLUME /var/lib/docker
+
 #clone and build fckit
 RUN mkdir -p /usr/local/src && \
    cd /usr/local/src && \
@@ -12,7 +15,7 @@ RUN mkdir -p /usr/local/src && \
    cd && rm -rf /usr/local/src/{build,fckit*}
 
 # clone and build shumlib
-RUN yum install -y subversion
+RUN yum install -y subversion awscli
 
 ENV SHUM_ROOT=/root/r4621_387_jedi_test_branch/build/ssec-ifort-icc
 
@@ -60,6 +63,19 @@ RUN mkdir -p /opt/build/atlas && \
     cd /opt/build/atlas && \
     ecbuild --build=Release -Dtrans_DIR=/opt/build/trans \
             --eckit_ROOT=/usr/local /root/src/atlas
+
+#Make a non-root user:jedi / group:jedi for running MPI
+RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi --uid 43891 && \
+    echo "export FC=mpifort" >> ~jedi/.bashrc && \
+    echo "export CC=mpicc" >> ~jedi/.bashrc && \
+    echo "export CXX=mpicxx" >> ~jedi/.bashrc && \
+    echo "export PYTHONPATH=/usr/local/lib:$PYTHONPATH" >> ~jedi/.bashrc && \
+    echo "ulimit -s unlimited" >> ~jedi/.bashrc && \
+    echo "ulimit -v unlimited" >> ~jedi/.bashrc && \
+    printf "[credential]\n    helper = cache --timeout=7200\n" >> ~jedi/.gitconfig && \
+    mkdir ~jedi/.openmpi && \
+    echo "rmaps_base_oversubscribe = 1" >> ~jedi/.openmpi/mca-params.conf && \
+    chown -R jedi:jedi ~jedi/.gitconfig ~jedi/.openmpi
 
 RUN cd / && \
     rm -rf {/usr/local/src/*,/var/tmp/*,/root/src/*}
