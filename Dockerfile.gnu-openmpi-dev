@@ -60,6 +60,16 @@ ENV FC=mpifort \
    CC=mpicc \
    CXX=mpicxx
 
+# set time zone
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata locales && \
+    ln -fs /usr/share/zoneinfo/America/Denver /etc/localtime && \
+    locale-gen --purge en_US.UTF-8 && \
+    dpkg-reconfigure --frontend noninteractive tzdata && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale "LANG=en_US.UTF-8" && \
+    update-locale "LANGUAGE=en_US:en"
+
 #Make a non-root user:jedi / group:jedi for running MPI
 RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi --uid 43891 && \
     echo "export FC=mpifort" >> ~jedi/.bashrc && \
