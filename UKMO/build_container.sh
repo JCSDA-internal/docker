@@ -13,4 +13,5 @@ set -e
 export TAG=${1:-"beta"}
 KEY=$HOME/.ssh/githubnew_rsa
 
+export DOCKER_BUILDKIT=1
 docker build --secret id=pwd,src=./credentials/mosrs --ssh github_ssh_key=${KEY} --progress=plain -f Dockerfile.jopa-gnu-ompi-ci -t jopa-gnu-ompi-ci:$TAG context
