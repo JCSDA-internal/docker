@@ -1,0 +1,30 @@
+FROM jcsda/docker-gnu-openmpi-dev:latest AS spython-base
+LABEL AUTHOR Redline Performance Solutions LLC 
+
+RUN mkdir -p /home/jedi
+WORKDIR /home/jedi
+RUN git clone -b feature/singularity https://github.com/noaa-emc/hpc-stack
+ENV ZLIB_ROOT=/usr/local/lib
+ENV PNETCDF_ROOT=/usr/local/lib
+ENV NETCDF_ROOT=/usr/local/lib
+WORKDIR /home/jedi/hpc-stack
+RUN ./build_stack.sh -p /usr/local -c config/config_custom.sh -y stack/stack_jedi_ufs.yaml
+
+WORKDIR /home/jedi
+RUN git clone --recurse-submodules https://github.com/mark-a-potts/ufs-weather-model
+WORKDIR /home/jedi/ufs-weather-model
+RUN mkdir build
+WORKDIR /home/jedi/ufs-weather-model/build
+RUN sed -i 's/lib\/include/include/g' /usr/local/lib/esmf.mk
+ENV ESMFMKFILE=/usr/local/lib/esmf.mk
+RUN cmake  -DCCPP_SUITES=FV3_GFS_v16,FV3_GFS_v15p2 -DREPRO=on -DOPENMP=ON -DINLINE_POST=OFF -DMULTI_GASES=OFF -DMPI=ON -DAPP=ATM -DCMAKE_PREFIX_PATH=/usr/local/lib/cmake -DNETCDF_ROOT=/usr/local -DCMAKE_INSTALL_PREFIX=/usr/local -DFMS_ROOT=/usr/local ..
+RUN make -j 8 install
+RUN cp ufs_model /usr/local/bin
+
+WORKDIR /home/jedi
+RUN rm -rf *
+WORKDIR /usr/local/include
+RUN mkdir /usr/local/include/CRTM
+RUN mv crtm* CRTM
+RUN mv kinds.mod CRTM
+
