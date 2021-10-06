@@ -17,7 +17,7 @@ RUN mkdir -p /usr/local/src && \
 # clone and build shumlib
 RUN yum install -y subversion awscli
 
-ENV SHUM_ROOT=/root/r4621_387_jedi_test_branch/build/ssec-ifort-icc
+ENV SHUM_ROOT=/opt/build/shumlib/vm-x86-gfortran-gcc/
 
 RUN --mount=type=secret,id=pwd mkdir -p /opt && \
     cd /opt && \
@@ -25,7 +25,7 @@ RUN --mount=type=secret,id=pwd mkdir -p /opt && \
     cd r4621_387_jedi_test_branch && \
     make -f make/vm-x86-gfortran-gcc.mk && \
     mkdir -p /opt/build/shumlib && \
-    mv build /opt/build/shumlib && \
+    mv build/* /opt/build/shumlib && \
     rm -rf /root/src
 
 SHELL ["/bin/bash", "-c"]
@@ -70,6 +70,7 @@ RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi --uid 43891 && \
     echo "export CC=mpicc" >> ~jedi/.bashrc && \
     echo "export CXX=mpicxx" >> ~jedi/.bashrc && \
     echo "export PYTHONPATH=/usr/local/lib:$PYTHONPATH" >> ~jedi/.bashrc && \
+    echo "export SHUM_ROOT=/opt/build/shumlib/vm-x86-gfortran-gcc/" >> ~jedi/.bashrc && \
     echo "ulimit -s unlimited" >> ~jedi/.bashrc && \
     echo "ulimit -v unlimited" >> ~jedi/.bashrc && \
     printf "[credential]\n    helper = cache --timeout=7200\n" >> ~jedi/.gitconfig && \
