@@ -42,18 +42,15 @@ RUN git config --global url.ssh://git@github.com/.insteadOf https://github.com/
 # build the jedi stack
 RUN --mount=type=ssh,id=github_ssh_key cd /root \
     && source /etc/profile \
-    && git clone git@github.com:jcsda-internal/jedi-stack.git \
+    && git clone git@github.com:JCSDA-internal/jedi-stack.git \
     && cd jedi-stack/buildscripts \
     && git checkout develop \
     && ./build_stack.sh "container-clang-mpich-dev" \
     && mv ../jedi-stack-contents.log /etc \
     && chmod a+r /etc/jedi-stack-contents.log \
-    && sed -i 's/site/dist/g' /root/jedi-stack/pkg/NCEPLIBS-bufr/python/CMakeLists.txt  \
-    && cd /root/jedi-stack/pkg/NCEPLIBS-bufr/build \
-    && make install \
     && cd /root/jedi-stack/pkg/NCEPLIBS-bufr/build/python \
     && python setup.py build \
-    && python setup.py install --prefix=/usr/local \
+    && python setup.py install --prefix=/usr/local --install-lib=/usr/local/lib/python3.8/dist-packages\
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
