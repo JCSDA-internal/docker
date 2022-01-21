@@ -16,7 +16,7 @@ set -e
 
 export CNAME=${1:-"gnu-openmpi-dev"}
 export TAG=${2:-"beta"}
-KEY=$HOME/.ssh/github_academy_rsa
+KEY=$HOME/.ssh/id_rsa
 
 #------------------------------------------------------------------------
 # Specify proper tag

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 FROM  jcsda/docker_base-clang-mpich-dev:__TAG__
-LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
+LABEL maintainer "Maryam Abdi-Oskouei <maryamao@ucar.edu>"
 
 # additional system packages
 RUN apt-get update -y && \
@@ -42,7 +42,7 @@ RUN git config --global url.ssh://git@github.com/.insteadOf https://github.com/
 # build the jedi stack
 RUN --mount=type=ssh,id=github_ssh_key cd /root \
     && source /etc/profile \
-    && git clone git@github.com:jcsda-internal/jedi-stack.git \
+    && git clone git@github.com:JCSDA-internal/jedi-stack.git \
     && cd jedi-stack/buildscripts \
     && git checkout develop \
     && ./build_stack.sh "container-clang-mpich-dev" \
@@ -50,7 +50,7 @@ RUN --mount=type=ssh,id=github_ssh_key cd /root \
     && chmod a+r /etc/jedi-stack-contents.log \
     && cd /root/jedi-stack/pkg/NCEPLIBS-bufr/build/python \
     && python setup.py build \
-    && python setup.py install --prefix=/usr/local \
+    && python setup.py install --prefix=/usr/local --install-lib=/usr/local/lib/python3.8/dist-packages\
     && rm -rf /root/jedi-stack \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /worktmp
@@ -63,6 +63,10 @@ RUN git config --global --unset url.ssh://git@github.com/.insteadOf \
 ENV FC=mpifort \
    CC=mpicc \
    CXX=mpicxx
+
+# build h5py and eccodes
+RUN CC="mpicc" HDF5_MPI="ON" HDF5_DIR=/usr/local pip install --no-binary=h5py h5py \
+    &&  pip install eccodes
 
 # set time zone
 RUN apt-get update && \
@@ -87,4 +91,5 @@ RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi --uid 43891 && \
     echo "rmaps_base_oversubscribe = 1" >> ~jedi/.openmpi/mca-params.conf && \
     chown -R jedi:jedi ~jedi/.gitconfig ~jedi/.openmpi
 
+VOLUME /var/lib/docker
 CMD ["/bin/bash" , "-l"]
