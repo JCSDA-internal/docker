@@ -79,11 +79,12 @@ RUN --mount=type=ssh,id=github_ssh_key cd /root \
 # clone and build shumlib
 RUN yum install -y subversion awscli
 
-RUN --mount=type=secret,id=pwd mkdir -p /root/src && \
+RUN mkdir -p /root/src && \
     cd /root/src && \
-    svn checkout --non-interactive --username=maryamabdioskouei --password=$(cat /run/secrets/pwd) https://code.metoffice.gov.uk/svn/utils/shumlib/branches/dev/stevensandbach/r5615_387_jedibranch && \
-    cd r5615_387_jedibranch && \
-    make -f make/vm-x86-gfortran-gcc.mk && \
+    wget -q -nc --no-check-certificate https://github.com/metomi/shumlib/archive/refs/tags/2021.10.1.tar.gz && \
+    tar -xf /root/src/2021.10.1.tar.gz && \
+    cd /root/src/shumlib-2021.10.1 && \
+    make -f  make/vm-x86-gfortran-gcc.mk && \
     mkdir -p /usr/local/shumlib && \
     mv build/* /usr/local/shumlib && \
     rm -rf /root/src

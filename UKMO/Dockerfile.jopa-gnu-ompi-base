@@ -65,17 +65,17 @@ RUN    cd / && \
 ENV LD_LIBRARY_PATH=/usr/local/gnu/lib64:$LD_LIBRARY_PATH \
     PATH=/usr/local/gnu/bin:$PATH
 
-# CMake version 3.16.4
+# CMake version 3.19.2
 RUN  yum install -y \
         make \
         wget && \
     rm -rf /var/cache/yum/*
 
 RUN cd / && \
-    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.sh && \
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://cmake.org/files/v3.19/cmake-3.19.2-Linux-x86_64.sh && \
     mkdir -p /usr/local && \
-    /bin/sh /var/tmp/cmake-3.16.4-Linux-x86_64.sh --prefix=/usr/local --skip-license && \
-    rm -rf /var/tmp/cmake-3.16.4-Linux-x86_64.sh
+    /bin/sh /var/tmp/cmake-3.19.2-Linux-x86_64.sh --prefix=/usr/local --skip-license && \
+    rm -rf /var/tmp/cmake-3.19.2-Linux-x86_64.sh
 
 ENV PATH=/usr/local/bin:$PATH \
     LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
