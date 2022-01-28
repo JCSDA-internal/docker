@@ -1,32 +1,54 @@
 # syntax=docker/dockerfile:experimental
-FROM jcsda/jopa-gnu-ompi-dev:latest
-LABEL maintainer "Mark Miesch <miesch@ucar.edu>"
+FROM jcsda/docker-jopa-gnu-ompi-base:beta
+LABEL maintainer "Maryam Abdi-Oskouei <maryamao@ucar.edu>"
 
 # Mount external volume for AWS CodeBuild
 VOLUME /var/lib/docker
 
-#clone and build fckit
-RUN mkdir -p /usr/local/src && \
-   cd /usr/local/src && \
-   git clone https://github.com/ecmwf/fckit.git -b 0.9.2 && \
-   mkdir -p build && cd build && \
-   ecbuild --build=Release ../fckit && \
-   make -j$(nproc) && make install && \
-   cd && rm -rf /usr/local/src/{build,fckit*}
 
-# clone and build shumlib
-RUN yum install -y subversion awscli
+RUN cd / && \
+    cd /usr/local/src && \
+    curl -O -L https://boostorg.jfrog.io/artifactory/main/release/1.68.0/source/boost_1_68_0.tar.bz2 && \
+    mkdir -p /usr/local/install && cd /usr/local/install && \
+    tar -xf /usr/local/src/boost_1_68_0.tar.bz2 boost_1_68_0/boost && \
+    cd boost_1_68_0 && mkdir include && mv boost include/ && \
+    cd && rm /usr/local/src/boost_1_68_0.tar.bz2
+ENV BOOST_ROOT=/usr/local/install/boost_1_68_0
 
-ENV SHUM_ROOT=/opt/build/shumlib/vm-x86-gfortran-gcc/
+RUN yum -y install boost-devel
 
-RUN --mount=type=secret,id=pwd mkdir -p /opt && \
-    cd /opt && \
-    svn checkout --non-interactive --username=markmiesch --password=$(cat /run/secrets/pwd) https://code.metoffice.gov.uk/svn/utils/shumlib/branches/dev/stevensandbach/r5615_387_jedibranch && \
-    cd r5615_387_jedibranch && \
-    make -f make/vm-x86-gfortran-gcc.mk && \
-    mkdir -p /opt/build/shumlib && \
-    mv build/* /opt/build/shumlib && \
-    rm -rf /root/src
+# netcdf
+RUN yum install -y \
+        boost-devel \
+        bzip2 \
+        ca-certificates \
+        file \
+        libcurl-devel \
+        m4 \
+        make \
+        perl \
+        tar \
+        wget \
+        zlib-devel && \
+    rm -rf /var/cache/yum/*
+
+# set environment variables manually
+ENV NETCDF=/usr/local \
+   PNETCDF=/usr/local \
+   HDF5_ROOT=/usr/local \
+   PIO=/usr/local \
+   BOOST_ROOT=/usr/local \
+   EIGEN3_INCLUDE_DIR=/usr/local \
+   LAPACK_PATH=/usr/local \
+   LAPACK_DIR=$LAPACK_PATH \
+   LAPACK_LIBRARIES="$LAPACK_PATH/lib/liblapack.a;$LAPACK_PATH/lib/libblas.a" \
+   SERIAL_CC=gcc \
+   SERIAL_CXX=g++ \
+   SERIAL_FC=gfortran \
+   MPI_CC=mpicc \
+   MPI_CXX=mpicxx \
+   MPI_FC=mpifort \
+   PYTHONPATH=/usr/local/lib64
 
 SHELL ["/bin/bash", "-c"]
 
@@ -34,8 +56,40 @@ SHELL ["/bin/bash", "-c"]
 RUN mkdir -p -m 0600 ~/.ssh && \
     ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-# set up ssh authentication for github
+# set up ssh authentication
 RUN git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+# build the jedi stack
+RUN --mount=type=ssh,id=github_ssh_key cd /root \
+    && source /etc/profile \
+    && git clone git@github.com:JCSDA-internal/jedi-stack.git \
+    && cd jedi-stack/buildscripts \
+    && git checkout feature/jopa-container \
+    && ./build_stack.sh "container_jopa-gnu-openmpi-dev" \
+    && mv ../jedi-stack-contents.log /etc \
+    && chmod a+r /etc/jedi-stack-contents.log \
+    && cd /root/jedi-stack/pkg/NCEPLIBS-bufr/build/python \
+    && export PYTHONPATH=/usr/local/lib:/usr/local/lib64 \
+    && python3 setup.py build \
+    && python3 setup.py install --prefix=/usr/local \
+    && rm -rf /root/jedi-stack \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir /worktmp
+
+# clone and build shumlib
+RUN yum install -y subversion awscli
+
+RUN mkdir -p /root/src && \
+    cd /root/src && \
+    wget -q -nc --no-check-certificate https://github.com/metomi/shumlib/archive/refs/tags/2021.10.1.tar.gz && \
+    tar -xf /root/src/2021.10.1.tar.gz && \
+    cd /root/src/shumlib-2021.10.1 && \
+    make -f  make/vm-x86-gfortran-gcc.mk && \
+    mkdir -p /usr/local/shumlib && \
+    mv build/* /usr/local/shumlib && \
+    rm -rf /root/src
+
+ENV SHUM_ROOT=/usr/local/shumlib/vm-x86-gfortran-gcc/
 
 #------------------------------------------------------------------------------#
 # Clone JCSDA source code
@@ -45,32 +99,53 @@ RUN --mount=type=ssh,id=github_ssh_key mkdir -p /root/src && \
     git clone git@github.com:JCSDA-internal/trans.git && \
     git clone git@github.com:JCSDA-internal/atlas.git -b feature/um
 
-# build faux
-RUN mkdir -p /opt/build/faux && \
-    cd /opt/build/faux && \
-    ecbuild --build=Release /root/src/faux && \
-    make -j4
+#build faux 
+RUN cd /root/src/faux && \
+    mkdir build && \
+    cd build && \
+    ecbuild --build=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_INSTALL_LIBDIR=lib .. && \
+    make -j4 && \
+    make install
 
 # build trans
-RUN mkdir -p /opt/build/trans && \
-    cd /opt/build/trans && \
-    ecbuild --build=Release -Dfaux_ROOT=/opt/build/faux /root/src/trans && \
-    make -j4
+RUN cd /root/src/trans && \
+    mkdir build && \
+    cd build && \
+    ecbuild --build=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_INSTALL_LIBDIR=lib -Dfaux_ROOT=/usr/local/module/faux .. && \
+    make -j4 && \
+    make install
 
-# Build atlas branch feature/um
-#ENV CMAKE_PREFIX_PATH=/usr/local/lib64/cmake/eckit:$CMAKE_PREFIX_PATH
-RUN mkdir -p /opt/build/atlas && \
-    cd /opt/build/atlas && \
-    ecbuild --build=Release -Dtrans_DIR=/opt/build/trans \
-            --eckit_ROOT=/usr/local /root/src/atlas
+#  build atlas
+#RUN cd /root/src/atlas && \
+#    git checkout feature/um && \
+#    mkdir build && \
+#    cd build && \
+#    ecbuild --build=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_INSTALL_LIBDIR=lib -Dtrans_DIR=/usr/local/include/trans .. && \
+#    make -j4 && \
+#    make instal
 
 #Make a non-root user:jedi / group:jedi for running MPI
 RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi --uid 43891 && \
     echo "export FC=mpifort" >> ~jedi/.bashrc && \
     echo "export CC=mpicc" >> ~jedi/.bashrc && \
     echo "export CXX=mpicxx" >> ~jedi/.bashrc && \
-    echo "export PYTHONPATH=/usr/local/lib:$PYTHONPATH" >> ~jedi/.bashrc && \
-    echo "export SHUM_ROOT=/opt/build/shumlib/vm-x86-gfortran-gcc/" >> ~jedi/.bashrc && \
+    echo "export PYTHONPATH=/usr/local/lib:/usr/local/lib64:$PYTHONPATH" >> ~jedi/.bashrc && \
+    echo "export SHUM_ROOT=/usr/local/shumlib/vm-x86-gfortran-gcc/" >> ~jedi/.bashrc && \
+    echo "export MKLROOT=/opt/intel/mkl" >> ~jedi/.bashrc && \
+    echo "export LIBRARY_PATH=/usr/local/pnetcdf/lib:/usr/local/netcdf/lib:/usr/local/hdf5/lib:/opt/intel/mkl/lib/intel64:/opt/intel/lib/intel64:" >> ~jedi/.bashrc && \
+    echo "export LD_LIBRARY_PATH=/usr/local/pnetcdf/lib:/usr/local/netcdf/lib:/usr/local/hdf5/lib:/opt/intel/mkl/lib/intel64:/opt/intel/lib/intel64:/usr/local/lib:/usr/local/gnu/lib64:" >> ~jedi/.bashrc && \
+    echo "export CPATH=/usr/local/pnetcdf/include:/usr/local/netcdf/include:/usr/local/hdf5/include:/opt/intel/mkl/include:" >> ~jedi/.bashrc && \
+    echo "export PATH=/usr/local/pnetcdf/bin:/usr/local/netcdf/bin:/usr/local/hdf5/bin:/usr/local/bin:/usr/local/gnu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> ~jedi/.bashrc && \
+    echo "export Eigen3_ROOT=/usr/local/install/eigen-3.3.7" >> ~jedi/.bashrc && \
+    echo "export BOOST_ROOT=/usr/local/install/boost_1_68_0" >> ~jedi/.bashrc && \
+    echo "export CMAKE_PREFIX_PATH=/usr/local/install/gsl-lite-0.37/lib64/cmake:" >> ~jedi/.bashrc && \
+    echo "export NETCDF_DIR=/usr/local/netcdf" >> ~jedi/.bashrc && \
+    echo "export NetCDF_ROOT=/usr/local/netcdf" >> ~jedi/.bashrc && \
+    echo "export H5DIR=/usr/local/hdf5" >> ~jedi/.bashrc && \
+    echo "export HDF5_DIR=/usr/local/hdf5" >> ~jedi/.bashrc && \
+    echo "export LDFLAGS=-L/lib" >> ~jedi/.bashrc && \
+    echo "export CPPFLAGS=-I/include" >> ~jedi/.bashrc && \
+    echo "export LIBS=-ldl" >> ~jedi/.bashrc && \
     echo "ulimit -s unlimited" >> ~jedi/.bashrc && \
     echo "ulimit -v unlimited" >> ~jedi/.bashrc && \
     printf "[credential]\n    helper = cache --timeout=7200\n" >> ~jedi/.gitconfig && \
@@ -78,5 +153,10 @@ RUN useradd -U -k /etc/skel -s /bin/bash -d /home/jedi -m jedi --uid 43891 && \
     echo "rmaps_base_oversubscribe = 1" >> ~jedi/.openmpi/mca-params.conf && \
     chown -R jedi:jedi ~jedi/.gitconfig ~jedi/.openmpi
 
+# clean up
+RUN git config --global --unset url.ssh://git@github.com/.insteadOf \
+    && rm -rf /root/.ssh
+
 RUN cd / && \
     rm -rf {/usr/local/src/*,/var/tmp/*,/root/src/*}
+

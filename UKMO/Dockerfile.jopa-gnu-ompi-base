@@ -1,0 +1,152 @@
+FROM centos:7
+
+# JOPA GNU-OpenMPI container
+
+RUN yum install -y epel-release && \
+    yum install -y \
+        build-essential \
+        gnupg2 && \
+    rm -rf /var/cache/yum/*
+
+RUN yum install -y \
+        bc \
+        bison \
+        bzip2 \
+        csh \
+        curl \
+        expat-devel \
+        file \
+        flex \
+        gmp-devel \
+        ksh \
+        less \
+        libX11-devel \
+        libxml2-devel \
+        man-db \
+        mpfr-devel \
+        nano \
+        ncurses-devel \
+        openssh-server \
+        openssl-devel \
+        redhat-lsb-core \
+        swig \
+        tcl \
+        tcsh \
+        time \
+        tk \
+        unzip \
+        wget \
+        wish && \
+    rm -rf /var/cache/yum/*
+
+# GNU compiler
+RUN yum install -y \
+        bzip2 \
+        file \
+        gcc \
+        gcc-c++ \
+        git \
+        make \
+        perl \
+        tar \
+        wget \
+        xz && \
+    rm -rf /var/cache/yum/*
+
+RUN    cd / && \
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp http://ftpmirror.gnu.org/gcc/gcc-9.3.0/gcc-9.3.0.tar.xz && \
+    mkdir -p /var/tmp && tar -x -f /var/tmp/gcc-9.3.0.tar.xz -C /var/tmp -J && \
+    cd /var/tmp/gcc-9.3.0 && ./contrib/download_prerequisites && \
+    mkdir -p /var/tmp/objdir && cd /var/tmp/objdir &&   /var/tmp/gcc-9.3.0/configure --prefix=/usr/local/gnu --disable-multilib --enable-languages=c,c++,fortran && \
+    make -j$(nproc) && \
+    make -j$(nproc) install && \
+    rm -rf /var/tmp/gcc-9.3.0.tar.xz /var/tmp/gcc-9.3.0 /var/tmp/objdir
+
+ENV LD_LIBRARY_PATH=/usr/local/gnu/lib64:$LD_LIBRARY_PATH \
+    PATH=/usr/local/gnu/bin:$PATH
+
+# CMake version 3.19.2
+RUN  yum install -y \
+        make \
+        wget && \
+    rm -rf /var/cache/yum/*
+
+RUN cd / && \
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://cmake.org/files/v3.19/cmake-3.19.2-Linux-x86_64.sh && \
+    mkdir -p /usr/local && \
+    /bin/sh /var/tmp/cmake-3.19.2-Linux-x86_64.sh --prefix=/usr/local --skip-license && \
+    rm -rf /var/tmp/cmake-3.19.2-Linux-x86_64.sh
+
+ENV PATH=/usr/local/bin:$PATH \
+    LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+RUN yum install -y \
+        doxygen \
+        git \
+        git-flow \
+        graphviz \
+        imagemagick \
+        lynx \
+        nedit \
+        tex4ht \
+        texinfo \
+        texlive-latex-recommended \
+        vim-minimal && \
+    rm -rf /var/cache/yum/*
+
+RUN cd / && \
+    curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash && \
+    yum -y install git-lfs && \
+    git lfs install --skip-repo
+
+RUN yum install -y \
+        autoconf \
+        automake \
+        clang-tidy \
+        ddd \
+        gdb \
+        pkgconfig \
+        valgrind && \
+    rm -rf /var/cache/yum/*
+
+RUN yum install -y \
+        python3-dev \
+        python3-devel \
+        python3-pip \
+        python3-scipy \
+        python3-yaml && \
+    rm -rf /var/cache/yum/*
+
+# OpenMPI version 4.0.3
+RUN yum install -y \
+        bzip2 \
+        file \
+        hwloc \
+        make \
+        numactl-devel \
+        openssh-clients \
+        perl \
+        tar \
+        wget && \
+    rm -rf /var/cache/yum/*
+
+RUN cd / && \
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://www.open-mpi.org/software/ompi/v4.0/downloads/openmpi-4.0.3.tar.bz2 && \
+    mkdir -p /var/tmp && tar -x -f /var/tmp/openmpi-4.0.3.tar.bz2 -C /var/tmp -j && \
+    cd /var/tmp/openmpi-4.0.3 &&  CC=/usr/local/gnu/bin/gcc CXX=/usr/local/gnu/bin/g++ F77=/usr/local/gnu/bin/gfortran F90=/usr/local/gnu/bin/gfortran FC=/usr/local/gnu/bin/gfortran LD_LIBRARY_PATH='/usr/local/gnu/lib64:$LD_LIBRARY_PATH' ./configure --prefix=/usr/local --enable-mpi-cxx --without-cuda --without-verbs && \
+    make -j$(nproc) && \
+    make -j$(nproc) install && \
+    rm -rf /var/tmp/openmpi-4.0.3 /var/tmp/openmpi-4.0.3.tar.bz2
+
+RUN cd / && \
+    cd /usr/local/src && \
+    curl -O -L https://github.com/linux-test-project/lcov/archive/v1.15.tar.gz && \
+    tar -xf v1.15.tar.gz && \
+    cd lcov-1.15 && \
+    make install && \
+    cd && rm -rf /usr/local/src/{lcov-1.15,v1.15*}
+
+
+RUN cd / && \
+    rm -rf {/usr/local/src/*,/var/tmp/*}
+
