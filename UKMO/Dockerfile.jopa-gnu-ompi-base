@@ -138,6 +138,29 @@ RUN cd / && \
     make -j$(nproc) install && \
     rm -rf /var/tmp/openmpi-4.0.3 /var/tmp/openmpi-4.0.3.tar.bz2
 
+
+# MKL version 2020.0-088
+RUN rpm --import https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB && \
+    yum install -y yum-utils && \
+    yum-config-manager --add-repo https://yum.repos.intel.com/mkl/setup/intel-mkl.repo && \
+    yum install -y \
+        intel-mkl-64bit-2020.0-088 && \
+    rm -rf /var/cache/yum/*
+
+ENV CPATH=/opt/intel/mkl/include:$CPATH \
+    LD_LIBRARY_PATH=/opt/intel/mkl/lib/intel64:/opt/intel/lib/intel64:$LD_LIBRARY_PATH \
+    LIBRARY_PATH=/opt/intel/mkl/lib/intel64:/opt/intel/lib/intel64:$LIBRARY_PATH \
+    MKLROOT=/opt/intel/mkl \
+    Eigen3_ROOT=/usr/local/install/eigen-3.3.7
+
+RUN cd / && \
+    cd /usr/local/src && \
+    git clone https://gitlab.com/libeigen/eigen.git -b 3.3.7 && \
+    mkdir -p build && cd build && \
+    cmake . -DCMAKE_INSTALL_PREFIX=$Eigen3_ROOT ../eigen && \
+    make install && \
+    cd && rm -rf /usr/local/src/{build,eigen*}
+
 RUN cd / && \
     cd /usr/local/src && \
     curl -O -L https://github.com/linux-test-project/lcov/archive/v1.15.tar.gz && \
